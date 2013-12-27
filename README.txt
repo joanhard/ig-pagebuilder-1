@@ -1,6 +1,6 @@
 === IG PageBuilder ===
 Contributors: Innogears
-Tags: simple, build, page builder, plugin, advanced,page elements, editor, pagebuilder, layout, page, post, responsive, widget
+Tags: admin, posts, images, image, simple, build, page builder, plugin, advanced, page elements, editor, pagebuilder, layout, page, post, responsive, widget
 Requires at least: 3.6
 Tested up to: 3.8
 Stable tag: 3.6
