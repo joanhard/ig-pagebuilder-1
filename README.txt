@@ -44,7 +44,7 @@ The plugin is similar to an advanced editor and used for both post and page. It 
 = 1.0.1 =
 
 * Fixed frontend bootstrap conflict with theme
-* Add carousel element
-* Add text editor into element setting modal
+* Added carousel element
+* Added text editor into element setting modal
 
 = 1.0 =
