@@ -3,7 +3,7 @@
  * Plugin Name: IG Pagebuilder
  * Plugin URI: http://innothemes.com
  * Description: Awesome content builder for Wordpress websites
- * Version: @version
+ * Version: 1.0.1
  * Author: InnoThemes Team <support@innothemes.com>
  * Author URI: http://innothemes.com
  * License: GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
