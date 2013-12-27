@@ -29,7 +29,7 @@ The plugin is similar to an advanced editor and used for both post and page. It 
 * Easy to customize and use other 3rd-party shortcodes
 * Support resizing blocks using only a mouse
 
-*If you like the plugin, please vote for it!*
+*<i>If you like the plugin, please vote for it!</i>*
 
 == Installation ==
 1. Upload IG PageBuilder to the /wp-content/plugins/ directory
