@@ -7,11 +7,11 @@ Stable tag: 3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A powerful plugin that brings a convenient way to help you build a complete Wordpress website in few minutes
+A convenient way to build a complete Wordpress website in few minutes
 
 == Description ==
 
-IG PageBuilder is a powerful plugin that brings a convenient way to help you build a complete Wordpress website in few minutes. Designed with an intuitive interface, simple and extremely easy to use, this plugin gives a new experience for creating an entire online shop by visual drag-and-drop functionality.
+IG PageBuilder is a powerful plugin can help you build a complete Wordpress website in few minutes. Designed with an intuitive interface, simple and extremely easy to use, this plugin gives a new experience for creating an entire online shop by visual drag-and-drop functionality.
 
 The plugin is similar to an advanced editor and used for both post and page. It includes full page elements, widget support, built-in shortcodes and much more options that provide an unlimited number of style variations so there is no need to touch any code. In particular, the remarkable improvement in the live preview mode, there will no longer be any feeling glitzy when creating too many things.
 
@@ -28,6 +28,8 @@ The plugin is similar to an advanced editor and used for both post and page. It 
 * Easy to add Widgets
 * Easy to customize and use other 3rd-party shortcodes
 * Support resizing blocks using only a mouse
+
+*If you like the plugin, please vote for it!*
 
 == Installation ==
 1. Upload IG PageBuilder to the /wp-content/plugins/ directory
