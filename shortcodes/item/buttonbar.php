@@ -21,7 +21,7 @@ if ( ! class_exists( 'IG_Item_ButtonBar' ) ) {
 			$this->config['shortcode'] = strtolower( __CLASS__ );
 			$this->config['exception'] = array(
 				'require_js'       => array( 'ig-linktype.js' ),
-				'data-modal-title' => __( 'ButtonBar Item', IGPBL )
+				'data-modal-title' => __( 'Button Bar Item', IGPBL )
 			);
 		}
 

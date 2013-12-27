@@ -78,7 +78,7 @@ if ( ! class_exists( 'IG_QRCode' ) ) {
 						'tooltip' => __( 'Alignment Description', IGPBL )
 					),
 					array(
-						'name'       => __( 'QRCode Sizes', IGPBL ),
+						'name'       => __( 'QR Code Sizes', IGPBL ),
 						'id'         => 'qrcode_sizes',
 						'type'       => 'text_append',
 						'type_input' => 'number',

@@ -574,8 +574,10 @@ root {
     width: 98%;
     clear: both;
     margin: 0;
-    padding: 7px 6px;
-    height: auto;
+    padding: 6px 6px;
+}
+#ig-widget-form select, #jsn-quicksearch-field{
+    height: 34px;
 }
 #ig-widget-form input[type="radio"], #ig-widget-form input[type="checkbox"]{
     margin: 0;
@@ -741,4 +743,9 @@ input:checked + .radio_image{
 /* fix css error of gradient */
 .classy-gradient-box .arrow{
     display: none !important;
+}
+
+/* Custom WYSIWYG editor */
+.wysiwyg {
+    width: 100% !important;
 }

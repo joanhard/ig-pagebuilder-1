@@ -44,44 +44,44 @@ if ( ! class_exists( 'IG_Pb_Modal' ) ) {
 				'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/css/modal.css',
 				'ver' => '1.0.0',
 			);
-            $assets['ig-pb-wysiwyg-js'] = array(
-            'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/jquery.wysiwyg.js',
-            'ver' => '1.0.0',
-        );
-        $assets['ig-pb-wysiwyg-css'] = array(
-            'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/jquery.wysiwyg.css',
-            'ver' => '1.0.0',
-        );
-        $assets['ig-pb-wysiwyg-0.9-js'] = array(
-            'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/jquery.wysiwyg-0.9.js',
-            'ver' => '1.0.0',
-        );
-        $assets['ig-pb-wysiwyg-0.9-css'] = array(
-            'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/jquery.wysiwyg-0.9.css',
-            'ver' => '1.0.0',
-        );
-        
-        $assets['ig-pb-wysiwyg-colorpicker-js'] = array(
-            'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.colorpicker.js',
-            'ver' => '1.0.0',
-        );
-        $assets['ig-pb-wysiwyg-table-js'] = array(
-            'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.table.js',
-            'ver' => '1.0.0',
-        );
-        $assets['ig-pb-wysiwyg-cssWrap-js'] = array(
-            'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.cssWrap.js',
-            'ver' => '1.0.0',
-        );
-        $assets['ig-pb-wysiwyg-image-js'] = array(
-            'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.image.js',
-            'ver' => '1.0.0',
-        );
-        $assets['ig-pb-wysiwyg-link-js'] = array(
-            'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.link.js',
-            'ver' => '1.0.0',
-        );
-        
+			$assets['ig-pb-wysiwyg-js'] = array(
+				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/jquery.wysiwyg.js',
+				'ver' => '1.0.0',
+			);
+			$assets['ig-pb-wysiwyg-css'] = array(
+				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/jquery.wysiwyg.css',
+				'ver' => '1.0.0',
+			);
+			$assets['ig-pb-wysiwyg-0.9-js'] = array(
+				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/jquery.wysiwyg-0.9.js',
+				'ver' => '1.0.0',
+			);
+			$assets['ig-pb-wysiwyg-0.9-css'] = array(
+				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/jquery.wysiwyg-0.9.css',
+				'ver' => '1.0.0',
+			);
+			
+			$assets['ig-pb-wysiwyg-colorpicker-js'] = array(
+				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.colorpicker.js',
+				'ver' => '1.0.0',
+			);
+			$assets['ig-pb-wysiwyg-table-js'] = array(
+				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.table.js',
+				'ver' => '1.0.0',
+			);
+			$assets['ig-pb-wysiwyg-cssWrap-js'] = array(
+				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.cssWrap.js',
+				'ver' => '1.0.0',
+			);
+			$assets['ig-pb-wysiwyg-image-js'] = array(
+				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.image.js',
+				'ver' => '1.0.0',
+			);
+			$assets['ig-pb-wysiwyg-link-js'] = array(
+				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/jquery-jwysiwyg' ) . '/controls/wysiwyg.link.js',
+				'ver' => '1.0.0',
+			);
+
 			return $assets;
 		}
 
@@ -95,9 +95,8 @@ if ( ! class_exists( 'IG_Pb_Modal' ) ) {
 
 			$scripts = array( 'ig-pb-handlesetting-js', 'ig-pb-jquery-fancybox-js', 'ig-pb-placeholder' );
 			IG_Pb_Assets::load( apply_filters( 'ig_pb_assets_enqueue_modal', $scripts ) );
-            
-            IG_Pb_Assets::load( array( 'ig-pb-wysiwyg-js', 'ig-pb-wysiwyg-css', 'ig-pb-wysiwyg-0.9-js', 'ig-pb-wysiwyg-0.9-css', 
-            'ig-pb-wysiwyg-colorpicker-js', 'ig-pb-wysiwyg-table-js', 'ig-pb-wysiwyg-cssWrap-js', 'ig-pb-wysiwyg-image-js', 'ig-pb-wysiwyg-link-js' ) );
+
+			IG_Pb_Assets::load( array( 'ig-pb-wysiwyg-js', 'ig-pb-wysiwyg-css', 'ig-pb-wysiwyg-0.9-js', 'ig-pb-wysiwyg-0.9-css', 'ig-pb-wysiwyg-colorpicker-js', 'ig-pb-wysiwyg-table-js', 'ig-pb-wysiwyg-cssWrap-js', 'ig-pb-wysiwyg-image-js', 'ig-pb-wysiwyg-link-js' ) );
 		}
 
 		public function enqueue_admin_style() {

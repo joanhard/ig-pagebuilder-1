@@ -20,6 +20,8 @@
 		}
 		if (typeof($.fancybox) == "function") {
 			$(".ig-prtbl-button-fancy").fancybox({
+                "width"		: "75%",
+				"height"	: "75%",
 	            "autoScale"	: false,
 	            "transitionIn"	: "elastic",
 	            "transitionOut"	: "elastic",

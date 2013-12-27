@@ -14,7 +14,8 @@
 #adminmenuback,
 #wpfooter,
 #setting-error-tgmpa,
-.update-nag
+.update-nag,
+.screen-reader-shortcut
 {
     display: none !important;
 }

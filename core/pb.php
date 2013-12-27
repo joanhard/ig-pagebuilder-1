@@ -67,6 +67,7 @@ class IG_Pb {
 		// register modal page
 		add_action( 'admin_init', array( &$this, 'modal_register' ) );
 		add_action( 'admin_init', array( &$this, 'widget_register_assets' ) );
+		add_action( 'admin_init', array( &$this, 'remove_admin_stylesheets' ) );
 		add_action( 'admin_menu', array( &$this, 'add_ig_modal_page' ) );
 		// enable shortcode in content & filter content with IGPB shortcodes
 		add_filter( 'the_content', 'do_shortcode' );
@@ -650,6 +651,15 @@ JS;
 			IG_Pb_Assets::load( 'ig-pb-widget-js' );
 		}
 	}
+
+    /**
+     * Unload Wp admin css in modal iframe
+     */
+    function remove_admin_stylesheets() {
+        if ( IG_Pb_Helper_Functions::is_modal() ) {
+            wp_deregister_style('wp-admin');
+        }
+    }
 
 	/**
 	 * Add Inno Button

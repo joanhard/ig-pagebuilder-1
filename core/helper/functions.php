@@ -410,6 +410,8 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 			$Ig_Pb_Widgets = array();
 			$widgets       = IG_Pb_Helper_Functions::list_widgets();
 			foreach ( $widgets as $id => $widget ) {
+                if ( $widget['class'] == 'IG_Pb_Widget' )
+                    continue;
 				$config = array(
 					'shortcode'     => $widget['class'],
 					'name'		  => $widget['name'],

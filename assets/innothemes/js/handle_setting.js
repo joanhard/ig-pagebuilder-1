@@ -126,22 +126,27 @@
     
     // Validator input field    
     $.HandleSetting.inputValidator = function() {
-        // Disable Special Characters        
-        $('#modalOptions input:text').bind('keypress change', function (event) {
-            $.HandleSetting.regexTestInput(event, "^[a-zA-Z0-9-_;|\b\s]+$");
+        var input_action = 'keypress change paste';
+        
+        // allow currency symbold in Price field
+        $('#modalOptions input:text.ig_pb_price').bind(input_action, function (event) {
+            $.HandleSetting.regexTestInput(event, "^[^!@#%\^&_;|\b\s]+$");
         });
         
-        // Limit length of title
-        $("#modalOptions #param-el_title, #modalOptions input:text[name$='[title]']").each(function(){
+        // Disable Special Characters, Limit length of title
+        $("#param-el_title, input:text[name$='[title]'], [data-role='title'], .ig-pb-limit-length", '#modalOptions').each(function(){
             $(this).prop('maxlength', 50);
+            $(this).bind(input_action, function (event) {
+                $.HandleSetting.regexTestInput(event, "^[a-zA-Z0-9-_;|\b\s]+$");
+            });
         });
         
         // Number field: only allow to type number
-        $("#modalOptions input[type='number']").bind('keypress change', function (event) {
+        $("#modalOptions input[type='number']").bind(input_action, function (event) {
             $.HandleSetting.regexTestInput(event, "^[0-9\b]+$");
         });
         // Doesn't allow 0 in items_per_ input field
-        $("#modalOptions input[id*='items_per']").bind('keypress change', function (event) {
+        $("#modalOptions input[id*='items_per']").bind(input_action, function (event) {
             var regex = /^[1-9\b]+$/g;
             var val = regex.test($(this).val());
             if(!val){
