@@ -15,7 +15,7 @@ IG PageBuilder is a powerful plugin that brings a convenient way to help you bui
 
 The plugin is similar to an advanced editor and used for both post and page. It includes full page elements, widget support, built-in shortcodes and much more options that provide an unlimited number of style variations so there is no need to touch any code. In particular, the remarkable improvement in the live preview mode, there will no longer be any feeling glitzy when creating too many things.
 
-Main Features:
+<h4>Main Features:</h4>
 
 * Intuitive and fully responsive layout
 * Enable Drag & Drop layout
