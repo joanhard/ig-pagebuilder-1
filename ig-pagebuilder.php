@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: IG Pagebuilder
- * Plugin URI: http://innothemes.com
+ * Plugin URI: http://innogears.com
  * Description: Awesome content builder for Wordpress websites
  * Version: 1.0.1
- * Author: InnoThemes Team <support@innothemes.com>
- * Author URI: http://innothemes.com
+ * Author: innogears Team <support@innogears.com>
+ * Author URI: http://innogears.com
  * License: GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
  */
 error_reporting( E_ALL ^ E_NOTICE );
