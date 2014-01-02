@@ -84,7 +84,7 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 					}
 					$file_path = $js_dir['path'] . '/' . $js_file;
 					$file_uri  = $js_dir['uri'] . '/' . $js_file;
-										
+
 					// if file doesn't exist, try to get it in IGPB js dir
 					if ( ! file_exists( $file_path ) ) {
 						$file_path = $inno_gears_js['path'] . '/' . $js_file;
@@ -245,7 +245,7 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 		static function ig_arr_walk_subsc( &$value, $key, $filter_arr ) {
 			$value['std'] = $filter_arr[$key];
 		}
-		
+
 		// get image id
 		public static function get_image_id( $image_url = '' ) {
 			global $wpdb;
@@ -349,7 +349,7 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 
 		// common scripts register at first
 		public static function enqueue_scripts() {
-			IG_Pb_Assets::load( array( 'jquery', 'jquery-ui', 'jquery-ui-resizable', 'jquery-ui-sortable', 'jquery-ui-tabs', 'jquery-ui-dialog', 'jquery-ui-button', 'jquery-ui-slider', 'ig-pb-jquery-tipsy-js', 'ig-pb-jquery-select2-js', 'ig-pb-bootstrap-transition-js', 'ig-pb-bootstrap-js', 'ig-pb-jquery-easing-js' ) );
+			IG_Pb_Assets::load( array( 'jquery', 'jquery-ui', 'jquery-ui-resizable', 'jquery-ui-sortable', 'jquery-ui-tabs', 'jquery-ui-dialog', 'jquery-ui-button', 'jquery-ui-slider', 'ig-pb-jquery-tipsy-js', 'ig-pb-bootstrap-js', 'ig-pb-jquery-easing-js' ) );
 		}
 
 		// common Handle Element, Modal scripts
@@ -410,8 +410,8 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 			$Ig_Pb_Widgets = array();
 			$widgets       = IG_Pb_Helper_Functions::list_widgets();
 			foreach ( $widgets as $id => $widget ) {
-                if ( $widget['class'] == 'IG_Pb_Widget' )
-                    continue;
+				if ( $widget['class'] == 'IG_Pb_Widget' )
+					continue;
 				$config = array(
 					'shortcode'     => $widget['class'],
 					'name'		  => $widget['name'],

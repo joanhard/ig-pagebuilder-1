@@ -32,7 +32,7 @@
         // Update preview when change param in Modal Box
         $( '#modalOptions' ).delegate( '[id^="param"]', 'change', function () {
             if ($(this).attr('data-role') == 'no_preview'){
-            	return false;
+                return false;
             }
             $.HandleSetting.shortcodePreview();
         });
@@ -53,13 +53,13 @@
         $.HandleSetting.buttonGroup();
 
         $.HandleSetting.disableHref();
-        
+
         $.HandleSetting.inputValidator();
-        
-        $.HandleSetting.setTinyMCE('.ig_pb_tiny_mce');        
+
+        $.HandleSetting.setTinyMCE('.ig_pb_tiny_mce');
 
         if ( $('#shortcode_name').val() != 'ig_image' ) {
-        	$('select option[value="large_image"]').hide();
+            $('select option[value="large_image"]').hide();
         }
 
     } );
@@ -112,27 +112,27 @@
             return false;
         });
     }
-    
+
     // validate input of text field with regular expression
     $.HandleSetting.regexTestInput = function(event, regex_str) {
         var regex = new RegExp(regex_str);
         var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
         if (!regex.test(key) && key != ' ') {
-           event.preventDefault();
-           return false;
+            event.preventDefault();
+            return false;
         }
         return true;
     }
-    
-    // Validator input field    
+
+    // Validator input field
     $.HandleSetting.inputValidator = function() {
         var input_action = 'keypress change paste';
-        
+
         // allow currency symbold in Price field
         $('#modalOptions input:text.ig_pb_price').bind(input_action, function (event) {
             $.HandleSetting.regexTestInput(event, "^[^!@#%\^&_;|\b\s]+$");
         });
-        
+
         // Disable Special Characters, Limit length of title
         $("#param-el_title, input:text[name$='[title]'], [data-role='title'], .ig-pb-limit-length", '#modalOptions').each(function(){
             $(this).prop('maxlength', 50);
@@ -140,7 +140,7 @@
                 $.HandleSetting.regexTestInput(event, "^[a-zA-Z0-9-_;|\b\s]+$");
             });
         });
-        
+
         // Number field: only allow to type number
         $("#modalOptions input[type='number']").bind(input_action, function (event) {
             $.HandleSetting.regexTestInput(event, "^[0-9\b]+$");
@@ -154,122 +154,168 @@
             }
         });
     }
-    
+
     // Custom WYSIWYG
     $.HandleSetting.setTinyMCE = function (selector) {
-    	$(selector).each(function() {
-    		var current_id = $(this).attr('id');
-    		if ( current_id ) {
-    			$('#' + current_id).wysiwyg({
-    	            controls:{
-    	                bold:{ visible:true },
-    	                italic:{ visible:true },
-    	                underline:{ visible:true },
-    	                strikeThrough:{ visible:true },
+        $(selector).each(function() {
+            var current_id = $(this).attr('id');
+            if ( current_id ) {
+                $('#' + current_id).wysiwyg({
+                    controls:{
+                        bold:{
+                            visible:true
+                        },
+                        italic:{
+                            visible:true
+                        },
+                        underline:{
+                            visible:true
+                        },
+                        strikeThrough:{
+                            visible:true
+                        },
 
-    	                justifyLeft:{ visible:true },
-    	                justifyCenter:{ visible:true },
-    	                justifyRight:{ visible:true },
-    	                justifyFull:{ visible:true },
+                        justifyLeft:{
+                            visible:true
+                        },
+                        justifyCenter:{
+                            visible:true
+                        },
+                        justifyRight:{
+                            visible:true
+                        },
+                        justifyFull:{
+                            visible:true
+                        },
 
-    	                indent:{ visible:true },
-    	                outdent:{ visible:true },
+                        indent:{
+                            visible:true
+                        },
+                        outdent:{
+                            visible:true
+                        },
 
-    	                subscript:{ visible:true },
-    	                superscript:{ visible:true },
+                        subscript:{
+                            visible:true
+                        },
+                        superscript:{
+                            visible:true
+                        },
 
-    	                undo:{ visible:true },
-    	                redo:{ visible:true },
+                        undo:{
+                            visible:true
+                        },
+                        redo:{
+                            visible:true
+                        },
 
-    	                insertOrderedList:{ visible:true },
-    	                insertUnorderedList:{ visible:true },
-    	                insertHorizontalRule:{ visible:true },
+                        insertOrderedList:{
+                            visible:true
+                        },
+                        insertUnorderedList:{
+                            visible:true
+                        },
+                        insertHorizontalRule:{
+                            visible:true
+                        },
 
-    	                h4:{
-    	                    visible:true,
-    	                    className:'h4',
-    	                    command:($.browser.msie || $.browser.safari) ? 'formatBlock' : 'heading',
-    	                    arguments:($.browser.msie || $.browser.safari) ? '<h4>' : 'h4',
-    	                    tags:['h4'],
-    	                    tooltip:'Header 4'
-    	                },
-    	                h5:{
-    	                    visible:true,
-    	                    className:'h5',
-    	                    command:($.browser.msie || $.browser.safari) ? 'formatBlock' : 'heading',
-    	                    arguments:($.browser.msie || $.browser.safari) ? '<h5>' : 'h5',
-    	                    tags:['h5'],
-    	                    tooltip:'Header 5'
-    	                },
-    	                h6:{
-    	                    visible:true,
-    	                    className:'h6',
-    	                    command:($.browser.msie || $.browser.safari) ? 'formatBlock' : 'heading',
-    	                    arguments:($.browser.msie || $.browser.safari) ? '<h6>' : 'h6',
-    	                    tags:['h6'],
-    	                    tooltip:'Header 6'
-    	                },
+                        h4:{
+                            visible:true,
+                            className:'h4',
+                            command:($.browser.msie || $.browser.safari) ? 'formatBlock' : 'heading',
+                            arguments:($.browser.msie || $.browser.safari) ? '<h4>' : 'h4',
+                            tags:['h4'],
+                            tooltip:'Header 4'
+                        },
+                        h5:{
+                            visible:true,
+                            className:'h5',
+                            command:($.browser.msie || $.browser.safari) ? 'formatBlock' : 'heading',
+                            arguments:($.browser.msie || $.browser.safari) ? '<h5>' : 'h5',
+                            tags:['h5'],
+                            tooltip:'Header 5'
+                        },
+                        h6:{
+                            visible:true,
+                            className:'h6',
+                            command:($.browser.msie || $.browser.safari) ? 'formatBlock' : 'heading',
+                            arguments:($.browser.msie || $.browser.safari) ? '<h6>' : 'h6',
+                            tags:['h6'],
+                            tooltip:'Header 6'
+                        },
 
-    	                cut:{ visible:true },
-    	                copy:{ visible:true },
-    	                paste:{ visible:true },
-    	                html:{ visible:true },
-    	                increaseFontSize:{ visible:true },
-    	                decreaseFontSize:{ visible:true },
-    	                initialContent: '',
-    	            }
-    	        });
-    			//$('#' + current_id).wysiwyg('document').keypress(function(e) {
-    				//$('#' + current_id).wysiwyg('getContent');
-    	    	//});
-    		}
-    	});
+                        cut:{
+                            visible:true
+                        },
+                        copy:{
+                            visible:true
+                        },
+                        paste:{
+                            visible:true
+                        },
+                        html:{
+                            visible:true
+                        },
+                        increaseFontSize:{
+                            visible:true
+                        },
+                        decreaseFontSize:{
+                            visible:true
+                        },
+                        initialContent: '',
+                    }
+                });
+            //$('#' + current_id).wysiwyg('document').keypress(function(e) {
+            //$('#' + current_id).wysiwyg('getContent');
+            //});
+            }
+        });
     }
 
     $.HandleSetting.selectImage = function() {
-    	var _custom_media 			= true,
-    		_orig_send_attachment 	= wp.media.editor.send.attachment;
-    	$('#modalOptions .select-media-remove').on('click', function() {
-    		var _input	= $(this).closest('div').find('input[type="text"]');
-    		_input.attr('value', '');
-    		_input.trigger('change');
-    	});
+        var _custom_media 			= true,
+        _orig_send_attachment 	= wp.media.editor.send.attachment;
+        $('#modalOptions .select-media-remove').on('click', function() {
+            var _input	= $(this).closest('div').find('input[type="text"]');
+            _input.attr('value', '');
+            _input.trigger('change');
+        });
 
-    	$('#modalOptions .select-media').click(function(e) {
-    		var button 			= $(this);
-    		var id 				= button.attr('id').replace('_button', '');
-    		var jqueryParent 	= window.parent.jQuery.noConflict();
-    		var filter_type		= $(this).attr('filter_type');
-    		var object 			= {};
-    		if (typeof(filter_type) != undefined){
-    			object.type	=	filter_type;
-    		}else {
-    			object.type	= '';
-    		}
+        $('#modalOptions .select-media').click(function(e) {
+            var button 			= $(this);
+            var id 				= button.attr('id').replace('_button', '');
+            var jqueryParent 	= window.parent.jQuery.noConflict();
+            var filter_type		= $(this).attr('filter_type');
+            var object 			= {};
+            if (typeof(filter_type) != undefined){
+                object.type	=	filter_type;
+            }else {
+                object.type	= '';
+            }
 
-    		jqueryParent('#ig-select-media').val(JSON.stringify(object));
-    		jqueryParent('#ig-select-media').trigger('change');
-    		var timer = setInterval(function() {
-    			var currentValue = jqueryParent('#ig-select-media').val();
-    			if ( currentValue ) {
-            		var jsonObject = JSON.parse( currentValue );
-            		switch ( jsonObject.type ) {
-            			case 'media_selected':
-            				if (typeof($.IG_ImageElement.setImageSize) == 'function') {
-            					$.IG_ImageElement.setImageSize(jsonObject.select_prop);
-            				}
-            				$("#"+id).val(jsonObject.select_url);
-            				$("#"+id).trigger('change');
-            				clearInterval(timer);
-            				break;
-            		}
-            	}
-    		}, 500);
-    	});
+            jqueryParent('#ig-select-media').val(JSON.stringify(object));
+            jqueryParent('#ig-select-media').trigger('change');
+            var timer = setInterval(function() {
+                var currentValue = jqueryParent('#ig-select-media').val();
+                if ( currentValue ) {
+                    var jsonObject = JSON.parse( currentValue );
+                    switch ( jsonObject.type ) {
+                        case 'media_selected':
+                            if (typeof($.IG_ImageElement.setImageSize) == 'function') {
+                                $.IG_ImageElement.setImageSize(jsonObject.select_prop);
+                            }
+                            $("#"+id).val(jsonObject.select_url);
+                            $("#"+id).trigger('change');
+                            clearInterval(timer);
+                            break;
+                    }
+                }
+            }, 500);
+        });
 
-    	$('#modalOptions .add_media').on('click', function(){
-    		_custom_media = false;
-    	});
+        $('#modalOptions .add_media').on('click', function(){
+            _custom_media = false;
+        });
 
     }
 
@@ -283,47 +329,11 @@
             else
                 $.HandleSetting.doing = 1;
         }
-    }
-
-    $.HandleSetting.getCookie = function ( c_name ) {
-        if ( ! c_name )
-            return null;
-        var c_value = document.cookie;
-        var c_start = c_value.indexOf(" " + c_name + "=");
-        if (c_start == -1) {
-            c_start = c_value.indexOf(c_name + "=");
-        }
-        if (c_start == -1) {
-            c_value = null;
-        } else {
-            c_start = c_value.indexOf("=", c_start) + 1;
-            var c_end = c_value.indexOf(";", c_start);
-            if (c_end == -1) {
-                c_end = c_value.length;
-            }
-            c_value = unescape(c_value.substring(c_start,c_end));
-        }
-        return c_value;
-    }
-
-    $.HandleSetting.removeCookie = function ( c_name ) {
-        if ( ! c_name )
-            return null;
-        document.cookie = c_name + "=;max-age=0; path=/";
-    }
+    }    
 
     $.HandleSetting.renderModal = function ()
     {
         if($( "#modalOptions" ).length == 0) return false;
-        var params		= '';
-        var cookie = $.HandleSetting.getCookie( 'ig_modal_params' );
-        if ( cookie ) {
-            $.HandleSetting.removeCookie( 'ig_modal_params' );
-            params		= JSON.parse( cookie );
-        } else {
-            params 		= $( '#shortcode_content' ).text();
-        }
-        var shortcode	= $( '#shortcode_name' ).val();
 
         $( "#modalOptions" ).modal( 'toggle' );
 
@@ -338,7 +348,6 @@
         $('body').trigger('on_remove_handle_reorder');
 
         $.HandleSetting.setColorPicker( '#modalOptions .color-selector' );
-
         $.HandleSetting.setTipsyElement( '#modalOptions .ig-label-des-tipsy' );
 
         // toggle dependency params
@@ -350,7 +359,6 @@
             var this_val  = $(this).val();
             $.HandleSetting.toggleDependency( this_id, this_val );
         });
-        $.HandleSetting.shortcodePreview(params, shortcode, null, null, false);
     }
 
     $.HandleSetting.setTipsyElement = function ( selector ) {
@@ -358,7 +366,9 @@
             return false;
         // Setting tipsy
         $(selector).tipsy({
-            title: function() { return this.getAttribute('data-title'); },
+            title: function() {
+                return this.getAttribute('data-title');
+            },
             gravity: 'w',
             fade: true
         });
@@ -375,7 +385,7 @@
             var inputId 	= colorInput.attr('id');
             var inputValue 	= inputId.replace(/_color/i, '') + '_value';
             if ($('#' + inputValue).length){
-            	$('#' + inputValue).val($(colorInput).val());
+                $('#' + inputValue).val($(colorInput).val());
             }
 
             self.ColorPicker({
@@ -393,7 +403,7 @@
                     $(colorInput).val('#' + hex);
 
                     if ($('#' + inputValue).length){
-                    	$('#' + inputValue).val('#' + hex);
+                        $('#' + inputValue).val('#' + hex);
                     }
                     self.children().css('background-color', '#' + hex);
                 }
@@ -408,7 +418,7 @@
     }
 
 
-    $.HandleSetting.shortcodePreview = function (params, shortcode, curr_iframe, callback, nopreview)
+    $.HandleSetting.shortcodePreview = function (params, shortcode, curr_iframe, callback)
     {
         if(($.HandleSetting.selector(curr_iframe,"#modalOptions").length == 0 || $.HandleSetting.selector(curr_iframe,"#modalOptions").hasClass('submodal_frame')) && curr_iframe == null)
             return true;
@@ -449,7 +459,7 @@
                                 && $(this).parents(".html-active").length == 0 && !$(this).hasClass('html-active')
                                 && !$(this).parents("[id^='parent-param']").hasClass( 'ig_hidden_depend' )
                                 && $(this).attr('id').indexOf('parent-') == -1
-                            )
+                                )
                                 {
                                 var id = $(this).attr('id');
                                 if($(this).attr('data-role') == 'content'){
@@ -519,9 +529,9 @@
                 {
                     var sub_sc_content = [];
                     $.HandleSetting.selector(curr_iframe, "#modalOptions [name^='shortcode_content']" ).each(function(){
-                    	if ( ! $(this).hasClass('exclude_gen_shortcode') ) {
-                    		sub_sc_content.push($(this).text());
-                    	}
+                        if ( ! $(this).hasClass('exclude_gen_shortcode') ) {
+                            sub_sc_content.push($(this).text());
+                        }
                     })
                     sc_content += sub_sc_content.join('');
                 }
@@ -553,9 +563,6 @@
         // change state to inactive
         $.HandleSetting.updateState(0);
 
-        if(nopreview != null && !nopreview)
-            return false;
-
         var url		= Ig_Ajax.adminroot;
         url			+= 'index.php?page=ig_modal_page&ig_shortcode_preview=1';
         url			+= '&ig_shortcode_name=' + shortcode_name;
@@ -563,7 +570,11 @@
 
         if ($('#shortcode_preview_iframe').length > 0){
             // asign value to a variable (for show/hide preview)
-            $.HandleSetting.previewData = {curr_iframe: curr_iframe, url : url, tmp_content: tmp_content};
+            $.HandleSetting.previewData = {
+                curr_iframe: curr_iframe,
+                url : url,
+                tmp_content: tmp_content
+            };
             // load preview iframe
             $.HandleSetting.loadIframe(curr_iframe, url, tmp_content);
         }
@@ -678,10 +689,10 @@
                 $(this).removeClass( 'ig_hidden_depend2' );
         });
         if ( ! allow ) {
-        	$( '#modalOptions .ig_depend_other[data-depend-element="'+this_id+'"]' ).each( function ()
-	        {
-        		$(this).removeClass( 'ig_hidden_depend2' );
-	        });
+            $( '#modalOptions .ig_depend_other[data-depend-element="'+this_id+'"]' ).each( function ()
+            {
+                $(this).removeClass( 'ig_hidden_depend2' );
+            });
         }
 
         // hide label if all options in .controls div have 'ig_hidden_depend' class
@@ -717,12 +728,12 @@
     // Show tab in Modal Options
     $.HandleSetting.tab = function ()
     {
-    	$('#ig_option_tab a[href="#styling"]').on('click', function () {
+        $('#ig_option_tab a[href="#styling"]').on('click', function () {
             if($('#ig_previewing').val() == '1')
                 return;
             $('#ig_previewing').val('1');
-    		$.HandleSetting.shortcodePreview();
-    	});
+            $.HandleSetting.shortcodePreview();
+        });
         if(!$('.jsn-tabs').find("#Notab").length)
             $('.jsn-tabs').tabs();
         return true;
@@ -745,13 +756,13 @@
         })
 
         $('.select2-select').each(function () {
-        	var id = $(this).attr('id');
-        	if ($('#' + id + '_select_multi').val()) {
-        		var arr_select_multi = $('#' + id + '_select_multi').val().split('__#__');
-        		$(this).val(arr_select_multi).select2();
-        	} else {
-        		$(this).select2();
-        	}
+            var id = $(this).attr('id');
+            if ($('#' + id + '_select_multi').val()) {
+                var arr_select_multi = $('#' + id + '_select_multi').val().split('__#__');
+                $(this).val(arr_select_multi).select2();
+            } else {
+                $(this).select2();
+            }
         });
 
         $.HandleSetting.select2_color();
@@ -766,11 +777,13 @@
             return "<img class='color_select2_item' src='"+Ig_Translate.asset_url+"images/icons-16/btn-color/" + type + ".png'/>" + state.text;
         }
         $('.color_select2').not('.hidden').each(function () {
-        	$(this).find('select').each(function(){
+            $(this).find('select').each(function(){
                 $(this).select2({
                     formatResult: format,
                     formatSelection: format,
-                    escapeMarkup: function(m) {return m;}
+                    escapeMarkup: function(m) {
+                        return m;
+                    }
                 });
             });
         });

@@ -5,8 +5,6 @@
     $.PbDoing = $.PbDoing || {};
     $.HandleSetting = $.HandleSetting || {};
 
-    $.GoogleMapElement	= $.GoogleMapElement || {};
-
     $.options = {
         min_column_span : 2,
         layout_span : 12,
@@ -60,6 +58,27 @@
         arr = arr.slice(0, 10);
         return arr.join(' ');
     },
+    $.HandleElement.getCookie = function ( c_name ) {
+        if ( ! c_name )
+            return null;
+        c_name = c_name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(c_name) == 0) return c.substring(c_name.length,c.length);
+        }
+        return null;
+    },
+    $.HandleElement.setCookie = function ( c_name, c_value ) {
+        c_value = c_value + ";max-age=" + 60 * 3 + ";path=/";
+        document.cookie	= c_name + "=" + c_value;
+    },
+    $.HandleElement.removeCookie = function ( c_name ) {
+        if ( ! c_name )
+            return null;
+        document.cookie = c_name + "=;max-age=0; path=/";
+    }
 
     /*******************************************************************
 	 * 3. PageBuilder
@@ -229,7 +248,7 @@
             append_title_el = ''
         }
         if ( elem_title ) {
-        	append_title_el = elem_title;
+            append_title_el = elem_title;
         }
         if($type != null && $type == 'widget'){
             html = ig_pb_remove_placeholder(html, 'widget_title', 'title='+append_title_el);
@@ -371,7 +390,7 @@
             $.PbDoing.editElement = 1;
 
             $("#form-container .active-shortcode").removeClass('active-shortcode');
-            var parent_item, shortcode	= $(this).attr("data-shortcode"), el_title = '';
+            var parent_item, shortcode = $(this).attr("data-shortcode"), el_title = '';
             if($(this).hasClass('row')){
                 parent_item = $(this).parent('.jsn-iconbar').parent('.jsn-row-container');
                 el_type		= 'element';
@@ -381,17 +400,13 @@
                 el_type		= parent_item.attr('data-el-type');
             }
             parent_item.addClass('active-shortcode');
+
             $.HandleElement.removeModal();
 
             if(el_type == 'widget'){
                 el_title = $.HandleElement.elTitle(shortcode, clk_title_el, 1);
             }
             var params		= parent_item.find("[data-sc-info^='shortcode_content']").first().text();
-            var json_data	= JSON.stringify(params);
-            if (json_data && params) {
-                var c_value = escape(json_data) + ";max-age=" + 60 * 3 + "; path=/";
-                document.cookie	= "ig_modal_params=" + c_value;
-            }
 
             var title = $.HandleElement.getModalTitle(shortcode, parent_item.attr('data-modal-title'));
             var frameId = $.options.modal_settings.modalId;
@@ -405,22 +420,25 @@
                 has_submodal = 1;
                 frameId = $.options.modal_settings.sub_modalChildId;
             }
+            if ( !params )
+                return false;
 
-            // save data of shortcode to preview in new Modal window
-            $.post(
-                Ig_Ajax.ajaxurl,
-                {
-                    action 		: 'save_session',
-                    shortcode 	: shortcode,
-                    params 		: ( params ),
-                    el_type        :   el_type,
-                    el_title        :   el_title,
-                    submodal    : has_submodal,
-                    ig_nonce_check : Ig_Ajax._nonce
-                },
-                function( data ) {                    
+            var cookie_prefix = 'ig_' + ( has_submodal ? 'sub_' : ''  ) + 'modal_data';
+            var obj = {
+                shortcode: shortcode,
+                params: params,
+                el_type: el_type,
+                el_title: el_title,
+                submodal: has_submodal
+            };
+            $.HandleElement.setCookie(cookie_prefix, JSON.stringify(obj));
+
+            var c_interval = setInterval(function(){
+                if($.HandleElement.getCookie(cookie_prefix)){
+                    clearInterval(c_interval);
+                    // Show Modal Iframe
                     $.HandleElement.fixTinyMceError();
-                    
+
                     var modal_width, modal_height;
                     if( has_submodal == 0 ){
                         modal_width = ($(window).width() > 750) ? 750 : $(window).width()*0.9;
@@ -440,7 +458,7 @@
                             'id'	: 'selected',
                             'class' : 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only',
                             'click'	: function () {
-                            	$('body').trigger('add_exclude_jsn_item_class');
+                                $('body').trigger('add_exclude_jsn_item_class');
                                 if($.HandleSetting.doing != null && $.HandleSetting.doing){
                                     alert(Ig_Translate.saving);
                                     return false;
@@ -453,7 +471,7 @@
                             'id'	: 'close',
                             'class' : 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only',
                             'click'	: function () {
-                            	$('body').trigger('add_exclude_jsn_item_class');
+                                $('body').trigger('add_exclude_jsn_item_class');
                                 var curr_iframe = window.parent.jQuery.noConflict()( '#' + frameId );
                                 var is_submodal = curr_iframe.contents().find('.submodal_frame').length;
                                 $.HandleElement.finalize(is_submodal);
@@ -475,14 +493,14 @@
                         }],
                         loaded: function (obj, iframe) {
                             $.HandleElement.fixTinyMceError();
-                    
+
                             $('body').trigger('ig_submodal_load',[iframe]);
 
                             // process untitled
                             var title = $(iframe).contents().find('[data-role="title"]').val();
                             var index = ig_pb_get_placeholder( 'index' );
                             if ( title != null && title.indexOf(index) >= 0 ) {
-                            	$(iframe).contents().find('[data-role="title"]').val('');
+                                $(iframe).contents().find('[data-role="title"]').val('');
                             }
                         },
                         fadeIn:200,
@@ -491,8 +509,8 @@
                         height: modal_height
                     });
                     modal.show();
-                });
-            return false;
+                }
+            }, 100);
         });
     },
 
@@ -534,18 +552,24 @@
 
         var $overlay = $selector('.jsn-modal-overlay');
         if ($overlay.size() == 0) {
-            $overlay = $('<div/>', {'class': 'jsn-modal-overlay'});
+            $overlay = $('<div/>', {
+                'class': 'jsn-modal-overlay'
+            });
         }
 
         var $indicator = $selector('.jsn-modal-indicator');
         if ($indicator.size() == 0) {
-            $indicator = $('<div/>', {'class': 'jsn-modal-indicator'});
+            $indicator = $('<div/>', {
+                'class': 'jsn-modal-indicator'
+            });
         }
 
         $selector('body')
-            .append($overlay)
-            .append($indicator);
-        $overlay.css({'z-index': 100}).show();
+        .append($overlay)
+        .append($indicator);
+        $overlay.css({
+            'z-index': 100
+        }).show();
         $indicator.show();
     },
 
@@ -683,9 +707,9 @@
             // update to textarea of Classdic Editor
 
             // inserts the shortcode into the active editor
-			tinyMCE.activeEditor.execCommand('mceInsertContent', 0, shortcode_content);
-			// closes Thickbox
-			tb_remove();
+            tinyMCE.activeEditor.execCommand('mceInsertContent', 0, shortcode_content);
+            // closes Thickbox
+            tb_remove();
         }
 
         if($.options.if_childmodal){
@@ -719,7 +743,7 @@
         }
 
         if ( ! item_title || item_title == "<i class=''></i>" )
-        	item_title = Ig_Translate.no_title;
+            item_title = Ig_Translate.no_title;
         active_shortcode.find(item_class).first().html(item_title);
         // update content to current active Cell in Table
         if(window.parent.jQuery.noConflict()( '#jsn_view_modal_sub').contents().find('#shortcode_name').val() == "ig_item_table"){
@@ -781,21 +805,13 @@
 
     // finalize when click Save/Cancel modal
     $.HandleElement.finalize = function(is_submodal, remove_modal){
-        // Remove Modal
+        // remove modal
         if(remove_modal || remove_modal == null)
             window.parent.jQuery.noConflict()('.jsn-modal').last().remove();
-        // remove Session
-        $.post(
-            Ig_Ajax.ajaxurl,
-            {
-                action 		: 'save_session',
-                submodal    : is_submodal,
-                delete_ss   : 1,
-                ig_nonce_check : Ig_Ajax._nonce
-            },
-            function( data ) {
-                $('body').trigger('on_after_closed_modal');
-            });
+
+        // remove stored data
+        var c_name = is_submodal? 'ig_sub_modal_data' : 'ig_modal_data';
+        $.HandleElement.removeCookie(c_name);
 
         $("#form-container").find('.jsn-icon-loading').remove();
 
@@ -1040,7 +1056,7 @@
                         var html_active = $("#wp-content-wrap").hasClass('html-active');
                         var tab_content = '';
                         $("#form-container textarea[name^='shortcode_content']").each(function(){
-                        tab_content += $(this).val();
+                            tab_content += $(this).val();
                         });
                         // disable WP Update button
                         $('#publishing-action #publish').attr('disabled', true);
@@ -1048,18 +1064,18 @@
                         tab_content = ig_pb_remove_placeholder(tab_content, 'wrapper_append', '');
 
                         $.post(
-                        Ig_Ajax.ajaxurl,
-                        {
-                            action : 'get_html_content',
-                            content : tab_content,
-                            ig_nonce_check : Ig_Ajax._nonce
-                        },
-                        function( tab_content ) {
-                            $.HandleElement.updateClassicEditor(tab_content, html_active, function(){
-                                $('#status-on').removeClass(class_btn['status-on']);
-                                $('#status-off').addClass(class_btn['status-off']);
+                            Ig_Ajax.ajaxurl,
+                            {
+                                action : 'get_html_content',
+                                content : tab_content,
+                                ig_nonce_check : Ig_Ajax._nonce
+                            },
+                            function( tab_content ) {
+                                $.HandleElement.updateClassicEditor(tab_content, html_active, function(){
+                                    $('#status-on').removeClass(class_btn['status-on']);
+                                    $('#status-off').addClass(class_btn['status-off']);
+                                });
                             });
-                        });
 
                     }
                     else{
@@ -1119,7 +1135,7 @@
         function self_(data){
             // remove current content of Pagebuilder
             $("#jsn-add-container").prevAll().remove();
-            
+
             // insert placeholder text to &lt; and &gt; before prepend, then replace it
             data = ig_pb_add_placeholder( data, '&lt;', 'wrapper_append', '&{0}lt;');
             data = ig_pb_add_placeholder( data, '&gt;', 'wrapper_append', '&{0}gt;');
@@ -1131,7 +1147,9 @@
 
             // show Pagebuilder
             $("#ig-pbd-loading").hide();
-            $("#form-container").animate({'opacity':1},200,'easeOutCubic');
+            $("#form-container").animate({
+                'opacity':1
+            },200,'easeOutCubic');
 
             // active WP Update button
             $('#publishing-action #publish').removeAttr('disabled');

@@ -11,13 +11,17 @@
  *
  * Content of Modal popup
  */
-if ( ! isset( $_SESSION ) )
+if ( ! isset( $_COOKIE ) )
 	die;
-extract( $_SESSION );
-if ( isset( $ig_pagebuilder_submodal ) )
-	extract( $ig_pagebuilder_submodal );
-else if ( isset( $ig_pagebuilder ) )
-	extract( $ig_pagebuilder );
+
+$data = ( ! empty( $_COOKIE['ig_sub_modal_data'] ) ) ? $_COOKIE['ig_sub_modal_data'] : $_COOKIE['ig_modal_data'];
+$data = stripslashes( $data );
+$data = urldecode( $data );
+$data = json_decode( $data, true );
+if ( empty( $data ) )
+	exit;
+extract( $data );
+
 $submodal = ! empty( $submodal ) ? 'submodal_frame' : '';
 if ( ! isset( $params ) )
 	exit;

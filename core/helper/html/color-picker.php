@@ -25,6 +25,16 @@ class IG_Pb_Helper_Html_Color_Picker extends IG_Pb_Helper_Html {
 
 		//$output = "<input class='{$element['class']} ig_color_picker' id='{$element['id']}' name='{$element['id']}' type='text' value='{$element['std']}'  DATA_INFO />
 		//<div class='cw-color-picker ig_color_picker_cw' rel='{$element['id']}'></div>";
+
+		add_filter( 'ig_pb_assets_enqueue_modal', array( __CLASS__, 'this_assets_enqueue_modal' ) );
+
 		return parent::final_element( $element, $output, $label );
+	}
+
+	// enqueue custom assets
+	static function this_assets_enqueue_modal( $scripts ){
+		$scripts = array_merge( $scripts, array( 'ig-pb-colorpicker-js', 'ig-pb-colorpicker-css', ) );
+
+		return $scripts;
 	}
 }

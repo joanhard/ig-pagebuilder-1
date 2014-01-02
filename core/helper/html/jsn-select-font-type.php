@@ -36,6 +36,16 @@ class IG_Pb_Helper_Html_Jsn_Select_Font_Type extends IG_Pb_Helper_Html {
 			}
 			$output .= '</select>';
 		}
+
+		add_filter( 'ig_pb_assets_enqueue_modal', array( __CLASS__, 'this_assets_enqueue_modal' ) );
+
 		return parent::final_element( $element, $output, $label );
+	}
+
+	// enqueue custom assets
+	static function this_assets_enqueue_modal( $scripts ){
+		$scripts = array_merge( $scripts, array( 'ig-pb-joomlashine-fontselector-js', ) );
+
+		return $scripts;
 	}
 }

@@ -19,6 +19,16 @@ class IG_Pb_Helper_Html_Gradient_Picker extends IG_Pb_Helper_Html {
 		$label   = parent::get_label( $element );
 		$output  = "<input type='hidden' class='jsn-grad-ex' id='{$element['id']}' name='{$element['id']}' value='{$element['std']}'  DATA_INFO />";
 		$output .= "<div class='classy-gradient-box'></div>";
+
+		add_filter( 'ig_pb_assets_enqueue_modal', array( __CLASS__, 'this_assets_enqueue_modal' ) );
+
 		return parent::final_element( $element, $output, $label );
+	}
+
+	// enqueue custom assets
+	static function this_assets_enqueue_modal( $scripts ){
+		$scripts = array_merge( $scripts, array( 'ig-pb-classygradient-js', 'ig-pb-classygradient-css', ) );
+
+		return $scripts;
 	}
 }

@@ -91,6 +91,7 @@ if ( ! class_exists( 'IG_Tooltip' ) ) {
 							),
 						),
 						'dependency' => array( 'tooltips_button', '=', 'yes' ),
+                        'container_class'   => 'color_select2',
 					),
 					array(
 						'name'            => __( 'Delay', IGPBL ),

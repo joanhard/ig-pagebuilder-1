@@ -83,7 +83,6 @@ class IG_Pb {
 		add_action( 'edit_page_form', array( &$this, 'save_pagebuilder_content' ) );
 		add_action( 'pre_post_update', array( &$this, 'save_pagebuilder_content' ) );
 		// ajax action
-		add_action( 'wp_ajax_save_session', array( &$this, 'save_session' ) );
 		add_action( 'wp_ajax_update_whole_sc_content', array( &$this, 'update_whole_sc_content' ) );
 		add_action( 'wp_ajax_shortcode_extract_param', array( &$this, 'shortcode_extract_param' ) );
 		add_action( 'wp_ajax_get_json_custom', array( &$this, 'ajax_json_custom' ) );
@@ -403,31 +402,6 @@ JS;
 	}
 
 	/**
-	 * Save shortcode information session to building Setting form in Modal page
-	 * @return type
-	 */
-	function save_session() {
-		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
-			return;
-		$session = $_POST['submodal'] ? 'ig_pagebuilder_submodal' : 'ig_pagebuilder';
-		// Delete session
-		if ( ! empty( $_POST['delete_ss'] ) ) {
-			if ( $_POST['submodal'] )
-				unset( $_SESSION['ig_pagebuilder_submodal'] );
-			else
-				session_unset();
-		}
-		else {
-			$_SESSION[$session]['shortcode'] = $_POST['shortcode'];
-			$_SESSION[$session]['params']    = $_POST['params'];
-			$_SESSION[$session]['el_type']   = $_POST['el_type'];
-			$_SESSION[$session]['el_title']  = $_POST['el_title'];
-			$_SESSION[$session]['submodal']  = $_POST['submodal'];
-		}
-		exit;
-	}
-
-	/**
 	 * Update Shortcode content by merge its content & sub-shortcode content
 	 */
 	function update_whole_sc_content() {
@@ -597,8 +571,11 @@ JS;
 
 	// get media file name
 	function media_file_name( $file ) {
-		$file['name'] = iconv( 'utf-8', 'ascii//TRANSLIG//IGNORE', $file['name'] );
-
+		$file_name    = $file['name'];
+		$file['name'] = iconv( 'utf-8', 'ascii//TRANSLIG//IGNORE', $file_name );
+		if ( !$file['name'] ) {
+			$file['name']   = $file_name;
+		}
 		return $file;
 	}
 
@@ -621,7 +598,7 @@ JS;
 			// scripts
 			IG_Pb_Helper_Functions::enqueue_scripts();
 
-			$scripts = array( 'ig-pb-jquery-livequery-js', 'ig-pb-addpanel-js', 'ig-pb-jquery-resize-js', 'ig-pb-joomlashine-modalresize-js', 'ig-pb-jquery-isotope-js', 'ig-pb-layout-js', 'ig-pb-jquery-mousewheel-js', 'ig-pb-jquery-fancybox-js', 'ig-pb-placeholder' );
+			$scripts = array( 'ig-pb-jquery-select2-js', 'ig-pb-jquery-livequery-js', 'ig-pb-addpanel-js', 'ig-pb-jquery-resize-js', 'ig-pb-joomlashine-modalresize-js', 'ig-pb-jquery-isotope-js', 'ig-pb-layout-js', 'ig-pb-jquery-mousewheel-js', 'ig-pb-jquery-fancybox-js', 'ig-pb-placeholder' );
 			IG_Pb_Assets::load( apply_filters( 'ig_pb_assets_enqueue_admin', $scripts ) );
 
 			IG_Pb_Helper_Functions::enqueue_scripts_end();
@@ -652,14 +629,20 @@ JS;
 		}
 	}
 
-    /**
+	/**
      * Unload Wp admin css in modal iframe
      */
-    function remove_admin_stylesheets() {
-        if ( IG_Pb_Helper_Functions::is_modal() ) {
-            wp_deregister_style('wp-admin');
-        }
-    }
+	function remove_admin_stylesheets() {
+		if ( IG_Pb_Helper_Functions::is_modal() ) {
+			wp_deregister_style( 'wp-admin' );
+
+			wp_deregister_script( 'colors' );
+			wp_deregister_script( 'ie' );
+			wp_dequeue_script( 'utils' );
+
+			remove_all_actions( 'all_admin_notices' );
+		}
+	}
 
 	/**
 	 * Add Inno Button

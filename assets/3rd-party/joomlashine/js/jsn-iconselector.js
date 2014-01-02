@@ -70,10 +70,23 @@
             renderListIconSelector:function ( container, list, actionSelector, valueDefault) {
                 $(container).find("li").removeClass("active");
                 $(container).html("");
+                
+                var _nonIconClass	= 'jsn-item';
+                if (!valueDefault) {
+                	var _nonIconClass	= 'jsn-item active';
+                }
+                $(container).append(
+                        $("<li/>", {'class': _nonIconClass}).append(
+                            $("<a/>", {"href":"javascript:void(0)", "class":"icons-item", "data-value":''}).append($("<i/>", {"class":'icon-'})).append('None').click(function () {
+                                actionSelector(this);
+                            })
+                        )
+                    );
+                
                 $.each(list, function (value, title) {
-                    var classActive = {"class":"jsn-item"}
+                    var classActive = {"class":"jsn-item"};
                     if (value == valueDefault) {
-                        classActive = {"class":"jsn-item active"}
+                        classActive = {"class":"jsn-item active"};
                     }
                     $(container).append(
                         $("<li/>", classActive).append(
@@ -81,7 +94,7 @@
                                 actionSelector(this);
                             })
                         )
-                    )
+                    );
                 })
             },
             Icomoon:function () {

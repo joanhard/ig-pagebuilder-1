@@ -576,8 +576,8 @@ root {
     margin: 0;
     padding: 6px 6px;
 }
-#ig-widget-form select, #jsn-quicksearch-field{
-    height: 34px;
+#ig-widget-form select {
+    height: 36px;
 }
 #ig-widget-form input[type="radio"], #ig-widget-form input[type="checkbox"]{
     margin: 0;

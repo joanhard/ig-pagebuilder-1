@@ -54,3 +54,10 @@ if ( ! empty( $pagebuilder_content ) ) {
 <?php
 include 'select-elements.php';
 ?>
+<!--[if IE]>
+<style>
+    #jsn-quicksearch-field{
+        height: 28px;
+    }
+</style>
+<![endif]-->

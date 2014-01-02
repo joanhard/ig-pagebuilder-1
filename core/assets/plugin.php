@@ -46,12 +46,6 @@ class IG_Pb_Plugin {
 			'site' => 'admin',
 		),
 
-		'ig-pb-bootstrap-transition-js' => array(
-			'src' => 'assets/3rd-party/bootstrap/js/bootstrap-transition.js',
-			'deps' => array( 'ig-pb-bootstrap-js' ),
-			'ver' => '2.3.2',
-		),
-
 		'ig-pb-bootstrap-paginator-js' => array(
 			'src' => 'assets/3rd-party/bootstrap-paginator/bootstrap-paginator.js',
 			'deps' => array( 'ig-pb-bootstrap-js' ),

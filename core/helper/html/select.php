@@ -44,6 +44,16 @@ class IG_Pb_Helper_Html_Select extends IG_Pb_Helper_Html {
 				$output .= "<input type='hidden' id='{$element['id']}_select_multi' value='{$element['std']}' />";
 			}
 		}
+
+		add_filter( 'ig_pb_assets_enqueue_modal', array( __CLASS__, 'this_assets_enqueue_modal' ) );
+
 		return parent::final_element( $element, $output, $label );
+	}
+
+	// enqueue custom assets
+	static function this_assets_enqueue_modal( $scripts ){
+		$scripts = array_merge( $scripts, array( 'ig-pb-jquery-select2-js', ) );
+
+		return $scripts;
 	}
 }

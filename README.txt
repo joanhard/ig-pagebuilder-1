@@ -41,6 +41,12 @@ The page builder is similar to an advanced editor and used for both post and pag
 
 == Changelog ==
 
+= 1.0.2 =
+
+* Improved Assets loading mechanism
+* Fixed Conflict with WP 3.8 Media uploaded
+* Added Ability to choose No Icon for element items
+
 = 1.0.1 =
 
 * Fixed frontend bootstrap conflict with theme
