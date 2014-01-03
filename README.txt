@@ -1,6 +1,6 @@
 === IG PageBuilder ===
 Contributors: Innogears
-Tags: easy, posts, images, image, simple, build, page builder, plugin, advanced, page elements, editor, pagebuilder, layout, page, post, responsive, widget
+Tags: admin, easy, content, cms, image, build, page builder, plugin, advanced, page elements, editor, pagebuilder, layout, page, post, responsive, widget
 Requires at least: 3.6
 Tested up to: 3.8
 Stable tag: 3.6
@@ -19,7 +19,7 @@ The page builder is similar to an advanced editor and used for both post and pag
 
 * Intuitive and fully responsive layout
 * Enable Drag & Drop layout
-* Support backend live preview
+* Support the backend live preview
 * Support multiple field layout options
 * Easy to customize and use other 3rd-party shortcodes
 * Easy to add Widgets
@@ -54,3 +54,4 @@ The page builder is similar to an advanced editor and used for both post and pag
 * Added text editor into element setting modal
 
 = 1.0 =
+
