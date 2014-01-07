@@ -146,13 +146,14 @@ if ( ! class_exists( 'IG_Tab' ) ) {
 				$fade_effect = 'fade in';
 			}
 			foreach ( $items as $idx => $item ) {
+				$new_key		 = $random_id . $idx;
 				$active          = ( $idx + 1 == $initial_open ) ? 'active' : '';
-				$item            = str_replace( '{index}', $idx, $item );
+				$item            = str_replace( '{index}', $new_key, $item );
 				$item            = str_replace( '{active}', $active, $item );
 				$item            = str_replace( '{fade_effect}', $fade_effect, $item );
 				$items[ $idx ]   = $item;
 				$active_li       = ( $idx + 1 == $initial_open ) ? "class='active'" : '';
-				$tab_navigator[] = "<li $active_li><a href='#pane$idx' data-toggle='tab'>{$items_data['icons'][$idx]}{$items_data['heading'][$idx]}</a></li>";
+				$tab_navigator[] = "<li $active_li><a href='#pane$new_key' data-toggle='tab'>{$items_data['icons'][$idx]}{$items_data['heading'][$idx]}</a></li>";
 			}
 			$sub_shortcode = implode( '', $items );
 			$tab_content   = "<div class='tab-content'>$sub_shortcode</div>";
