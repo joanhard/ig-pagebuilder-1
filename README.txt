@@ -46,6 +46,10 @@ The plugin is similar to an advanced editor and works on both posts and pages of
 3. Widget Window
 
 == Changelog ==
+= 1.0.3 =
+* Fixed Icon of List element not working
+* Fixed some minor displaying bugs
+* Improved  Editor switching feature
 
 = 1.0.2 =
 
