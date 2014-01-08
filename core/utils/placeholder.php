@@ -4,7 +4,7 @@
  *
  * Set & Get placeholder on Php files
  *
- * @author		InnoThemes Team <support@innothemes.com>
+ * @author		InnoGears Team <support@www.innogears.com>
  * @package		IGPGBLDR
  * @version		$Id$
  */

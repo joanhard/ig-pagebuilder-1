@@ -2,25 +2,23 @@
 /**
  * @version	$Id$
  * @package	IG Pagebuilder
- * @author	 InnoThemes Team <support@innothemes.com>
- * @copyright  Copyright (C) 2012 innothemes.com. All Rights Reserved.
+ * @author	 InnoGears Team <support@www.innogears.com>
+ * @copyright  Copyright (C) 2012 www.innogears.com. All Rights Reserved.
  * @license	GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Websites: http://www.innothemes.com
- * Technical Support:  Feedback - http://www.innothemes.com
+ * Websites: http://www.www.innogears.com
+ * Technical Support:  Feedback - http://www.www.innogears.com
  *
  * Content of Modal popup
  */
-if ( ! isset( $_COOKIE ) )
+if ( ! isset( $_SESSION ) )
 	die;
 
-$data = ( ! empty( $_COOKIE['ig_sub_modal_data'] ) ) ? $_COOKIE['ig_sub_modal_data'] : $_COOKIE['ig_modal_data'];
-$data = stripslashes( $data );
-$data = urldecode( $data );
-$data = json_decode( $data, true );
-if ( empty( $data ) )
-	exit;
-extract( $data );
+extract( $_SESSION );
+if ( isset( $ig_pagebuilder_submodal ) )
+	extract( $ig_pagebuilder_submodal );
+else if ( isset( $ig_pagebuilder ) )
+	extract( $ig_pagebuilder );
 
 $submodal = ! empty( $submodal ) ? 'submodal_frame' : '';
 if ( ! isset( $params ) )

@@ -1,12 +1,12 @@
 /**
  * @version    $Id$
  * @package    IGPGBLDR
- * @author     InnoThemes Team <support@innothemes.com>
- * @copyright  Copyright (C) 2012 InnoThemes.com. All Rights Reserved.
+ * @author     InnoGears Team <support@www.innogears.com>
+ * @copyright  Copyright (C) 2012 InnoGears.com. All Rights Reserved.
  * @license    GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Websites: http://www.innothemes.com
- * Technical Support: Feedback - http://www.innothemes.com/contact-us/get-support.html
+ * Websites: http://www.www.innogears.com
+ * Technical Support: Feedback - http://www.www.innogears.com/contact-us/get-support.html
  */
 
 (function ($)
@@ -52,8 +52,6 @@
 
         $.HandleSetting.buttonGroup();
 
-        $.HandleSetting.disableHref();
-
         $.HandleSetting.inputValidator();
 
         $.HandleSetting.setTinyMCE('.ig_pb_tiny_mce');
@@ -98,18 +96,6 @@
             data_value = $(this).attr('data-value');
             $(this).parent().next('.ig-btn-radio').find('input:radio[value="'+data_value+'"]').prop('checked', true);
             $.HandleSetting.shortcodePreview();
-        });
-    }
-
-    // Disable click on a tag inside preview iframe
-    $.HandleSetting.disableHref = function() {
-        $('#modalOptions a, #shortcode_inner_wrapper a').click(function(e){
-            e.preventDefault();
-        });
-        // disable form submit
-        $('#shortcode_inner_wrapper form').submit(function(e){
-            e.preventDefault();
-            return false;
         });
     }
 
@@ -329,7 +315,7 @@
             else
                 $.HandleSetting.doing = 1;
         }
-    }    
+    }
 
     $.HandleSetting.renderModal = function ()
     {

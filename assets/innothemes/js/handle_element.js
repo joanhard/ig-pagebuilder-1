@@ -407,6 +407,11 @@
                 el_title = $.HandleElement.elTitle(shortcode, clk_title_el, 1);
             }
             var params		= parent_item.find("[data-sc-info^='shortcode_content']").first().text();
+            var json_data	= JSON.stringify(params);
+            if (json_data && params) {
+                var c_value = escape(json_data) + ";max-age=" + 60 * 3 + "; path=/";
+                document.cookie	= "ig_modal_params=" + c_value;
+            }
 
             var title = $.HandleElement.getModalTitle(shortcode, parent_item.attr('data-modal-title'));
             var frameId = $.options.modal_settings.modalId;
@@ -420,23 +425,20 @@
                 has_submodal = 1;
                 frameId = $.options.modal_settings.sub_modalChildId;
             }
-            if ( !params )
-                return false;
 
-            var cookie_prefix = 'ig_' + ( has_submodal ? 'sub_' : ''  ) + 'modal_data';
-            var obj = {
-                shortcode: shortcode,
-                params: params,
-                el_type: el_type,
-                el_title: el_title,
-                submodal: has_submodal
-            };
-            $.HandleElement.setCookie(cookie_prefix, JSON.stringify(obj));
-
-            var c_interval = setInterval(function(){
-                if($.HandleElement.getCookie(cookie_prefix)){
-                    clearInterval(c_interval);
-                    // Show Modal Iframe
+            // save data of shortcode to preview in new Modal window
+            $.post(
+                Ig_Ajax.ajaxurl,
+                {
+                    action 		: 'save_session',
+                    shortcode 	: shortcode,
+                    params 		: ( params ),
+                    el_type        :   el_type,
+                    el_title        :   el_title,
+                    submodal    : has_submodal,
+                    ig_nonce_check : Ig_Ajax._nonce
+                },
+                function( data ) {
                     $.HandleElement.fixTinyMceError();
 
                     var modal_width, modal_height;
@@ -509,8 +511,8 @@
                         height: modal_height
                     });
                     modal.show();
-                }
-            }, 100);
+                });
+            return false;
         });
     },
 
@@ -809,9 +811,18 @@
         if(remove_modal || remove_modal == null)
             window.parent.jQuery.noConflict()('.jsn-modal').last().remove();
 
-        // remove stored data
-        var c_name = is_submodal? 'ig_sub_modal_data' : 'ig_modal_data';
-        $.HandleElement.removeCookie(c_name);
+        // remove Session
+        $.post(
+            Ig_Ajax.ajaxurl,
+            {
+                action 		: 'save_session',
+                submodal    : is_submodal,
+                delete_ss   : 1,
+                ig_nonce_check : Ig_Ajax._nonce
+            },
+            function( data ) {
+                $('body').trigger('on_after_closed_modal');
+        });
 
         $("#form-container").find('.jsn-icon-loading').remove();
 
@@ -1161,7 +1172,7 @@
     $.HandleElement.updateClassicEditor	= function (tab_content, html_active, callback){
         // active tinyMCE
         switchEditors.switchto(document.getElementById('content-tmce'));
-        setTimeout(function(){
+        var timer = setInterval(function() {
             // set content for tinyMCE
             window.tinyMCE.get('content').setContent(tab_content);
             // set content for html content box
@@ -1173,9 +1184,22 @@
             if(callback != null)
                 callback();
 
+            clearInterval(timer);
             // active WP Update button
             $('#publishing-action #publish').removeAttr('disabled');
-        }, 200);
+        }, 100);
+    }
+
+    // Disable click on a tag inside preview iframe
+    $.HandleElement.disableHref = function() {
+        $('#modalOptions a, #shortcode_inner_wrapper a').click(function(e){
+            e.preventDefault();
+        });
+        // disable form submit
+        $('#shortcode_inner_wrapper form').submit(function(e){
+            e.preventDefault();
+            return false;
+        });
     }
 
     $(document).ready(function() {
@@ -1187,6 +1211,7 @@
         $.HandleElement.checkSelectMedia();
         $.HandleElement.initModeSwitcher();
         $.HandleElement.initStatusSwitcher();
+        $.HandleElement.disableHref();
     });
 
     /**

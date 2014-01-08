@@ -3,12 +3,12 @@
 /**
  * @version    $Id$
  * @package    IG Pagebuilder
- * @author     InnoThemes Team <support@innothemes.com>
- * @copyright  Copyright (C) 2012 innothemes.com. All Rights Reserved.
+ * @author     InnoGears Team <support@www.innogears.com>
+ * @copyright  Copyright (C) 2012 www.innogears.com. All Rights Reserved.
  * @license    GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Websites: http://www.innothemes.com
- * Technical Support:  Feedback - http://www.innothemes.com
+ * Websites: http://www.www.innogears.com
+ * Technical Support:  Feedback - http://www.www.innogears.com
  */
 /**
  * Helper class of shortcode
@@ -60,10 +60,16 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 			return apply_filters( 'ig_pb_js_translation', $default );
 		}
 
-		// enqueue scripts for shortcodes
+		/**
+		 * enqueue scripts for shortcodes
+		 * @global type $Ig_Sc_By_Providers
+		 * @param type $this_       :   current shortcode object
+		 * @param type $extra       :   require_frontend_js/ require_js
+		 * @param type $post_fix    :   _frontend/ ''
+		 */
 		public static function shortcode_enqueue_js( $this_, $extra, $post_fix = '' ){
 			$extra_js = isset( $this_->config['exception'] ) && isset( $this_->config['exception'][$extra] ) && is_array( $this_->config['exception'][$extra] );
-			$js_files = array_merge( $extra_js ? $this_->config['exception'][$extra] : array(), array( str_replace( 'ig_', '', $this_->config['shortcode'] ) . $post_fix . '.js' ) );
+			$js_files = array_merge( $extra_js ? $this_->config['exception'][$extra] : array(), array( str_replace( 'ig_', '', $this_->config['shortcode'] ) . $post_fix ) );
 			foreach ( $js_files as $js_file ) {
 				if ( wp_script_is( $js_file, 'enqueued' ) ) {
 					IG_Pb_Assets::load( $js_file );
@@ -73,28 +79,102 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 					if ( empty( $Ig_Sc_By_Providers ) ){
 						continue;
 					}
-					// get js directory of InnoGears
-					$inno_gears    = array_values( IG_Pb_Helper_Shortcode::this_provider() );
-					$inno_gears_js = $inno_gears[0]['js_shortcode_dir'];
-					// get js directory of shortcodes
-					$js_dir = IG_Pb_Helper_Shortcode::get_js_dir_of_shortcode( $this_->config['shortcode'], $Ig_Sc_By_Providers );
-					if ( empty( $js_dir ) || ! count( $js_dir ) ){
-						// if doesn't have a js dir, assign InnoGears js dir
-						$js_dir = $inno_gears_js;
-					}
-					$file_path = $js_dir['path'] . '/' . $js_file;
-					$file_uri  = $js_dir['uri'] . '/' . $js_file;
 
-					// if file doesn't exist, try to get it in IGPB js dir
-					if ( ! file_exists( $file_path ) ) {
-						$file_path = $inno_gears_js['path'] . '/' . $js_file;
-						$file_uri  = $inno_gears_js['uri'] . '/' . $js_file;
-					}
-					if ( file_exists( $file_path ) ) {
-						wp_enqueue_script( preg_replace( '/[_.]/', '-', $js_file ), $file_uri, null, null, true );
+					// load assets file in assets directory of all shortcodes
+					$default_assets = self::assets_default( $this_, $js_file );
+					if ( ! $default_assets ) {
+						$shortcode_dir = IG_Pb_Helper_Shortcode::get_provider_info( $this_->config['shortcode'], 'shortcode_dir' );
+						if ( $shortcode_dir == IG_PB_LAYOUT_PATH ) {
+							// this is core PB
+							$sc_path = IG_PB_ELEMENT_PATH;
+							$sc_uri  = IG_PB_URI . basename( $sc_path );
+						} else {
+							$plugin_path   = IG_Pb_Helper_Shortcode::get_provider_info( $this_->config['shortcode'], 'path' );
+							$plugin_uri    = IG_Pb_Helper_Shortcode::get_provider_info( $this_->config['shortcode'], 'uri' );
+							$shortcode_dir = IG_Pb_Helper_Shortcode::get_provider_info( $this_->config['shortcode'], 'shortcode_dir' );
+							$shortcode_dir = $shortcode_dir[0];
+							$sc_path   = $plugin_path . basename( $shortcode_dir );
+							$sc_uri    = $plugin_uri . basename( $shortcode_dir );
+						}
+
+						$ext_regex = '/\.(js|css)$/';
+						if ( preg_match( $ext_regex, $js_file ) ){
+							// load assets in directory of other shortcodes
+							$require_sc = preg_replace( $ext_regex, '', $js_file );
+							self::assets_specific_shortcode( $require_sc, $js_file, $sc_path, $sc_uri );
+						} else {
+							// auto load assets in directory of current shortcode
+							$exts = array( 'js', 'css' );
+							foreach ( $exts as $ext ) {
+								$require_sc = $this_->config['shortcode'];
+								self::assets_specific_shortcode( $require_sc, $js_file . ".$ext", $sc_path, $sc_uri );
+							}
+						}
 					}
 				}
 			}
+		}
+
+		/**
+		 * Get assest file in assets directory of all shortcodes
+		 *
+		 * @param type $this_
+		 * @param type $js_file
+		 */
+		static private function assets_default( $this_, $js_file ) {
+			global $Ig_Sc_By_Providers;
+			// get js directory of InnoGears
+			$inno_gears    = array_values( IG_Pb_Helper_Shortcode::this_provider() );
+			$inno_gears_js = $inno_gears[0]['js_shortcode_dir'];
+			// get js directory of shortcodes
+			$js_dir = IG_Pb_Helper_Shortcode::get_provider_info( $this_->config['shortcode'], 'js_shortcode_dir' );
+			if ( empty( $js_dir ) || ! count( $js_dir ) ){
+				// if doesn't have a js dir, assign InnoGears js dir
+				$js_dir = $inno_gears_js;
+			}
+			$file_path = $js_dir['path'] . '/' . $js_file;
+			$file_uri  = $js_dir['uri'] . '/' . $js_file;
+
+			// if file doesn't exist, try to get it in IGPB js dir
+			if ( ! file_exists( $file_path ) ) {
+				$file_path = $inno_gears_js['path'] . '/' . $js_file;
+				$file_uri  = $inno_gears_js['uri'] . '/' . $js_file;
+			}
+			if ( file_exists( $file_path ) ) {
+				self::asset_enqueue_( $file_uri, $js_file );
+				return true;
+			}
+			return false;
+		}
+
+		/**
+         * Get assets in specific shortcode folder
+         *
+         * @param type $require_sc
+         * @param type $js_file
+         * @param type $sc_path
+         * @param type $sc_uri
+         */
+		static private function assets_specific_shortcode( $require_sc, $js_file, $sc_path, $sc_uri ) {
+			$require_sc = preg_replace( '/(ig_|item_)/', '', $require_sc );
+			$file_path  = $sc_path. "/$require_sc/assets/" . $js_file;
+			$file_uri   = $sc_uri . "/$require_sc/assets/" . $js_file;
+			if ( file_exists( $file_path ) ) {
+				self::asset_enqueue_( $file_uri, $js_file );
+			}
+		}
+
+		/**
+		 * Enqueue script/style
+		 *
+		 * @param unknown $file_uri
+		 * @param unknown $js_file
+		 */
+		static private function asset_enqueue_( $file_uri, $js_file ) {
+			if ( strpos( $file_uri, '.js' ) !== false )
+				wp_enqueue_script( preg_replace( '/[_.]/', '-', $js_file ), $file_uri, null, null, true );
+			else
+				wp_enqueue_style( preg_replace( '/[_.]/', '-', $js_file ), $file_uri, null, null );
 		}
 
 		/**
@@ -118,46 +198,6 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 		static function post_excerpt( $post_content ){
 			$excerpt = IG_Pb_Helper_Shortcode::remove_ig_shortcodes( $post_content );
 			return strip_tags( $excerpt );
-		}
-
-		/**
-		 * Js for Carousel element
-		 *
-		 * @param type $carousel_id
-		 * @param type $interval
-		 * @param type $pause
-		 * @return type
-		 */
-		static function carousel_js( $carousel_id, $interval, $pause ) {
-			return "<script type='text/javascript'>( function ($) {
-					$( document ).ready(function()
-					{
-						if( $( '#$carousel_id' ).length )
-						{
-							$( '#$carousel_id' ).carousel( {interval: $interval,$pause} );
-							$( '#$carousel_id' ).bind('slid',function(){
-								var idx = $( '#$carousel_id .carousel-inner .active' ).index();
-								$( '#$carousel_id .carousel-indicators' ).find( '.active' ).removeClass( 'active' );
-								$( '#$carousel_id .carousel-indicators li' ).eq( idx ).addClass( 'active' );
-							})
-							$( '#$carousel_id .carousel-indicators li' ).click(function(){
-								var slice_to = $( this ).attr( 'data-slide-to' );
-								$( '#$carousel_id' ).carousel( parseInt( slice_to ) );
-								$( this ).parent().find( '.active' ).removeClass( 'active' );
-								$( this ).addClass( 'active' );
-							})
-
-							$( '#$carousel_id .carousel-control' ).click(function(){
-								setTimeout(function(){
-									var idx = $( '#$carousel_id .carousel-inner .active' ).index();
-									$( '#$carousel_id .carousel-indicators' ).find( '.active' ).removeClass( 'active' );
-									$( '#$carousel_id .carousel-indicators li' ).eq( idx ).addClass( 'active' );
-								}, 100)
-							})
-							if( ( $('#$carousel_id' ).parents( '.tab-content' ).length == 0 && document.getElementById( '$carousel_id' ).clientWidth < 600) || ( $('#$carousel_id' ).parents( '.tab-content' ).length && $( '#$carousel_id' ).parents( '.tab-content' ).width() <600)) $( '#$carousel_id' ).addClass( 'carousel-small' );
-						}
-					});
-				} )( jQuery )</script>";
 		}
 
 		/**

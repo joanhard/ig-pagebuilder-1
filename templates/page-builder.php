@@ -2,12 +2,12 @@
 /**
  * @version    $Id$
  * @package    IG Pagebuilder
- * @author     InnoThemes Team <support@innothemes.com>
- * @copyright  Copyright (C) 2012 innothemes.com. All Rights Reserved.
+ * @author     InnoGears Team <support@www.innogears.com>
+ * @copyright  Copyright (C) 2012 www.innogears.com. All Rights Reserved.
  * @license    GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Websites: http://www.innothemes.com
- * Technical Support:  Feedback - http://www.innothemes.com
+ * Websites: http://www.www.innogears.com
+ * Technical Support:  Feedback - http://www.www.innogears.com
  */
 wp_nonce_field( 'ig_builder', IGNONCE . '_builder' );
 ?>
@@ -48,8 +48,16 @@ if ( ! empty( $pagebuilder_content ) ) {
 	</div>
 </div>
 
-<div id="branding" class="text-center">
-	<?php _e( 'PageBuilder by', IGPBL ); ?> <a href="http://www.innogears.com" target="_blank">InnoGears.com</a>
+<div id="branding">
+	<div class="pull-left">
+		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-on-wporg.html"><?php _e( 'PageBuilder', IGPBL ); ?></a> <?php _e( 'by', IGPBL )?> <a href="http://www.innogears.com" target="_blank">InnoGears.com</a>	
+	</div>
+	<div class="pull-right">
+		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-docs.zip"><?php _e( 'Documentation' ); ?></a> |
+		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-support.html" target="_blank"><?php _e( 'Support' ); ?></a> | 
+		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-review.html" target="_blank"><?php _e( 'Review' ); ?></a>
+	</div>
+	<div class="clearbreak"></div>
 </div>
 <?php
 include 'select-elements.php';

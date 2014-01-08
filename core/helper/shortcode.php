@@ -2,12 +2,12 @@
 /**
  * @version    $Id$
  * @package    IG Pagebuilder
- * @author     InnoThemes Team <support@innothemes.com>
- * @copyright  Copyright (C) 2012 innothemes.com. All Rights Reserved.
+ * @author     InnoGears Team <support@www.innogears.com>
+ * @copyright  Copyright (C) 2012 www.innogears.com. All Rights Reserved.
  * @license    GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Websites: http://www.innothemes.com
- * Technical Support:  Feedback - http://www.innothemes.com
+ * Websites: http://www.www.innogears.com
+ * Technical Support:  Feedback - http://www.www.innogears.com
  */
 if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 
@@ -27,24 +27,34 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 			do_action( 'ig_pb_third_party' );
 
 			global $Ig_Sc_Providers;
-			$Ig_Sc_Providers = $providers = apply_filters(
+			$Ig_Sc_Providers = apply_filters(
 					'ig_pb_provider',
 					self::this_provider()
 			);
+            set_transient( '_ig_pb_providers', serialize( $Ig_Sc_Providers ) );
 
-			$sc_path = self::shortcode_dirs( $providers );
+			$sc_path = self::shortcode_dirs();
 
 			foreach ( $sc_path as $path ) {
-				// autoload shortcodes
-				IG_Pb_Loader::register( $path, 'IG_' );
-				// autoload 2nd level shortcodes
-				IG_Pb_Loader::register( $path . '/item', 'IG_Item_' );
-				// autoload 3rd shortcodes
-				IG_Pb_Loader::register( $path . '/item/item', 'IG_Item_Item_' );
+				self::autoload_shortcodes( $path );
+				while ( $d = glob( $path . '/*', GLOB_ONLYDIR ) ) {
+					$path .= '/*';
+					foreach ( $d as $adir ) {
+						self::autoload_shortcodes( $adir );
+					}
+				}
 			}
 
-			$shortcodes = self::shortcodes_list( $sc_path, $providers );
+			$shortcodes = self::shortcodes_list( $sc_path );
 			return $shortcodes;
+		}
+
+		// autoload shortcodes & sub shortcodes
+		public static function autoload_shortcodes( $path ){
+			$items   = substr_count( $path, '/item' );
+			$postfix = str_repeat( 'Item_', $items );
+			// autoload shortcodes
+			IG_Pb_Loader::register( $path, 'IG_' . $postfix );
 		}
 
 		// set information for InnoGears provider
@@ -52,8 +62,10 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 			return array(
 						plugin_dir_path( IG_PB_FILE ) =>
 							array(
+								'path' => IG_PB_PATH,
+								'uri' => IG_PB_URI,
 								'name' => 'InnoGears',
-								'shortcode_dir' => array( IG_PB_LAYOUT_PATH, IG_PB_ELEMENT_PATH ),
+								'shortcode_dir' => array( IG_PB_LAYOUT_PATH ), //array( IG_PB_LAYOUT_PATH, IG_PB_ELEMENT_PATH ),
 								'js_shortcode_dir' => array(
 										'path' => IG_PB_PATH . 'assets/innothemes/js/shortcodes',
 										'uri' => IG_PB_URI . 'assets/innothemes/js/shortcodes',
@@ -66,43 +78,58 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 		 * Get provider name & path of a shortcode directory
 		 *
 		 * @param type $shortcode_dir
-		 * @param type $providers
 		 * @return type
 		 */
-		private static function get_provider( $shortcode_dir, $providers ){
+		private static function get_provider( $shortcode_dir ){
+			global $Ig_Sc_Providers;
+			$providers = $Ig_Sc_Providers;
 			foreach ( $providers as $dir => $provider ) {
-				if ( in_array( $shortcode_dir, $provider['shortcode_dir'] ) ){
-					return array(
-						'name' => $provider['name'],
-						'dir' => $dir,
-					);
+				foreach ( $provider['shortcode_dir'] as $dir ) {
+					if ( strpos( $shortcode_dir, $dir ) !== false ){
+						return array(
+							'name' => $provider['name'],
+							'dir' => $dir,
+						);
+					}
 				}
 			}
 		}
 
 		/**
-		 * Get js directory of a shortcode name
+		 * Get info of provider of the shortcode
 		 *
-		 * @global type $Ig_Sc_Providers
+		 * @global type $Ig_Sc_Providers, $Ig_Sc_By_Providers
 		 * @param type $shortcode_name
 		 * @param type $shortcode_by_providers
 		 * @return type
 		 */
-		public static function get_js_dir_of_shortcode( $shortcode_name, $shortcode_by_providers ){
+		public static function get_provider_info( $shortcode_name, $info ){
 			global $Ig_Sc_Providers;
+			global $Ig_Sc_By_Providers;
+			$providers = $Ig_Sc_Providers;
+			$shortcode_by_providers = $Ig_Sc_By_Providers;
 			foreach ( $shortcode_by_providers as $provider_dir => $shortcodes ) {
+				// find shortcode in what directory
 				if ( in_array( $shortcode_name, $shortcodes ) ){
-					return $Ig_Sc_Providers[$provider_dir]['js_shortcode_dir'];
+					// find provider of that directory
+					foreach ( $providers as $dir => $provider ) {
+						foreach ( $provider['shortcode_dir'] as $dir ) {
+							if ( $provider_dir == $dir ){
+								return $Ig_Sc_Providers[$provider['path']][$info];
+							}
+						}
+					}
 				}
 			}
 		}
 
 		/**
 		 * Get shortcode directories of providers
-		 * @param type $providers
 		 * @return type
 		 */
-		public static function shortcode_dirs( $providers ){
+		public static function shortcode_dirs( ){
+			global $Ig_Sc_Providers;
+			$providers = $Ig_Sc_Providers;
 			$shortcode_dirs = array();
 			foreach ( $providers as $provider ) {
 				$shortcode_dirs = array_merge( $shortcode_dirs, $provider['shortcode_dir'] );
@@ -113,22 +140,24 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 		/**
 		 * Get shortcodes in shortcode directories
 		 * @param array $sc_path
-		 * @param array $providers
 		 * @return array
 		 */
-		public static function shortcodes_list( $sc_path, $providers ) {
+		public static function shortcodes_list( $sc_path ) {
 			if ( empty( $sc_path ) )
 				return NULL;
 			if ( ! is_array( $sc_path ) ) {
 				$sc_path = array( $sc_path );
 			}
 			global $Ig_Sc_By_Providers;
+			// get list of directory by directory level
 			$level_dirs = array();
 			foreach ( $sc_path as $path ) {
 				$level_dirs[substr_count( $path, '/*' )][] = $path;
 				while ( $d = glob( $path . '/*', GLOB_ONLYDIR ) ) {
 					$path .= '/*';
-					$level_dirs[substr_count( $path, '/*' )][] = $d[0];
+					foreach ( $d as $adir ) {
+						$level_dirs[substr_count( $path, '/*' )][] = $adir;
+					}
 				}
 			}
 			// traverse over array of path to get shortcode information
@@ -136,10 +165,11 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 				foreach ( $dirs as $dir ) {
 					// provider info
 					$parent_path = str_replace( '/item', '', $dir );
-					$provider    = self::get_provider( $parent_path, $providers );
+					$provider    = self::get_provider( $parent_path );
 					// shortcode info
 					$type   = ( $dir == IG_PB_LAYOUT_PATH ) ? 'layout' : 'element';
-					$append = str_repeat( 'item_', intval( $level ) );
+					$this_level = ( intval( $level ) > 0 ) ? ( intval( $level ) - 1 ) : intval( $level );
+					$append     = str_repeat( 'item_', $this_level );
 					foreach ( glob( $dir . '/*.php' ) as $file ) {
 						$p = pathinfo( $file );
 						$element = str_replace( '-', '_', $p['filename'] );

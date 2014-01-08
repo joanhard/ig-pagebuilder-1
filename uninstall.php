@@ -1,13 +1,25 @@
 <?php
 /**
- * IG Pagebuilder Uninstalling
  *
  * Uninstalling IG Pagebuilder: deletes post metas & options
  *
- * @author		InnoThemes Team <support@innothemes.com>
+ * @author		InnoGears Team <support@www.innogears.com>
  * @package		IGPGBLDR
  * @version		$Id$
  */
+
+// delete all other providers
+$providers = get_transient( '_ig_pb_providers' );
+if ( $providers ) {
+    $providers = unserialize( $providers );
+    $list_plugins = array();
+    foreach ( $providers as $provider ) {
+        if ( isset ( $provider['main_file'] ) ) {
+            $list_plugins[] = $provider['main_file'];
+        }
+    }
+    delete_plugins( $list_plugins );
+}
 
 //if uninstall not called from WordPress exit
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) )

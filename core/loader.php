@@ -2,12 +2,12 @@
 /**
  * @version    $Id$
  * @package    IG_PageBuilder
- * @author     InnoThemes Team <support@innothemes.com>
- * @copyright  Copyright (C) 2012 InnoThemes.com. All Rights Reserved.
+ * @author     InnoGears Team <support@www.innogears.com>
+ * @copyright  Copyright (C) 2012 InnoGears.com. All Rights Reserved.
  * @license    GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Websites: http://www.innothemes.com
- * Technical Support:  Feedback - http://www.innothemes.com/contact-us/get-support.html
+ * Websites: http://www.www.innogears.com
+ * Technical Support:  Feedback - http://www.www.innogears.com/contact-us/get-support.html
  */
 
 if ( ! class_exists( 'IG_Pb_Loader' ) ) {
@@ -38,7 +38,7 @@ if ( ! class_exists( 'IG_Pb_Loader' ) ) {
 		}
 
 		/**
-		 * Auload InnoThemes's classes.
+		 * Auload InnoGears's classes.
 		 *
 		 * @param   string  $className  Name of class.
 		 *

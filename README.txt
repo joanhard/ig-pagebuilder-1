@@ -29,6 +29,10 @@ The plugin is similar to an advanced editor and works on both posts and pages of
 * Support many advanced page elements 
 * Support resizing blocks using only a mouse
 
+<h4>Support</h4>
+<p>
+	<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-docs.zip">Full Help Documentation</a></p>
+
 <i>*If you like the plugin, please vote for it!*</i>
 
 == Installation ==

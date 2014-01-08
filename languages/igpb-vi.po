@@ -1628,7 +1628,7 @@ msgid "Image ALT Text"
 msgstr ""
 
 #: E:\BB-projects\works\WPR\itpagebuilder\wp-content\plugins\ig-pagebuilder/shortcodes/qrcode.php:53
-msgid "Wordpress themes from www.innothemes.com"
+msgid "Wordpress themes from www.www.innogears.com"
 msgstr ""
 
 #: E:\BB-projects\works\WPR\itpagebuilder\wp-content\plugins\ig-pagebuilder/shortcodes/qrcode.php:54

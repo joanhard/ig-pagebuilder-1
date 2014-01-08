@@ -1,12 +1,12 @@
 <?php
 /**
  * Plugin Name: IG Pagebuilder
- * Plugin URI: http://innothemes.com
+ * Plugin URI:  http://www.innogears.com
  * Description: Awesome content builder for Wordpress websites
- * Version: 1.0.2
- * Author: InnoThemes Team <support@innothemes.com>
- * Author URI: http://innothemes.com
- * License: GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
+ * Version:     1.0.3
+ * Author:      InnoGears Team <support@www.innogears.com>
+ * Author URI:  http://www.innogears.com
+ * License:     GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
  */
 error_reporting( E_ALL ^ E_NOTICE );
 define( 'IG_PB_FILE', __FILE__ );
@@ -43,8 +43,8 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 			include_once 'core/third-party.php';
 			// include utility files
 			include_once 'core/utils/common.php';
-			include_once 'core/utils/deactivate.php';
 			include_once 'core/utils/placeholder.php';
+			include_once 'core/utils/plugin.php';
 		}
 
 		// autoload register
@@ -60,10 +60,11 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 
 		// remove session of old shortcode
 		function remove_session(){
+			session_start();
 			global $pagenow;
 			if ( in_array( $pagenow, array( 'post.php', 'post-new.php', 'widgets.php' ) ) ) {
-				unset( $_COOKIE['ig_modal_data'] );
-				unset( $_COOKIE['ig_sub_modal_data'] );
+				unset( $_SESSION['ig_pagebuilder'] );
+				unset( $_SESSION['ig_pagebuilder_submodal'] );
 			}
 		}
 	}

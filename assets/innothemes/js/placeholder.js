@@ -3,7 +3,7 @@
  *
  * Set & Get placeholder on Javascript files
  *
- * @author		InnoThemes Team <support@innothemes.com>
+ * @author		InnoGears Team <support@www.innogears.com>
  * @package		IGPGBLDR
  * @version		$Id$
  */

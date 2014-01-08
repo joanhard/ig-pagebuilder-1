@@ -4,12 +4,14 @@
  *
  * Define properties & methods
  *
- * @author		InnoThemes Team <support@innothemes.com>
+ * @author		InnoGears Team <support@www.innogears.com>
  * @package		IGPGBLDR
  * @version		$Id$
  */
 class Ig_Pb_Third_Party {
 
+	// prodiver name
+	protected $define;
 	// prodiver name
 	protected $provider;
 	// register assets (js/css)
@@ -105,6 +107,9 @@ class Ig_Pb_Third_Party {
 		$js_shortcode_dir = empty ( $provider['js_shortcode_dir'] ) ? 'assets/js/shortcodes' : $provider['js_shortcode_dir'];
 
 		$providers[$path] = array(
+			'path' => $path,
+			'uri' => $uri,
+			'main_file' => $provider['main_file'],
 			'name' => $provider['name'],
 			'shortcode_dir' => array( $path . $shortcode_dir ),
 			'js_shortcode_dir' => array( 'path' => $path . $js_shortcode_dir, 'uri' => $uri . $js_shortcode_dir ),
@@ -113,22 +118,26 @@ class Ig_Pb_Third_Party {
 	}
 	// register assets
 	public function this_assets_register( $assets ){
-		$assets = array_merge( $assets, $this->get_assets_register() );
+		$this_asset = $this->get_assets_register();
+		$assets     = array_merge( $assets, empty ( $this_asset ) ? array() : $this_asset );
 		return $assets;
 	}
 	// assets enqueue for admin
 	public function this_assets_enqueue_admin( $assets ){
-		$assets = array_merge( $assets, $this->get_assets_enqueue_admin() );
+		$this_asset = $this->get_assets_enqueue_admin();
+		$assets     = array_merge( $assets, empty ( $this_asset ) ? array() : $this_asset );
 		return $assets;
 	}
 	// assets enqueue for modal
 	public function this_assets_enqueue_modal( $assets ){
-		$assets = array_merge( $assets, $this->get_assets_enqueue_modal() );
+		$this_asset = $this->get_assets_enqueue_modal();
+		$assets     = array_merge( $assets, empty ( $this_asset ) ? array() : $this_asset );
 		return $assets;
 	}
 	// assets enqueue for frontend
 	public function this_assets_enqueue_frontend( $assets ){
-		$assets = array_merge( $assets, $this->get_assets_enqueue_frontend() );
+		$this_asset = $this->get_assets_enqueue_frontend();
+		$assets     = array_merge( $assets, empty ( $this_asset ) ? array() : $this_asset );
 		return $assets;
 	}
 

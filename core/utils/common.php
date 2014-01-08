@@ -4,7 +4,7 @@
  *
  * Common functions (pure data, don't relate to IGPB shortcodes)
  *
- * @author		InnoThemes Team <support@innothemes.com>
+ * @author		InnoGears Team <support@www.innogears.com>
  * @package		IGPGBLDR
  * @version		$Id$
  */
