@@ -47,7 +47,8 @@ add_action( 'admin_init', 'ig_pb_activate_plugin' );
 function ig_pb_activate_plugin() {
 	global $pagenow;
 	global $free_sc_fname;
-	if ( $pagenow == 'plugins.php' && get_transient( 'ig_pb_installed' ) !== false ) {
+	
+	if ( is_plugin_active ('ig-pagebuilder/ig-pagebuilder.php') ) {
 		if ( ! is_plugin_active( $free_sc_fname . '/main.php' ) ) {
 			activate_plugin( $free_sc_fname . '/main.php' );
 			// reset
