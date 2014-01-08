@@ -49,6 +49,7 @@ function ig_pb_activate_plugin() {
 	global $free_sc_fname;
 	
 	if ( is_plugin_active ('ig-pagebuilder/ig-pagebuilder.php') ) {
+		ig_pb_activate();
 		if ( ! is_plugin_active( $free_sc_fname . '/main.php' ) ) {
 			activate_plugin( $free_sc_fname . '/main.php' );
 			// reset
