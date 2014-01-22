@@ -528,7 +528,7 @@
                 if ( textarea_text.indexOf('disabled="no"') > 0 ) {
                     textarea_text = textarea_text.replace('disabled="no"', 'disabled="yes"');
                 } else {
-                    textarea_text = textarea_text.replace(']', 'disabled="yes" ]');
+                    textarea_text = textarea_text.replace(']', ' disabled="yes" ]');
                 }
                 // update icon
                 child_i.removeClass('icon-cancel').addClass('icon-checkmark');
