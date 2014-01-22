@@ -27,7 +27,6 @@ if ( empty ($elements) || empty ( $elements['element'] ) ) {
 		$elements_html[] = $element->element_button( $idx + 1 );
 	}
 	?>
-	<!-- test -->
 	<div id="ig-add-element" class="ig-add-element add-field-dialog" style="display: none;">
 		<div class="popover top" style="display: block;">
 			<div class="arrow"></div>

@@ -17,9 +17,11 @@ class IG_Pb_Element extends IG_Pb_Common {
 
 	public function __construct() {
 		$this->type = 'element';
+		$this->config['el_type'] = 'element';
 
 		$this->element_config();
 		$this->element_items();
+		$this->element_items_extra();
 		$this->shortcode_data();
 
 		// add shortcode
@@ -27,14 +29,14 @@ class IG_Pb_Element extends IG_Pb_Common {
 
 		// enqueue script for current element in backend (modal setting iframe)
 		if ( IG_Pb_Helper_Functions::is_modal_of_element( $this->config['shortcode'] ) ) {
-			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_modal' ) );
+			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_modal' ), 1000000 );
 		}
 		// enqueue script for current element in backend (preview iframe)
 		if ( IG_Pb_Helper_Functions::is_preview() ) {
-			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ) );
+			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ), 1000000 );
 		}
 		// enqueue script for current element in frontend
-		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ) );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ), 100 );
 
 		do_action( 'ig_pb_element_init' );
 	}
@@ -59,6 +61,49 @@ class IG_Pb_Element extends IG_Pb_Common {
 
 	}
 
+	// add more options to all elements
+	public function element_items_extra() {
+
+		$disable_el = array(
+			'name' => __( 'Disable', IGPBL ),
+			'id' => 'disabled',
+			'type' => 'radio',
+			'std' => 'no',
+			'options' => array( 'yes' => __( 'Yes', IGPBL ), 'no' => __( 'No', IGPBL ) ),
+			'wrap_class' => 'control-group hidden',
+		);
+		if ( isset ( $this->items['styling'] ) ) {
+			$this->items['styling'] = array_merge(
+				$this->items['styling'], array(
+					// Disable element
+					$disable_el,
+
+					// always at the end of array
+					array(
+						'name'			=> __( 'Margin', IGPBL ),
+						'container_class' 	=> 'combo-group',
+						'id'			=> 'div_margin',
+						'type'			=> 'margin',
+						'extended_ids'	=> array( 'div_margin_top', 'div_margin_bottom' ),
+						'div_margin_top'	=> array( 'std' => '' ),
+						'div_margin_bottom'	=> array( 'std' => '' ),
+						'margin_elements'	=> 't, b',
+						'tooltip' 			=> __( 'Set margin size', 	IGPBL )
+					),
+				)
+			);
+		} else {
+			if ( isset ( $this->items['Notab'] ) ) {
+				$this->items['Notab'] = array_merge(
+					$this->items['Notab'], array(
+					// Disable element
+					$disable_el,
+					)
+				);
+			}
+		}
+	}
+
 	/**
 	 * DEFINE html structure of shortcode in Page Builder area
 	 *
@@ -72,18 +117,14 @@ class IG_Pb_Element extends IG_Pb_Common {
 		$shortcode		  = $this->config['shortcode'];
 		$is_sub_element   = ( isset( $this->config['sub_element'] ) ) ? true : false;
 		$parent_shortcode = ( $is_sub_element ) ? str_replace( 'ig_item_', '', $shortcode ) : $shortcode;
-		$type			  = ! empty( $this->config['el_type'] ) ? $this->config['el_type'] : 'element';
-		$buttons = array(
-			'edit'   => '<a href="#" onclick="return false;" title="' . __( 'Edit element', IGPBL ) . '" data-shortcode="' . $shortcode . '" class="element-edit"><i class="icon-pencil"></i></a>',
-			'clone'  => '<a href="#" onclick="return false;" title="' . __( 'Duplicate element', IGPBL ) . '" data-shortcode="' . $shortcode . '" class="element-clone"><i class="icon-copy"></i></a>',
-			'delete' => '<a href="#" onclick="return false;" title="' . __( 'Delete element', IGPBL ) . '" class="element-delete"><i class="icon-trash"></i></a>'
-		);
+		$type			  = ! empty( $this->config['el_type'] ) ? $this->config['el_type'] : 'widget';
+
 		// Empty content if this is not sub element
 		if ( ! $is_sub_element )
 			$content = '';
 
-		$exception   = isset($this->config['exception']) ? $this->config['exception'] : array();
-		$content     = (isset($exception['default_content'])) ? $exception['default_content'] : $content;
+		$exception   = isset( $this->config['exception'] ) ? $this->config['exception'] : array();
+		$content     = ( isset( $exception['default_content'] ) ) ? $exception['default_content'] : $content;
 		$modal_title = '';
 		// if is widget
 		if ( $type == 'widget' ) {
@@ -124,14 +165,29 @@ class IG_Pb_Element extends IG_Pb_Common {
 		$shortcode_data  = stripslashes( $shortcode_data );
 		$element_wrapper = ! empty( $exception['item_wrapper'] ) ? $exception['item_wrapper'] : ( $is_sub_element ? 'li' : 'div' );
 		$content_class   = ( $is_sub_element ) ? 'jsn-item-content' : 'ig-pb-element';
-		$action_btns     = ( empty( $exception['action_btn']) ) ? implode( '', $buttons ) : $buttons[$exception['action_btn']];
 		$modal_title     = empty ( $modal_title ) ? ( ! empty( $exception['data-modal-title'] ) ? "data-modal-title='{$exception['data-modal-title']}'" : '' ) : $modal_title;
 		$element_type    = "data-el-type='$type'";
+
+		$data = array(
+			'element_wrapper' => $element_wrapper,
+			'modal_title' => $modal_title,
+			'element_type' => $element_type,
+			'name' => $name,
+			'shortcode' => $shortcode,
+			'shortcode_data' => $shortcode_data,
+			'content_class' => $content_class,
+			'content' => $content,
+			'action_btn' => empty( $exception['action_btn'] ) ? '' : $exception['action_btn'],
+			'this_' => $this,
+		);
+		$extra = array();
 		if ( isset( $this->config['exception']['disable_preview_container'] ) ) {
-			$html_preview = IG_Pb_Helper_Functions::get_element_item_html( $element_wrapper, $modal_title, $element_type, $name, $shortcode, $shortcode_data, $content_class, $content, $action_btns, '', '', '' );
-		} else {
-			$html_preview = IG_Pb_Helper_Functions::get_element_item_html( $element_wrapper, $modal_title, $element_type, $name, $shortcode, $shortcode_data, $content_class, $content, $action_btns );
+			$extra = array(
+				'has_preview' => FALSE,
+			);
 		}
+		$data = array_merge( $data, $extra );
+		$html_preview = IG_Pb_Helper_Functions::get_element_item_html( $data );
 		return array(
 			$html_preview
 		);
@@ -143,8 +199,25 @@ class IG_Pb_Element extends IG_Pb_Common {
 	 * @param type $atts
 	 * @param type $content
 	 */
-	public function element_shortcode( $atts = null, $content = null ) {
+	public function element_shortcode_full( $atts = null, $content = null ) {
 
+	}
+
+	/**
+	 * return shortcode content: if shortcode is disable, return empty
+	 *
+	 * @param type $atts
+	 * @param type $content
+	 */
+	public function element_shortcode( $atts = null, $content = null ) {
+		$arr_params = ( shortcode_atts( $this->config['params'], $atts ) );
+		if ( $arr_params['disabled'] == 'yes' ) {
+			if ( IG_Pb_Helper_Functions::is_preview() ) {
+				return ''; //'This element is deactivated. It will be hidden at frontend';
+			}
+			return '';
+		}
+		return $this->element_shortcode_full( $atts, $content );
 	}
 
 	/**
@@ -200,7 +273,7 @@ class IG_Pb_Element extends IG_Pb_Common {
 		$params = IG_Pb_Helper_Shortcode::generate_shortcode_params( $this->items, null, null, false, true );
 		// add Margin parameter for Not child shortcode
 		if ( strpos( $this->config['shortcode'], '_item' ) === false ) {
-			$this->config['params'] = array_merge( array( 'div_margin_top' => '', 'div_margin_bottom' => '' ), $params );
+			$this->config['params'] = array_merge( array( 'div_margin_top' => '', 'div_margin_bottom' => '', 'disabled' => 'no' ), $params );
 		}
 		else {
 			$this->config['params'] = $params;

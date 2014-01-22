@@ -33,17 +33,17 @@ if ( ! class_exists( 'IG_Pb_Modal' ) ) {
 
 		public function apply_assets( $assets ){
 			$assets['ig-pb-handlesetting-js'] = array(
-				'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/js/handle_setting.js',
+				'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/handle_setting.js',
 				'ver' => '1.0.0',
 			);
 			if ( IG_Pb_Helper_Functions::is_preview() ) {
 				$assets['ig-pb-frontend-css'] = array(
-					'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/css/front_end.css',
+					'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/css/front_end.css',
 					'ver' => '1.0.0',
 				);
 			}
 			$assets['ig-pb-modal-css'] = array(
-				'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/css/modal.css',
+				'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/css/modal.css',
 				'ver' => '1.0.0',
 			);
 
@@ -74,12 +74,20 @@ if ( ! class_exists( 'IG_Pb_Modal' ) ) {
 			wp_localize_script( 'ig-pb-handlesetting-js', 'Ig_Ajax', IG_Pb_Helper_Functions::localize_js() );
 		}
 
-		public function preview_modal() {
-			add_action( 'ig_pb_modal_page_content', array( &$this, 'content' ), 10 );
+		public function preview_modal( $page = '' ) {
+			add_action( 'ig_pb_modal_page_content', array( &$this, 'content' . $page ), 10 );
 		}
 
 		public function content() {
 			include IG_PB_TPL_PATH . '/modal.php';
+
+			// load last assets: HandleSettings & hooked assets
+			$assets = apply_filters( 'ig_pb_assets_enqueue_modal', array( 'ig-pb-handlesetting-js', ) );
+			IG_Pb_Assets::load( $assets );
+		}
+
+		public function content_layout() {
+			include IG_PB_TPL_PATH . '/layout-list.php';
 
 			// load last assets: HandleSettings & hooked assets
 			$assets = apply_filters( 'ig_pb_assets_enqueue_modal', array( 'ig-pb-handlesetting-js', ) );
@@ -148,24 +156,6 @@ if ( ! class_exists( 'IG_Pb_Modal' ) ) {
 					}
 
 					$has_margin = 0;
-					// Add Margin options to all shortcodes
-					if ( $tab == 'styling' ) {
-						$options = array_merge(
-							$options, array(
-								array(
-									'name'			=> __( 'Margin', IGPBL ),
-									'container_class' 	=> 'combo-group',
-									'id'			=> 'div_margin',
-									'type'			=> 'margin',
-									'extended_ids'	=> array( 'div_margin_top', 'div_margin_bottom' ),
-									'div_margin_top'	=> array( 'std' => '' ),
-									'div_margin_bottom'	=> array( 'std' => '' ),
-									'margin_elements'	=> 't, b',
-									'tooltip' 			=> __( 'Margin Description', 	IGPBL )
-								),
-							)
-						);
-					}
 					$param_html = array();
 					foreach ( $options as $idx => $option ) {
 						// check if this element has Margin param (1)

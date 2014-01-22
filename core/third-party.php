@@ -11,8 +11,6 @@
 class Ig_Pb_Third_Party {
 
 	// prodiver name
-	protected $define;
-	// prodiver name
 	protected $provider;
 	// register assets (js/css)
 	protected $assets_register;
@@ -42,18 +40,9 @@ class Ig_Pb_Third_Party {
 
 	// SET FUNCTIONS
 	/**
-	 *
-	 * @param array $provider
-	 * array(
-			'path' => THIS_PATH,
-			'name' => THIS_NAME,
-			'shortcode_dir' => THIS_PATH . 'shortcodes',
-			'js_shortcode_dir' => array(
-				'path' => THIS_PATH . 'shortcodes_js',
-				'uri' => THIS_URI . 'shortcodes_js',
-			),
-		)
-	 */
+     *
+     * @param type $provider
+     */
 	public function set_provider( $provider ){
 		$this->provider = $provider;
 	}
@@ -98,18 +87,24 @@ class Ig_Pb_Third_Party {
 	// filter providers
 	public function this_provider( $providers ){
 		$provider = $this->get_provider();
-		if ( empty ( $provider ) || empty ( $provider['path'] ) ){
+		if ( empty ( $provider ) || empty ( $provider['file'] ) ){
 			return $providers;
 		}
-		$path = $provider['path'];
-		$uri = $provider['uri'];
+		$file = $provider['file'];
+		$path = plugin_dir_path( $file );
+		$uri  = plugin_dir_url( $file );
 		$shortcode_dir    = empty ( $provider['shortcode_dir'] ) ? 'shortcodes' : $provider['shortcode_dir'];
 		$js_shortcode_dir = empty ( $provider['js_shortcode_dir'] ) ? 'assets/js/shortcodes' : $provider['js_shortcode_dir'];
 
+		//get plugin name & main file
+		$main_file = pathinfo( $file );
+		$folder    = basename( $main_file['dirname'] );
+		$main_file = $folder . '/' . $main_file['basename'];
 		$providers[$path] = array(
 			'path' => $path,
 			'uri' => $uri,
-			'main_file' => $provider['main_file'],
+			'file' => $main_file,
+			'folder' => $folder,
 			'name' => $provider['name'],
 			'shortcode_dir' => array( $path . $shortcode_dir ),
 			'js_shortcode_dir' => array( 'path' => $path . $js_shortcode_dir, 'uri' => $uri . $js_shortcode_dir ),

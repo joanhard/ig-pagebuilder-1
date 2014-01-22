@@ -16,6 +16,10 @@ define( 'IG_PB_PATH', plugin_dir_path( IG_PB_FILE ) );
 define( 'IG_PB_LAYOUT_PATH', plugin_dir_path( IG_PB_FILE ) . 'core/shortcode/layout' );
 define( 'IG_PB_ELEMENT_PATH', plugin_dir_path( IG_PB_FILE ) . 'shortcodes' );
 
+// Define premade layout folder
+define( 'IG_PB_PREMADE_LAYOUT', plugin_dir_path( IG_PB_FILE ) . 'templates/pre-made-layout' );
+define( 'IG_PB_PREMADE_LAYOUT_URI', plugin_dir_url( IG_PB_FILE ) . 'templates/pre-made-layout' );
+
 // Define absolute path of templates folder
 define( 'IG_PB_TPL_PATH', plugin_dir_path( IG_PB_FILE ) . 'templates' );
 

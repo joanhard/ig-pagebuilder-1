@@ -72,11 +72,10 @@ class IG_Pb_Assets {
 				add_action( 'customize_controls_print_scripts'  , array( __CLASS__, 'footer'          ), 100 );
 			} else {
 				$prefix = defined( 'WP_ADMIN' ) ? 'admin' : 'wp';
-
 				// Register actions
-				add_action( "{$prefix}_enqueue_scripts", array( __CLASS__, 'enqueue_scripts' ), 100 );
-				add_action( "{$prefix}_head"           , array( __CLASS__, 'head'            ), 100 );
-				add_action( "{$prefix}_footer"         , array( __CLASS__, 'footer'          ), 100 );
+				add_action( "{$prefix}_enqueue_scripts", array( __CLASS__, 'enqueue_scripts' ), 1000000 );
+				add_action( "{$prefix}_head"           , array( __CLASS__, 'head'            ), 1000000 );
+				add_action( "{$prefix}_footer"         , array( __CLASS__, 'footer'          ), 1000000 );
 			}
 
 			$registered = true;
@@ -203,6 +202,7 @@ class IG_Pb_Assets {
 	 * @return  void
 	 */
 	protected static function enqueue_asset( $handle ) {
+        global $ig_handle_assets;
 		if ( isset( self::$assets[ $handle ] ) && isset( self::$assets[ $handle ]['site'] ) ) {
 			if ( 'admin' == self::$assets[ $handle ]['site'] && ! defined( 'WP_ADMIN' ) ) {
 				return;
@@ -222,6 +222,7 @@ class IG_Pb_Assets {
 		$type = ( substr( $handle, -4 ) == '-css' ) ? 'style' : 'script';
 
 		// Enqueue asset
+        $ig_handle_assets[] = $handle;
 		if ( 'script' == $type && isset( self::$assets[ $handle ] ) && in_array( $handle, self::$registered ) ) {
 			// Build arguments to load script in footer so it can be localized at any time
 			$args[] = preg_replace( '/-( css|js )$/', '', $handle );

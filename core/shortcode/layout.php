@@ -17,6 +17,7 @@ class IG_Pb_Layout extends IG_Pb_Common {
 
 	public function __construct() {
 		$this->type = 'layout';
+		$this->config['el_type'] = 'element';
 
 		$this->element_config();
 		$this->element_items();
@@ -36,14 +37,14 @@ class IG_Pb_Layout extends IG_Pb_Common {
 	 * @return type
 	 */
 	public function element_button( $sort ) {
-		
+
 	}
 
 	/**
 	 * html structure of element in Page Builder area
 	 */
 	public function element_in_pgbldr() {
-		
+
 	}
 
 	/**
@@ -53,14 +54,14 @@ class IG_Pb_Layout extends IG_Pb_Common {
 	 * @param type $content
 	 */
 	public function element_shortcode( $atts = null, $content = null ) {
-		
+
 	}
 
 	/**
 	 * get params & structure of shortcode
 	 */
 	public function shortcode_data() {
-		
+
 	}
 
 }

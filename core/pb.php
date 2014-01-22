@@ -67,7 +67,8 @@ class IG_Pb {
 		// register modal page
 		add_action( 'admin_init', array( &$this, 'modal_register' ) );
 		add_action( 'admin_init', array( &$this, 'widget_register_assets' ) );
-		add_action( 'admin_init', array( &$this, 'remove_admin_stylesheets' ) );
+		add_action( 'admin_init', array( &$this, 'remove_admin_assets' ), 900000 );
+		add_action( 'admin_footer', array( &$this, 'remove_admin_assets_footer' ), 10 );
 		add_action( 'admin_menu', array( &$this, 'add_ig_modal_page' ) );
 		// enable shortcode in content & filter content with IGPB shortcodes
 		add_filter( 'the_content', 'do_shortcode' );
@@ -83,7 +84,7 @@ class IG_Pb {
 		add_action( 'edit_page_form', array( &$this, 'save_pagebuilder_content' ) );
 		add_action( 'pre_post_update', array( &$this, 'save_pagebuilder_content' ) );
 		// ajax action
-		add_action( 'wp_ajax_save_session', array( &$this, 'save_session' ) );
+		add_action( 'wp_ajax_save_layout', array( &$this, 'save_layout' ) );
 		add_action( 'wp_ajax_update_whole_sc_content', array( &$this, 'update_whole_sc_content' ) );
 		add_action( 'wp_ajax_shortcode_extract_param', array( &$this, 'shortcode_extract_param' ) );
 		add_action( 'wp_ajax_get_json_custom', array( &$this, 'ajax_json_custom' ) );
@@ -134,7 +135,7 @@ class IG_Pb {
 	 */
 	function apply_assets( $assets ) {
 		$assets['ig-pb-frontend-css'] = array(
-			'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/css/front_end.css',
+			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/css/front_end.css',
 			'ver' => '1.0.0',
 		);
 		if ( ! is_admin() || IG_Pb_Helper_Functions::is_preview() ) {
@@ -148,23 +149,23 @@ class IG_Pb {
 			);
 		}
 		$assets['ig-pb-frontend-responsive-css'] = array(
-			'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/css/front_end_responsive.css',
+			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/css/front_end_responsive.css',
 			'ver' => '1.0.0',
 		);
 		$assets['ig-pb-addpanel-js'] = array(
-			'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/js/add_page_builder.js',
+			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/add_page_builder.js',
 			'ver' => '1.0.0',
 		);
 		$assets['ig-pb-layout-js'] = array(
-			'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/js/layout.js',
+			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/layout.js',
 			'ver' => '1.0.0',
 		);
 		$assets['ig-pb-widget-js'] = array(
-			'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/js/widget.js',
+			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/widget.js',
 			'ver' => '1.0.0',
 		);
 		$assets['ig-pb-placeholder'] = array(
-			'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/js/placeholder.js',
+			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/placeholder.js',
 			'ver' => '1.0.0',
 		);
 		return $assets;
@@ -245,6 +246,8 @@ class IG_Pb {
 	 */
 	function element_tpl() {
 		ob_start();
+
+		// print template html of IG element
 		$elements = $this->get_elements();
 		foreach ( $elements as $type_list ) {
 			foreach ( $type_list as $element ) {
@@ -254,6 +257,26 @@ class IG_Pb {
 				}
 			}
 		}
+		// print template html of Widget
+		global $Ig_Pb_Widgets;
+		foreach ( $Ig_Pb_Widgets as $shortcode => $shortcode_obj ) {
+			if ( ! class_exists( 'IG_Widget' ) ) {
+				continue;
+			}
+			$element = new IG_Widget();
+			$modal_title = $shortcode_obj['identity_name'];
+			$element->config['shortcode'] = $shortcode;
+			$content = $element->config['exception']['data-modal-title'] = $modal_title;
+			$element->config['shortcode_structure'] = ig_pb_add_placeholder( "[ig_widget widget_id=\"$shortcode\"]%s[/ig_widget]", 'widget_title' );
+			$element->config['el_type'] = $type;
+			$element_type = $element->element_in_pgbldr( $content );
+			foreach ( $element_type as $element_structure ) {
+				echo balanceTags( "<script type='text/html' id='tmpl-{$shortcode}'>\n{$element_structure}\n</script>\n" );
+			}
+		}
+
+
+		do_action( 'ig_pb_footer' );
 		ob_end_flush();
 	}
 
@@ -265,6 +288,8 @@ class IG_Pb {
 			$cls_modal = IG_Pb_Modal::get_instance();
 			if ( ! empty( $_GET['ig_modal_type'] ) )
 				$cls_modal->preview_modal();
+			if ( ! empty( $_GET['ig_layout'] ) )
+				$cls_modal->preview_modal( '_layout' );
 		}
 	}
 
@@ -403,27 +428,18 @@ JS;
 	}
 
 	/**
-	 * Save shortcode information session to building Setting form in Modal page
+	 * Save premade layout to file
 	 * @return type
 	 */
-	function save_session() {
+	function save_layout() {
 		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
 			return;
-		$session = $_POST['submodal'] ? 'ig_pagebuilder_submodal' : 'ig_pagebuilder';
-		// Delete session
-		if ( ! empty( $_POST['delete_ss'] ) ) {
-			if ( $_POST['submodal'] )
-				unset( $_SESSION['ig_pagebuilder_submodal'] );
-			else
-				session_unset();
-		}
-		else {
-			$_SESSION[$session]['shortcode'] = $_POST['shortcode'];
-			$_SESSION[$session]['params']    = $_POST['params'];
-			$_SESSION[$session]['el_type']   = $_POST['el_type'];
-			$_SESSION[$session]['el_title']  = $_POST['el_title'];
-			$_SESSION[$session]['submodal']  = $_POST['submodal'];
-		}
+
+		$layout_name    = $_POST['layout_name'];
+		$layout_content = stripslashes( $_POST['layout_content'] );
+
+		IG_Pb_Helper_Functions::save_premade_layouts( $layout_name, $layout_content );
+
 		exit;
 	}
 
@@ -505,13 +521,7 @@ JS;
 			}
 		} else {
 			$shortcode = mysql_real_escape_string( $shortcode );
-			$el_title  = isset( $_POST['el_title'] ) ? $_POST['el_title'] : '';
-			$class     = 'IG_Widget';
-			$elements  = $this->get_elements();
-			$element   = isset( $elements['element'][strtolower( $class )] ) ? $elements['element'][strtolower( $class )] : null;
-			if ( ! is_object( $element ) ) {
-				$element = new $class();
-			}
+			$element   = new IG_Widget();
 			global $Ig_Pb_Widgets;
 			$modal_title = $Ig_Pb_Widgets[$shortcode]['identity_name'];
 			$element->config['shortcode'] = $shortcode;
@@ -597,11 +607,7 @@ JS;
 
 	// get media file name
 	function media_file_name( $file ) {
-		$file_name    = $file['name'];
-		$file['name'] = iconv( 'utf-8', 'ascii//TRANSLIG//IGNORE', $file_name );
-		if ( ! $file['name'] ) {
-			$file['name'] = $file_name;
-		}
+		$file['name'] = iconv( 'utf-8', 'ascii//TRANSLIG//IGNORE', $file['name'] );
 
 		return $file;
 	}
@@ -659,7 +665,7 @@ JS;
 	/**
      * Unload Wp admin css in modal iframe
      */
-	function remove_admin_stylesheets() {
+	function remove_admin_assets() {
 		if ( IG_Pb_Helper_Functions::is_modal() ) {
 			wp_deregister_style( 'wp-admin' );
 
@@ -667,9 +673,68 @@ JS;
 			wp_deregister_script( 'ie' );
 			wp_dequeue_script( 'utils' );
 
+            global $wp_scripts;
+            unset ( $wp_scripts );
+
+            remove_all_actions( 'admin_print_styles' );
+//            remove_all_actions( 'admin_print_scripts' );
+
+            if ( is_network_admin() ) {
+                /**
+                 * Print network admin screen notices.
+                 *
+                 * @since 3.1.0
+                 */
+                remove_all_actions( 'network_admin_notices' );
+            } elseif ( is_user_admin() ) {
+                /**
+                 * Print user admin screen notices.
+                 *
+                 * @since 3.1.0
+                 */
+                remove_all_actions( 'user_admin_notices' );
+            } else {
+                /**
+                 * Print admin screen notices.
+                 *
+                 * @since 3.1.0
+                 */
+                remove_all_actions( 'admin_notices' );
+            }
 			remove_all_actions( 'all_admin_notices' );
 		}
 	}
+
+    /**
+     * Remove assets of any third parties at admin footer
+     */
+    function remove_admin_assets_footer() {
+        if ( IG_Pb_Helper_Functions::is_modal() ) {
+            global $ig_handle_assets;
+            $ig_handle_assets[] = "common";
+//            $ig_handle_assets[] = "admin-bar";
+            $ig_handle_assets[] = "media-editor";
+//            $ig_handle_assets[] = "utils";
+            $ig_handle_assets[] = "wp-auth-check";
+            $ig_handle_assets[] = "jquery";
+            $ig_handle_assets[] = "jquery-ui-core";
+            $ig_handle_assets[] = "jquery-ui-tabs";
+            $ig_handle_assets[] = "jquery-ui-widget";
+            $ig_handle_assets[] = "jquery-ui-resizable";
+            $ig_handle_assets[] = "jquery-ui-sortable";
+            $ig_handle_assets[] = "jquery-ui-dialog";
+            $ig_handle_assets[] = "jquery-ui-button";
+            $ig_handle_assets[] = "jquery-ui-slider";
+
+            global $wp_scripts;
+            foreach ($wp_scripts->queue as $script) {
+                if ( ! in_array( $script, $ig_handle_assets ) ) {
+                    wp_dequeue_script( $script );
+                    wp_dequeue_style( $script );
+                }
+            }
+        }
+    }
 
 	/**
 	 * Add Inno Button
@@ -689,14 +754,14 @@ JS;
 	 * @return string
 	 */
 	function filter_mce_plugin( $plugins ) {
-		$plugins['ig_pb'] = IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/js/tinymce.js';
+		$plugins['ig_pb'] = IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/tinymce.js';
 		return $plugins;
 	}
 
 	// Gravatar : use default avatar, don't request from gravatar server
 	function remove_gravatar( $image, $params, $item_id, $avatar_dir, $css_id, $html_width, $html_height, $avatar_folder_url, $avatar_folder_dir ) {
 
-		$default = IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/images/default_avatar.png';
+		$default = IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/images/default_avatar.png';
 
 		if ( $image && strpos( $image, 'gravatar.com' ) ) {
 
@@ -708,7 +773,7 @@ JS;
 
 	// Gravatar : use default avatar
 	function get_gravatar( $avatar, $id_or_email, $size, $default ) {
-		$default = IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/images/default_avatar.png';
+		$default = IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/images/default_avatar.png';
 		return '<img src="' . $default . '" alt="avatar" class="avatar" width="60" height="60" />';
 	}
 

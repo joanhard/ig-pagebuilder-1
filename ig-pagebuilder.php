@@ -3,7 +3,7 @@
  * Plugin Name: IG Pagebuilder
  * Plugin URI:  http://www.innogears.com
  * Description: Awesome content builder for Wordpress websites
- * Version:     1.0.3
+ * Version:     1.0.4
  * Author:      InnoGears Team <support@www.innogears.com>
  * Author URI:  http://www.innogears.com
  * License:     GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,7 +19,6 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 
 			$this->includes();
 			$this->autoload();
-			$this->remove_session();
 
 			// Init the plugin
 			IG_Pb_Plugin::init();
@@ -30,9 +29,9 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 		}
 
 		function init(){
-			global $Ig_Pb, $Ig_Pb_Widgets;
-			$Ig_Pb = new IG_Pb();
-			$Ig_Pb_Widgets = ! empty( $Ig_Pb_Widgets ) ? $Ig_Pb_Widgets : IG_Pb_Helper_Functions::widgets();
+            global $Ig_Pb, $Ig_Pb_Widgets;
+            $Ig_Pb = new IG_Pb();
+            $Ig_Pb_Widgets = ! empty( $Ig_Pb_Widgets ) ? $Ig_Pb_Widgets : IG_Pb_Helper_Functions::widgets();
 		}
 
 		// include some core files
@@ -56,16 +55,6 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 			IG_Pb_Loader::register( IG_PB_PATH . 'core/shortcode', 'IG_Pb_' );
 
 			do_action( 'ig_pb_autoload' );
-		}
-
-		// remove session of old shortcode
-		function remove_session(){
-			session_start();
-			global $pagenow;
-			if ( in_array( $pagenow, array( 'post.php', 'post-new.php', 'widgets.php' ) ) ) {
-				unset( $_SESSION['ig_pagebuilder'] );
-				unset( $_SESSION['ig_pagebuilder_submodal'] );
-			}
 		}
 	}
 

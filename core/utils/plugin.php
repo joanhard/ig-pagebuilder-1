@@ -8,37 +8,43 @@
  * @package		IGPGBLDR
  * @version		$Id$
  */
-global $free_sc_fname;
-$free_sc_fname = 'ig-shortcodes-free';
+
 /*------------------------------------------------------
 	Activate
 ------------------------------------------------------*/
 register_activation_hook( IG_PB_FILE, 'ig_pb_activate' );
 function ig_pb_activate() {
-	global $free_sc_fname;
-	$free_sc_zip = plugin_dir_path( IG_PB_FILE ) . $free_sc_fname . '.zip';
-	if ( ! ( file_exists( $free_sc_zip ) ) ){
-		$error = 404;
-		return;
-	}
+	$providers = ig_default_providers();
 	$zip = new ZipArchive;
-	if ( $zip->open( $free_sc_zip ) === TRUE ) {
-		$free_sc_folder = WP_PLUGIN_DIR . "/$free_sc_fname";
-		if ( file_exists( $free_sc_folder ) ) {
-			// rename older folder
-			rename( $free_sc_folder, $free_sc_folder . '-old' );
+	// extract dependency plugins
+	foreach ( $providers as $provider ) {
+		if ( isset ( $provider['folder'] ) ) {
+			$folder     = $provider['folder'];
+			$source_zip = plugin_dir_path( IG_PB_FILE ) . $folder . '.zip';
+			if ( ! ( file_exists( $source_zip ) ) ){
+				$error = 404;
+				return;
+			}
+
+			if ( $zip->open( $source_zip ) === TRUE ) {
+				$source_folder = WP_PLUGIN_DIR . "/$folder";
+				if ( file_exists( $source_folder ) ) {
+					// delete folder
+					rrmdir( $source_folder );
+					// rename older folder
+					//rename( $source_folder, $source_folder . '-old' );
+				}
+				// extract to plugin folder
+				$zip->extractTo( $source_folder );
+				$zip->close();
+				// remove zip file
+				unlink( $source_zip );
+
+				$error = 0;
+			} else {
+				$error = -1;
+			}
 		}
-		// extract to plugin folder
-		$zip->extractTo( $free_sc_folder );
-		$zip->close();
-
-		// remove zip file
-		unlink( $free_sc_zip );
-
-		set_transient( 'ig_pb_installed', 1, 2 * MINUTE_IN_SECONDS );
-		$error = 0;
-	} else {
-		$error = -1;
 	}
 }
 
@@ -46,19 +52,61 @@ add_action( 'admin_init', 'ig_pb_activate_plugin' );
 // active extracted plugin
 function ig_pb_activate_plugin() {
 	global $pagenow;
-	global $free_sc_fname;
-	
-	if ( is_plugin_active ('ig-pagebuilder/ig-pagebuilder.php') ) {
+	$providers = ig_default_providers();
+
+	if ( is_plugin_active( 'ig-pagebuilder/ig-pagebuilder.php' ) ) {
 		ig_pb_activate();
-		if ( ! is_plugin_active( $free_sc_fname . '/main.php' ) ) {
-			activate_plugin( $free_sc_fname . '/main.php' );
-			// reset
-			delete_transient( 'ig_pb_installed' );
-			remove_action( 'admin_init', __FUNCTION__ );
+
+		// activate dependency plugins
+		foreach ( $providers as $provider ) {
+			if ( isset ( $provider['folder'] ) ) {
+				$folder = $provider['folder'];
+				if ( ! is_plugin_active( $folder . '/main.php' ) ) {
+					activate_plugin( $folder . '/main.php' );
+					// remove action
+					remove_action( 'admin_init', __FUNCTION__ );
+				}
+			}
 		}
 	}
 }
 
+/**
+ * Get default providers directory
+ *
+ * @global type $Ig_Sc_Providers
+ * @return type
+ */
+function ig_default_providers() {
+	global $Ig_Sc_Providers;
+	if ( count( $Ig_Sc_Providers ) == 1 ) {
+		return array(
+				array(
+					'folder' => 'ig-shortcodes-free',
+				),
+            );
+	}
+	return $Ig_Sc_Providers;
+}
+
+/**
+ * Remove directory
+ * @param type $dir
+ */
+function rrmdir( $dir ) {
+	if ( is_dir( $dir ) ) {
+		$objects = scandir( $dir );
+		foreach ( $objects as $object ) {
+			if ( $object != '.' && $object != '..' ) {
+				if ( filetype( $dir.'/'.$object ) == 'dir' )
+					rrmdir( $dir.'/'.$object );
+				else unlink( $dir.'/'.$object );
+			}
+		}
+		reset( $objects );
+		rmdir( $dir );
+	}
+}
 /*------------------------------------------------------
 	Deactivate
 ------------------------------------------------------*/

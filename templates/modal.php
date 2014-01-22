@@ -11,14 +11,10 @@
  *
  * Content of Modal popup
  */
-if ( ! isset( $_SESSION ) )
+if ( ! isset( $_POST ) )
 	die;
 
-extract( $_SESSION );
-if ( isset( $ig_pagebuilder_submodal ) )
-	extract( $ig_pagebuilder_submodal );
-else if ( isset( $ig_pagebuilder ) )
-	extract( $ig_pagebuilder );
+extract( $_POST );
 
 $submodal = ! empty( $submodal ) ? 'submodal_frame' : '';
 if ( ! isset( $params ) )

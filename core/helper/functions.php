@@ -50,11 +50,45 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 				'deactivatePb'     => __( 'After turning off, the content built with PageBuilder will be parsed to plain HTML code and inserted to default editor. Are you sure you want to turn PageBuilder off?', IGPBL ),
 				'no_title'		 => __( '(Untitled )', IGPBL ),
 				'inno_shortcode'   => __( 'Inno Shortcodes', IGPBL ),
-				'inno_icon'		=> IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/images/inno.png',
-				'asset_url'		=> IG_PB_URI . 'assets/innothemes/',
-				'prtbl_item_cell'		=> IG_Pb_Helper_Functions::get_element_item_html( 'li', 'data-modal-title="IG_OPTIONS_ATTRIBUTES"', 'data-el-type="element"', 'Item_pricingtable Item', 'ig_item_pricingtable', 'IG_SHORTCODE_CONTENT', 'jsn-item-content', 'IG_CONTENT', '<a href="javascript:void(0)" class="element-action-edit"><i class="icon-cog"></i></a>', 'true', '', '' ),
-				'prtbl_item_cell_label'  => IG_Pb_Helper_Functions::get_element_item_html( 'li', 'data-modal-title="IG_OPTIONS_ATTRIBUTES"', 'data-el-type="element"', 'Pricingtablelabel Item', 'ig_item_pricingtablelabel', 'IG_SHORTCODE_CONTENT', 'jsn-item-content', 'IG_CONTENT', '', '', 'exclude_gen_shortcode', '' ),
+				'inno_icon'		=> IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/images/inno.png',
+				'asset_url'		=> IG_PB_URI . 'assets/innogears/',
+				'prtbl_item_cell'		=> IG_Pb_Helper_Functions::get_element_item_html(
+					array(
+						'element_wrapper' => 'li',
+						'modal_title' => 'data-modal-title="IG_OPTIONS_ATTRIBUTES"',
+						'element_type' => 'data-el-type="element"',
+						'name' => 'Item_pricingtable Item',
+						'shortcode' => 'ig_item_pricingtable',
+						'shortcode_data' => 'IG_SHORTCODE_CONTENT',
+						'content_class' => 'jsn-item-content',
+						'content' => 'IG_CONTENT',
+						'action_btn' => 'edit',
+						'is_prtbl' => TRUE,
+					)
+				),
+				'prtbl_item_cell_label'  => IG_Pb_Helper_Functions::get_element_item_html(
+					array(
+						'element_wrapper' => 'li',
+						'modal_title' => 'data-modal-title="IG_OPTIONS_ATTRIBUTES"',
+						'element_type' => 'data-el-type="element"',
+						'name' => 'Pricingtablelabel Item',
+						'shortcode' => 'ig_item_pricingtablelabel',
+						'shortcode_data' => 'IG_SHORTCODE_CONTENT',
+						'content_class' => 'jsn-item-content',
+						'content' => 'IG_CONTENT',
+						'exclude_gen_shortcode' => 'exclude_gen_shortcode',
+						'has_preview' => FALSE,
+					)
+				),
 				'limit_title' => __( 'You used up to 50 characters', IGPBL ),
+				'select_layout' => __( 'Content of current post will be replaced by content of selected layout. Do you want to continue?', IGPBL ),
+				'disabled' => array(
+					'deactivate' => __( 'Deactivate element', IGPBL ),
+					'reactivate' => __( 'Reactivate element', IGPBL ),
+				),
+				'button' => array(
+					'select' => __( 'Select', IGPBL ),
+				)
 			);
 
 			return apply_filters( 'ig_pb_js_translation', $default );
@@ -148,13 +182,13 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 		}
 
 		/**
-         * Get assets in specific shortcode folder
-         *
-         * @param type $require_sc
-         * @param type $js_file
-         * @param type $sc_path
-         * @param type $sc_uri
-         */
+		 * Get assets in specific shortcode folder
+		 *
+		 * @param type $require_sc
+		 * @param type $js_file
+		 * @param type $sc_path
+		 * @param type $sc_uri
+		 */
 		static private function assets_specific_shortcode( $require_sc, $js_file, $sc_path, $sc_uri ) {
 			$require_sc = preg_replace( '/(ig_|item_)/', '', $require_sc );
 			$file_path  = $sc_path. "/$require_sc/assets/" . $js_file;
@@ -172,9 +206,9 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 		 */
 		static private function asset_enqueue_( $file_uri, $js_file ) {
 			if ( strpos( $file_uri, '.js' ) !== false )
-				wp_enqueue_script( preg_replace( '/[_.]/', '-', $js_file ), $file_uri, null, null, true );
+				wp_enqueue_script( preg_replace( '/[_.]/', '-', $js_file ), $file_uri );
 			else
-				wp_enqueue_style( preg_replace( '/[_.]/', '-', $js_file ), $file_uri, null, null );
+				wp_enqueue_style( preg_replace( '/[_.]/', '-', $js_file ), $file_uri );
 		}
 
 		/**
@@ -206,17 +240,25 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 		 * @param type $selector
 		 * @return type
 		 */
-		static function fancybox( $selector, $iframe = false ){
-			$iframe_setting = $iframe ? "'type'		: 'iframe'" : '';
+		static function fancybox( $selector, $options = array() ){
+			$default = array(
+				'type' => '',
+				'autoScale'	=> 'false',
+				'transitionIn'	=> 'elastic',
+				'transitionOut'	=> 'elastic',
+			);
+			$options = array_merge( $default, $options );
+			$data    = array();
+			foreach ( $options as $key => $value ) {
+				$value  = is_string( $value ) ? "'$value'" : $value;
+				$data[] = "'$key' : $value";
+			}
+			$data = implode( ',', $data );
+
 			$script  = "<script type='text/javascript'>";
 			$script .= "( function ($ ) {
 				$( document ).ready( function () {
-					$( '$selector' ).fancybox( {
-						'autoScale'	: false,
-						'transitionIn'	: 'elastic',
-						'transitionOut'	: 'elastic',
-						$iframe_setting
-					} );
+					$( '$selector' ).fancybox( { $data } );
 				});
 			})( jQuery )";
 			$script .= '</script>';
@@ -408,15 +450,15 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 		// register some custom assets
 		public static function register_assets( $assets ) {
 			$assets['ig-pb-modal-js'] = array(
-				'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/js/modal.js',
+				'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/modal.js',
 				'ver' => '1.0.0',
 			);
 			$assets['ig-pb-handleelement-js'] = array(
-				'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/js/handle_element.js',
+				'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/handle_element.js',
 				'ver' => '1.0.0',
 			);
 			$assets['ig-pb-admin-css'] = array(
-				'src' => IG_Pb_Helper_Functions::path( 'assets/innothemes' ) . '/css/page_builder.css',
+				'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/css/page_builder.css',
 				'ver' => '1.0.0',
 			);
 			return $assets;
@@ -428,7 +470,20 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 			wp_localize_script( 'ig-pb-handleelement-js', 'Ig_Js_Html', IG_Pb_Helper_Shortcode::$item_html_template );
 			wp_localize_script( 'ig-pb-handleelement-js', 'Ig_Ajax', IG_Pb_Helper_Functions::localize_js() );
 			wp_localize_script( 'ig-pb-layout-js', 'Ig_Translate', IG_Pb_Helper_Functions::js_translation() );
-			wp_localize_script( 'ig-pb-widget-js', 'Ig_Preview_Html', IG_Pb_Helper_Functions::get_element_item_html( 'div', '', 'data-el-type="element"', 'Widget Element Setting', 'IG_SHORTCODE_CONTENT', 'IG_SHORTCODE_DATA', 'ig-pb-element', 'Widget Element Setting', '' ) );
+			wp_localize_script(
+				'ig-pb-widget-js', 'Ig_Preview_Html', IG_Pb_Helper_Functions::get_element_item_html(
+					array(
+					'element_wrapper' => 'div',
+					'modal_title' => '',
+					'element_type' => 'data-el-type="element"',
+					'name' => 'Widget Element Setting',
+					'shortcode' => 'IG_SHORTCODE_CONTENT',
+					'shortcode_data' => 'IG_SHORTCODE_DATA',
+					'content_class' => 'ig-pb-element',
+					'content' => 'Widget Element Setting',
+					)
+				)
+			);
 		}
 
 		// get list of defined widgets
@@ -466,29 +521,27 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 		/**
 		 * Get html item
 		 *
-		 * @param string $element_wrapper
-		 * @param string $modal_title
-		 * @param string $element_type
-		 * @param string $name
-		 * @param string $shortcode
-		 * @param string $shortcode_data
-		 * @param string $content_class
-		 * @param string $content
-		 * @param string $action_btns
-		 * @param string $is_prtbl
-		 * @param string $exclude_gen_shortcode
-		 * @param string $has_preview
+		 * @param array $data
 		 * @return string
 		 */
-		static function get_element_item_html( $element_wrapper, $modal_title, $element_type, $name, $shortcode, $shortcode_data, $content_class, $content, $action_btns, $is_prtbl = '', $exclude_gen_shortcode = '', $has_preview = 'true' ) {
-			if ( ! $action_btns ) {
-				$buttons = array(
-						'edit'   => '<a href="#" onclick="return false;" title="' . __( 'Edit element', IGPBL ) . '" data-shortcode="' . $shortcode . '" class="element-edit"><i class="icon-pencil"></i></a>',
-						'clone'  => '<a href="#" onclick="return false;" title="' . __( 'Duplicate element', IGPBL ) . '" data-shortcode="' . $shortcode . '" class="element-clone"><i class="icon-copy"></i></a>',
-						'delete' => '<a href="#" onclick="return false;" title="' . __( 'Delete element', IGPBL ) . '" class="element-delete"><i class="icon-trash"></i></a>'
-				);
-				$action_btns = implode( '', $buttons );
-			}
+		static function get_element_item_html( $data ) {
+			$default = array(
+				'element_wrapper' => '',
+				'modal_title' => '',
+				'element_type' => '',
+				'name' => '',
+				'shortcode' => '',
+				'shortcode_data' => '',
+				'content_class' => '',
+				'content' => '',
+				'action_btn' => '',
+				'is_prtbl' => false,
+				'exclude_gen_shortcode' => '',
+				'has_preview' => true,
+				'this_' => '',
+			);
+			$data = array_merge( $default, $data );
+			extract( $data );
 
 			$input_html = '';
 			if ( $is_prtbl ) {
@@ -503,13 +556,172 @@ if ( ! class_exists( 'IG_Pb_Helper_Functions' ) ) {
 			}
 			$extra_class  = ig_pb_get_placeholder( 'extra_class' );
 			$custom_style = ig_pb_get_placeholder( 'custom_style' );
-			return "<$element_wrapper class='jsn-item jsn-element ui-state-default jsn-iconbar-trigger shortcode-container $extra_class' $modal_title $element_type data-name='$name' $custom_style>
+			$other_class  = '';
+
+			if ( ! empty( $this_ ) ) {
+				$match = preg_match( "/\[$shortcode" . '\s' . '([^\]])*' . 'disabled="yes"'. '([^\]])*' . '\]/', $shortcode_data );
+				if ( $match ) {
+						$other_class = 'disabled';
+				}
+			}
+			$buttons = array(
+				'edit'   => '<a href="#" onclick="return false;" title="' . __( 'Edit element', IGPBL ) . '" data-shortcode="' . $shortcode . '" class="element-edit"><i class="icon-pencil"></i></a>',
+				'clone'  => '<a href="#" onclick="return false;" title="' . __( 'Duplicate element', IGPBL ) . '" data-shortcode="' . $shortcode . '" class="element-clone"><i class="icon-copy"></i></a>',
+				'deactivate'  => '<a href="#" onclick="return false;" title="' . __( 'Deactivate element', IGPBL ) . '" data-shortcode="' . $shortcode . '" class="element-deactivate"><i class="icon-cancel"></i></a>',
+				'delete' => '<a href="#" onclick="return false;" title="' . __( 'Delete element', IGPBL ) . '" class="element-delete"><i class="icon-trash"></i></a>'
+			);
+			if ( ! empty ( $other_class ) ) {
+				$buttons = array_merge(
+					$buttons, array(
+					'deactivate'  => '<a href="#" onclick="return false;" title="' . __( 'Reactivate element', IGPBL ) . '" data-shortcode="' . $shortcode . '" class="element-deactivate"><i class="icon-checkmark"></i></a>',
+					)
+				);
+			}
+			$action_btns = ( empty( $action_btn) ) ? implode( '', $buttons ) : $buttons[$action_btn];
+
+			return "<$element_wrapper class='jsn-item jsn-element ui-state-default jsn-iconbar-trigger shortcode-container $extra_class $other_class' $modal_title $element_type data-name='$name' $custom_style>
 				<textarea class='hidden $exclude_gen_shortcode shortcode-content' shortcode-name='$shortcode' data-sc-info='shortcode_content' name='shortcode_content[]' >$shortcode_data</textarea>
 				<div class='$content_class'>$content</div>
 				$input_html
 				<div class='jsn-iconbar'>$action_btns</div>
 				$preview_html
 			</$element_wrapper>";
+		}
+
+		static function get_wp_upload_folder(){
+			$ig_pb_user_layout = '/ig-pb-user-layout';
+			$upload_dir = wp_upload_dir();
+			if ( is_array( $upload_dir ) && isset ( $upload_dir['basedir'] ) ) {
+				$upload_dir = $upload_dir['basedir'];
+			} else {
+				$upload_dir = WP_CONTENT_DIR . '/uploads';
+				if ( ! is_dir( $upload_dir ) ) {
+					mkdir( $upload_dir );
+				}
+			}
+			if ( ! is_dir( $upload_dir . $ig_pb_user_layout ) ) {
+				mkdir( $upload_dir . $ig_pb_user_layout );
+			}
+			return $upload_dir . $ig_pb_user_layout;
+		}
+
+		/**
+		 * save premade layouts file
+		 * @param type $layout_name
+		 * @param type $layout_content
+		 */
+		static function save_premade_layouts( $layout_name, $layout_content ) {
+			$upload_dir = self::get_wp_upload_folder();
+
+			$layout_name = preg_replace( '/([\[\]])*/', '',  $layout_name );
+			$file = $upload_dir . '/layout-' . time() . '.tpl';
+			$fp = fopen( $file, 'w+' );
+			fwrite( $fp, "[ig_layout_tile $layout_name]" );
+			fwrite( $fp, $layout_content );
+			fclose( $fp );
+		}
+
+		/**
+		 * get name of premade layouts file
+		 */
+		static function get_premade_layouts() {
+			$upload_dir = self::get_wp_upload_folder();
+			$files = array();
+			$dirs = array( $upload_dir, IG_PB_PREMADE_LAYOUT );
+			foreach ( $dirs as $dir ) {
+				foreach ( glob( $dir . '/*.tpl' ) as $filename ) {
+					$prefix = ( ( $dir == IG_PB_PREMADE_LAYOUT ) ? 'ig_pb' : 'user' ) . '_layout';
+					if ( ! isset ( $files[$prefix] ) ) {
+						$files[$prefix] = array();
+					}
+					$files[$prefix][basename( $filename )] = $filename;
+				}
+			}
+			return $files;
+		}
+
+		/**
+		 * get name of premade layouts file
+		 */
+		static function show_premade_layouts() {
+			$files = self::get_premade_layouts();
+			ob_start();
+			?>
+			<?php
+			foreach ( $files as $provider  => $layouts ) {
+				foreach ( $layouts as $name => $path ) {
+					$layout_name = self::extract_layout_data( $path, 'name' );
+					if ( empty ( $layout_name ) ) {
+						continue;
+					}
+					$content = "<textarea class='hidden'>" . self::extract_layout_data( $path, 'content' ) . '</textarea>';
+					if ( $provider == 'ig_pb_layout' ) {
+						$thumbnail = 'default.png';
+						$strip_ext = str_replace( '.tpl', '', $name );
+						if ( file_exists( IG_PB_PREMADE_LAYOUT . "/$strip_ext.png" ) ) {
+							$thumbnail = $strip_ext . '.png';
+						}
+						$layout_thumb = IG_PB_PREMADE_LAYOUT_URI . "/$thumbnail";
+						echo balanceTags(
+							"<li class='jsn-item $provider' data-type='$provider' >
+						        <a class='template-item-thumb premade-layout-item' data-id='$name' href='javascript:;'>
+						            <span class='thumbnail'>
+										<img src='$layout_thumb' alt='$layout_name' align='center'>
+						            </span>
+						            <span>$layout_name</span>
+						            $content
+						        </a>
+						    </li>"
+						);
+					} else {
+						$class = 'hidden';
+						echo balanceTags(
+							"<li class='jsn-item $provider $class' data-type='$provider' >
+						        <button data-id='$name' class='premade-layout-item btn'>$layout_name $content</button>
+
+						    </li>"
+						);
+					}
+				}
+			}
+			?>
+			<?php
+			$content = ob_get_clean();
+			echo balanceTags( $content );
+		}
+
+		/**
+		 * get content of premade layouts file, prinrt as template
+		 */
+		static function print_premade_layouts() {
+			$files = self::get_premade_layouts();
+			foreach ( $files as $provider  => $layouts ) {
+				foreach ( $layouts as $name => $path ) {
+					$content = self::extract_layout_data( $path, 'content' );
+					echo balanceTags( "<script type='text/html' id='tmpl-layout-$name'>\n$content\n</script>\n" );
+				}
+			}
+		}
+
+		/**
+		 * Read file line by line
+		 *
+		 * @param type $path
+		 * @return type
+		 */
+		static function extract_layout_data( $path, $data ){
+			$handle = @fopen( $path, 'r' );
+			if ( $handle ) {
+				$contents = fread( $handle, filesize( $path ) );
+				$pattern  = '/\[ig_layout_tile\s([^\]]+)\]/';
+
+				if ( $data == 'name' ) {
+					preg_match( $pattern, $contents, $matches );
+					return $matches[1];
+				} else if ( $data == 'content' ) {
+					return preg_replace( $pattern, '', $contents );
+				}
+			}
 		}
 	}
 

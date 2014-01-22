@@ -22,7 +22,7 @@ class IG_Pb_Parent extends IG_Pb_Element {
 	 */
 	public function shortcode_data() {
 		$params = IG_Pb_Helper_Shortcode::generate_shortcode_params( $this->items );
-		$this->config['params'] = array_merge( array( 'div_margin_top' => '', 'div_margin_bottom' => '' ), $params );
+		$this->config['params'] = array_merge( array( 'div_margin_top' => '', 'div_margin_bottom' => '', 'disabled' => 'no' ), $params );
 
 		// get content of sub-shortcode
 		$sub_sc_content = array();

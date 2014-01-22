@@ -27,8 +27,8 @@ class IG_Pb_Helper_Html_Radio_Button_Group extends IG_Pb_Helper_Html {
 		$output .= '</div>';
 		$output .= "<div class='radio-group ig-btn-radio hidden'>";
 		foreach ( $element['options'] as $key => $text ) {
-			$active  = ( $key == $element['std'] ) ? 'active' : '';
-			$output .= "<input type='radio' name='{$element['id']}' id='{$element['id']}' value='$key'/>";
+			$checked  = ( $key == $element['std'] ) ? 'checked' : '';
+			$output .= "<input type='radio' name='{$element['id']}' $checked id='{$element['id']}' value='$key'/>";
 		}
 		$output .= '</div>';
 

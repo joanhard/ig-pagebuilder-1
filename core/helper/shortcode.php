@@ -31,7 +31,7 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 					'ig_pb_provider',
 					self::this_provider()
 			);
-            set_transient( '_ig_pb_providers', serialize( $Ig_Sc_Providers ) );
+			set_transient( '_ig_pb_providers', serialize( $Ig_Sc_Providers ) );
 
 			$sc_path = self::shortcode_dirs();
 
@@ -67,8 +67,8 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 								'name' => 'InnoGears',
 								'shortcode_dir' => array( IG_PB_LAYOUT_PATH ), //array( IG_PB_LAYOUT_PATH, IG_PB_ELEMENT_PATH ),
 								'js_shortcode_dir' => array(
-										'path' => IG_PB_PATH . 'assets/innothemes/js/shortcodes',
-										'uri' => IG_PB_URI . 'assets/innothemes/js/shortcodes',
+										'path' => IG_PB_PATH . 'assets/innogears/js/shortcodes',
+										'uri' => IG_PB_URI . 'assets/innogears/js/shortcodes',
 									),
 							)
 						);
@@ -198,7 +198,9 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 				$output = array();
 				preg_match_all( '/([A-Za-z0-9_-]+)=\"([^"\']*)\"/u', $param_value, $output, PREG_SET_ORDER );
 				foreach ( $output as $item ) {
-					$params[$item[1]] = urldecode( $item[2] );
+					if ( ! in_array( $item[1], array( 'disabled' ) ) || ! isset ( $params[$item[1]] ) ) {
+						$params[$item[1]] = urldecode( $item[2] );
+					}
 				}
 			}
 			$pattern = get_shortcode_regex();
@@ -508,6 +510,11 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 		public static function do_shortcode_admin( $content = '', $column = false, $refine = false ) {
 			if ( empty( $content ) )
 				return '';
+			// check if Free Shortcode Plugin is not installed
+			global $shortcode_tags;
+			if ( ! array_key_exists( 'ig_text', $shortcode_tags ) ) {
+				return __( 'You have not activated <b>"IG Free Shortcodes"</b> plugin. Please activate it before using PageBuilder.', IGPBL );
+			}
 
 			$content = trim( $content );
 

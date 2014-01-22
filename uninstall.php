@@ -11,14 +11,14 @@
 // delete all other providers
 $providers = get_transient( '_ig_pb_providers' );
 if ( $providers ) {
-    $providers = unserialize( $providers );
-    $list_plugins = array();
-    foreach ( $providers as $provider ) {
-        if ( isset ( $provider['main_file'] ) ) {
-            $list_plugins[] = $provider['main_file'];
-        }
-    }
-    delete_plugins( $list_plugins );
+	$providers    = unserialize( $providers );
+	$list_plugins = array();
+	foreach ( $providers as $provider ) {
+		if ( isset ( $provider['file'] ) ) {
+			$list_plugins[] = $provider['file'];
+		}
+	}
+	delete_plugins( $list_plugins );
 }
 
 //if uninstall not called from WordPress exit

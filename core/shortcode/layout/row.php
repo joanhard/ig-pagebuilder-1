@@ -46,7 +46,7 @@ if ( ! class_exists( 'IG_Row' ) ) {
 						'id'         => 'background',
 						'type'       => 'select',
 						'std'        => 'none',
-						'options'    => array( 
+						'options'    => array(
 							'none'     => __( 'None', IGPBL ),
 							'solid'    => __( 'Solid Color', IGPBL ),
 							'gradient' => __( 'Gradient Color', IGPBL ),
@@ -117,7 +117,7 @@ if ( ! class_exists( 'IG_Row' ) ) {
 							'horizontal' => __( 'Horizontal', IGPBL ),
 						),
 						'dependency' => array( 'background', '=', 'pattern' ),
-					), 
+					),
 					array(
 						'name'       => __( 'Image', IGPBL ),
 						'id'         => 'image',
@@ -137,7 +137,7 @@ if ( ! class_exists( 'IG_Row' ) ) {
 							'cover'   => __( 'Cover', IGPBL ),
 							'contain' => __( 'Contain', IGPBL ),
 						),
-						'dependency' => array( 'background', '=', 'image' ),
+						'dependency' => array( 'background', '=', 'pattern' ),
 					),
 					array(
 						'name'       => __( 'Position', IGPBL ),
@@ -243,7 +243,7 @@ if ( ! class_exists( 'IG_Row' ) ) {
 							</div>
 							<div class="jsn-iconbar jsn-vertical">
 								<a href="javascript:void(0);" class="add-container" title="' . __( 'Add column', IGPBL ) . '"><i class="icon-plus"></i></a>
-								<a href="javascript:void(0);" title="Edit element" data-shortcode="' . $this->config['shortcode'] . '" class="element-edit row"><i class="icon-pencil"></i></a>
+								<a href="javascript:void(0);" title="Edit row" data-shortcode="' . $this->config['shortcode'] . '" class="element-edit row"><i class="icon-pencil"></i></a>
 								<a href="javascript:void(0);" class="item-delete row" title="' . __( 'Delete row', IGPBL ) . '"><i class="icon-trash"></i></a>
 							</div>
 							<textarea class="hidden" name="shortcode_content[]" >[/' . $this->config['shortcode'] . ']</textarea>
@@ -300,8 +300,7 @@ if ( ! class_exists( 'IG_Row' ) ) {
 						$pattern_img     = $atts['pattern'];
 						$pattern_repeat  = $atts['repeat'];
 						$pattern_stretch = $atts['stretch'];
-
-						$background = "background-image:url('$pattern_img');";
+						$background = "background-image:url(\"$pattern_img\");";
 						switch ( $pattern_repeat ) {
 							case 'full':
 								$background_repeat = 'repeat';
@@ -329,7 +328,7 @@ if ( ! class_exists( 'IG_Row' ) ) {
 								$background_size = 'contain';
 								break;
 						}
-						$background .= ! empty( $background_size ) ? 'background-size:$background_size;' : '';
+						$background .= ! empty( $background_size ) ? "background-size:$background_size;" : '';
 
 						break;
 					case 'image':

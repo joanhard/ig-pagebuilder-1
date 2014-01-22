@@ -50,17 +50,18 @@ if ( ! empty( $pagebuilder_content ) ) {
 
 <div id="branding">
 	<div class="pull-left">
-		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-on-wporg.html"><?php _e( 'PageBuilder', IGPBL ); ?></a> <?php _e( 'by', IGPBL )?> <a href="http://www.innogears.com" target="_blank">InnoGears.com</a>	
+		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-on-wporg.html"><?php _e( 'PageBuilder', IGPBL ); ?></a> <?php _e( 'by', IGPBL )?> <a href="http://www.innogears.com" target="_blank">InnoGears.com</a>
 	</div>
 	<div class="pull-right">
-		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-docs.zip"><?php _e( 'Documentation' ); ?></a> |
-		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-support.html" target="_blank"><?php _e( 'Support' ); ?></a> | 
-		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-review.html" target="_blank"><?php _e( 'Review' ); ?></a>
+		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-docs.zip"><?php _e( 'Documentation', IGPBL ); ?></a> |
+		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-support.html" target="_blank"><?php _e( 'Support', IGPBL ); ?></a> |
+		<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-review.html" target="_blank"><?php _e( 'Review', IGPBL ); ?></a>
 	</div>
 	<div class="clearbreak"></div>
 </div>
 <?php
 include 'select-elements.php';
+include 'layout-template.php';
 ?>
 <!--[if IE]>
 <style>
