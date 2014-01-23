@@ -46,6 +46,9 @@ The plugin is similar to an advanced editor and works on both posts and pages of
 3. Widget Window
 
 == Changelog ==
+= 1.0.5 ==
+* Re-fixed File upload problem
+
 = 1.0.4 ==
 * Added ability to disable an element on frontend
 * Improved Editor switching feature
