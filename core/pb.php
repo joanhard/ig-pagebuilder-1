@@ -607,7 +607,11 @@ JS;
 
 	// get media file name
 	function media_file_name( $file ) {
-		$file['name'] = iconv( 'utf-8', 'ascii//TRANSLIG//IGNORE', $file['name'] );
+		$file_name    = $file['name'];
+		$file['name'] = iconv( 'utf-8', 'ascii//TRANSLIG//IGNORE', $file_name );
+		if ( ! $file['name'] ) {
+			$file['name'] = $file_name;
+		}
 
 		return $file;
 	}
