@@ -46,6 +46,12 @@ The plugin is similar to an advanced editor and works on both posts and pages of
 3. Widget Window
 
 == Changelog ==
+= 1.0.6 ==
+* Added Option that allows user to not transform pagebuilder data to HTML after deactivate plugin
+* Fixed redirect after activate free shortcodes on some server configurations
+* Improved Only load IG PageBuilder in page/post editing but all screen
+* Improved Assets loading on frontend
+
 = 1.0.5 ==
 * Re-fixed File upload problem
 

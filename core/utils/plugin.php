@@ -9,11 +9,33 @@
  * @version		$Id$
  */
 
-/*------------------------------------------------------
-	Activate
-------------------------------------------------------*/
-register_activation_hook( IG_PB_FILE, 'ig_pb_activate' );
-function ig_pb_activate() {
+add_action( 'admin_init', 'ig_pb_activate_plugin' );
+// active extracted plugin
+function ig_pb_activate_plugin() {
+	global $pagenow;
+	$providers = ig_default_providers();
+
+	if ( is_plugin_active( 'ig-pagebuilder/ig-pagebuilder.php' ) ) {
+		ig_pb_extract_plugins();
+
+		// activate dependency plugins
+		foreach ( $providers as $provider ) {
+			if ( isset ( $provider['folder'] ) ) {
+				$folder = $provider['folder'];
+				if ( ! is_plugin_active( $folder . '/main.php' ) ) {
+					activate_plugin( $folder . '/main.php' );
+					// remove action
+					remove_action( 'admin_init', __FUNCTION__ );
+				}
+			}
+		}
+	}
+}
+
+/**
+ * Extract packages of third-party plugins
+ */
+function ig_pb_extract_plugins() {
 	$providers = ig_default_providers();
 	$zip = new ZipArchive;
 	// extract dependency plugins
@@ -43,29 +65,6 @@ function ig_pb_activate() {
 				$error = 0;
 			} else {
 				$error = -1;
-			}
-		}
-	}
-}
-
-add_action( 'admin_init', 'ig_pb_activate_plugin' );
-// active extracted plugin
-function ig_pb_activate_plugin() {
-	global $pagenow;
-	$providers = ig_default_providers();
-
-	if ( is_plugin_active( 'ig-pagebuilder/ig-pagebuilder.php' ) ) {
-		ig_pb_activate();
-
-		// activate dependency plugins
-		foreach ( $providers as $provider ) {
-			if ( isset ( $provider['folder'] ) ) {
-				$folder = $provider['folder'];
-				if ( ! is_plugin_active( $folder . '/main.php' ) ) {
-					activate_plugin( $folder . '/main.php' );
-					// remove action
-					remove_action( 'admin_init', __FUNCTION__ );
-				}
 			}
 		}
 	}
@@ -137,10 +136,12 @@ function ig_pb_deactivate() {
 				// create ig_nonce
 				$ig_nonce = wp_create_nonce( $ig_action );
 				$method   = $deactivate_one ? 'GET' : 'POST';
+
+                $back_text = __( 'No, take me back', IGPBL );
 				if ( $deactivate_one )
-					$back_btn = "<a href='$plugin_url' class='button button-large'>" . __( 'No, take me back', IGPBL ) . '</a>';
+					$back_btn = "<a href='$plugin_url' class='button button-large'>" . $back_text . '</a>';
 				else {
-					$back_btn = "<input type='submit' name='ig_back' class='button button-large' value='" . __( 'No, take me back', IGPBL ) . "'>";
+					$back_btn = "<input type='submit' name='ig_back' class='button button-large' value='" . $back_text . "'>";
 				}
 				$form   = " action='{$plugin_url}' method='$method' ";
 				$fields = '';
@@ -164,8 +165,17 @@ function ig_pb_deactivate() {
 				<center>
 					<form <?php echo balanceTags( $form ); ?>>
 						<?php echo balanceTags( $fields ); ?>
-						<input type="submit" name="ig_deactivate" class="button button-large" value="<?php _e( 'Yes, deactivate plugin', IGPBL ); ?>">
+						<input type="submit" name="ig_deactivate" class="button button-large" value="<?php _e( 'Yes, deactivate plugin', IGPBL ); ?>" style="background: #d9534f;color: #fff;text-shadow:none;border:none;">
 						<?php echo balanceTags( $back_btn ); ?>
+					</form>
+				</center>
+                <p style="font-style: italic; font-size: 12px;margin-top: 20px;">
+                        <?php _e( "Or if you want to deactivate without parsing 'content built with PageBuilder' to HTML code, click on the button below", IGPBL ); ?>
+				</p>
+                <center>
+					<form <?php echo balanceTags( $form ); ?>>
+						<?php echo balanceTags( $fields ); ?>
+						<input type="submit" name="ig_deactivate_light" class="button button-large" value="<?php _e( 'Deactivate without parsing data', IGPBL ); ?>" style="background: #f0ad4e;color: #fff;text-shadow:none;border:none;">
 					</form>
 				</center>
 				<?php
@@ -192,8 +202,8 @@ function ig_pb_deactivate() {
 					// Overwrite list of checked plugins to deactivating
 					$_POST['checked'] = $_REQUEST['checked'];
 				}
-				// deactivate Ig Pagebuilder
-				else {
+				// deactivate Ig Pagebuilder & parsing content
+				else if ( isset($_REQUEST['ig_deactivate']) ) {
 					global $wpdb;
 					// update post content = value of '_ig_html_content', deactivate pagebuilder
 					$meta_key1 = 1;

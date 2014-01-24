@@ -607,12 +607,10 @@ JS;
 
 	// get media file name
 	function media_file_name( $file ) {
-		$file_name    = $file['name'];
-		$file['name'] = iconv( 'utf-8', 'ascii//TRANSLIG//IGNORE', $file_name );
-		if ( ! $file['name'] ) {
+		$file_name = iconv( 'utf-8', 'ascii//TRANSLIG//IGNORE', $file['name'] );
+		if ( $file_name ) {
 			$file['name'] = $file_name;
 		}
-
 		return $file;
 	}
 
@@ -667,8 +665,8 @@ JS;
 	}
 
 	/**
-     * Unload Wp admin css in modal iframe
-     */
+	 * Unload Wp admin css in modal iframe
+	 */
 	function remove_admin_assets() {
 		if ( IG_Pb_Helper_Functions::is_modal() ) {
 			wp_deregister_style( 'wp-admin' );
@@ -677,68 +675,68 @@ JS;
 			wp_deregister_script( 'ie' );
 			wp_dequeue_script( 'utils' );
 
-            global $wp_scripts;
-            unset ( $wp_scripts );
+			global $wp_scripts;
+			unset ( $wp_scripts );
 
-            remove_all_actions( 'admin_print_styles' );
-//            remove_all_actions( 'admin_print_scripts' );
+			remove_all_actions( 'admin_print_styles' );
+			//			remove_all_actions( 'admin_print_scripts' );
 
-            if ( is_network_admin() ) {
-                /**
-                 * Print network admin screen notices.
-                 *
-                 * @since 3.1.0
-                 */
-                remove_all_actions( 'network_admin_notices' );
-            } elseif ( is_user_admin() ) {
-                /**
-                 * Print user admin screen notices.
-                 *
-                 * @since 3.1.0
-                 */
-                remove_all_actions( 'user_admin_notices' );
-            } else {
-                /**
-                 * Print admin screen notices.
-                 *
-                 * @since 3.1.0
-                 */
-                remove_all_actions( 'admin_notices' );
-            }
+			if ( is_network_admin() ) {
+				/**
+				 * Print network admin screen notices.
+				 *
+				 * @since 3.1.0
+				 */
+				remove_all_actions( 'network_admin_notices' );
+			} elseif ( is_user_admin() ) {
+				/**
+				 * Print user admin screen notices.
+				 *
+				 * @since 3.1.0
+				 */
+				remove_all_actions( 'user_admin_notices' );
+			} else {
+				/**
+				 * Print admin screen notices.
+				 *
+				 * @since 3.1.0
+				 */
+				remove_all_actions( 'admin_notices' );
+			}
 			remove_all_actions( 'all_admin_notices' );
 		}
 	}
 
-    /**
-     * Remove assets of any third parties at admin footer
-     */
-    function remove_admin_assets_footer() {
-        if ( IG_Pb_Helper_Functions::is_modal() ) {
-            global $ig_handle_assets;
-            $ig_handle_assets[] = "common";
-//            $ig_handle_assets[] = "admin-bar";
-            $ig_handle_assets[] = "media-editor";
-//            $ig_handle_assets[] = "utils";
-            $ig_handle_assets[] = "wp-auth-check";
-            $ig_handle_assets[] = "jquery";
-            $ig_handle_assets[] = "jquery-ui-core";
-            $ig_handle_assets[] = "jquery-ui-tabs";
-            $ig_handle_assets[] = "jquery-ui-widget";
-            $ig_handle_assets[] = "jquery-ui-resizable";
-            $ig_handle_assets[] = "jquery-ui-sortable";
-            $ig_handle_assets[] = "jquery-ui-dialog";
-            $ig_handle_assets[] = "jquery-ui-button";
-            $ig_handle_assets[] = "jquery-ui-slider";
+	/**
+	 * Remove assets of any third parties at admin footer
+	 */
+	function remove_admin_assets_footer() {
+		if ( IG_Pb_Helper_Functions::is_modal() ) {
+			global $ig_handle_assets;
+			$ig_handle_assets[] = 'common';
+			//			$ig_handle_assets[] = 'admin-bar';
+			$ig_handle_assets[] = 'media-editor';
+			//			$ig_handle_assets[] = 'utils';
+			$ig_handle_assets[] = 'wp-auth-check';
+			$ig_handle_assets[] = 'jquery';
+			$ig_handle_assets[] = 'jquery-ui-core';
+			$ig_handle_assets[] = 'jquery-ui-tabs';
+			$ig_handle_assets[] = 'jquery-ui-widget';
+			$ig_handle_assets[] = 'jquery-ui-resizable';
+			$ig_handle_assets[] = 'jquery-ui-sortable';
+			$ig_handle_assets[] = 'jquery-ui-dialog';
+			$ig_handle_assets[] = 'jquery-ui-button';
+			$ig_handle_assets[] = 'jquery-ui-slider';
 
-            global $wp_scripts;
-            foreach ($wp_scripts->queue as $script) {
-                if ( ! in_array( $script, $ig_handle_assets ) ) {
-                    wp_dequeue_script( $script );
-                    wp_dequeue_style( $script );
-                }
-            }
-        }
-    }
+			global $wp_scripts;
+			foreach ( $wp_scripts->queue as $script ) {
+				if ( ! in_array( $script, $ig_handle_assets ) ) {
+					wp_dequeue_script( $script );
+					wp_dequeue_style( $script );
+				}
+			}
+		}
+	}
 
 	/**
 	 * Add Inno Button

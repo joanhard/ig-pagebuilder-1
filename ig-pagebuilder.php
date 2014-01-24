@@ -3,7 +3,7 @@
  * Plugin Name: IG Pagebuilder
  * Plugin URI:  http://www.innogears.com
  * Description: Awesome content builder for Wordpress websites
- * Version:     1.0.5
+ * Version:     1.0.6
  * Author:      InnoGears Team <support@www.innogears.com>
  * Author URI:  http://www.innogears.com
  * License:     GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
@@ -20,10 +20,14 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 			$this->includes();
 			$this->autoload();
 
-			// Init the plugin
-			IG_Pb_Plugin::init();
-			// Assets load management
-			IG_Pb_Assets::hook();
+            global $pagenow;
+            $pages = array( 'post.php', 'post-new.php', 'widgets.php', 'admin-ajax.php' );
+            if ( in_array( $pagenow, $pages )  || IG_Pb_Helper_Functions::is_modal() || ! is_admin() ) {
+                // Init the plugin
+                IG_Pb_Plugin::init();
+                // Assets load management
+                IG_Pb_Assets::hook();
+            }
 
 			add_action( 'widgets_init', array( &$this, 'init' ), 100 );
 		}

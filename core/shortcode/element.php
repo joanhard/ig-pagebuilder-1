@@ -35,8 +35,6 @@ class IG_Pb_Element extends IG_Pb_Common {
 		if ( IG_Pb_Helper_Functions::is_preview() ) {
 			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ), 1000000 );
 		}
-		// enqueue script for current element in frontend
-		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ), 100 );
 
 		do_action( 'ig_pb_element_init' );
 	}
@@ -178,6 +176,7 @@ class IG_Pb_Element extends IG_Pb_Common {
 			'content_class' => $content_class,
 			'content' => $content,
 			'action_btn' => empty( $exception['action_btn'] ) ? '' : $exception['action_btn'],
+			'this_' => 'el_obj',
 		);
 		$extra = array();
 		if ( isset( $this->config['exception']['disable_preview_container'] ) ) {
@@ -212,10 +211,14 @@ class IG_Pb_Element extends IG_Pb_Common {
 		$arr_params = ( shortcode_atts( $this->config['params'], $atts ) );
 		if ( $arr_params['disabled'] == 'yes' ) {
 			if ( IG_Pb_Helper_Functions::is_preview() ) {
-				return ''; //'This element is deactivated. It will be hidden at frontend';
+				return ''; //_e( 'This element is deactivated. It will be hidden at frontend', IGPBL );
 			}
 			return '';
 		}
+
+        // enqueue script for current element in frontend
+		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ), 100 );
+        // get full shortcode content
 		return $this->element_shortcode_full( $atts, $content );
 	}
 
