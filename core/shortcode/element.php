@@ -178,7 +178,6 @@ class IG_Pb_Element extends IG_Pb_Common {
 			'content_class' => $content_class,
 			'content' => $content,
 			'action_btn' => empty( $exception['action_btn'] ) ? '' : $exception['action_btn'],
-			'this_' => $this,
 		);
 		$extra = array();
 		if ( isset( $this->config['exception']['disable_preview_container'] ) ) {
