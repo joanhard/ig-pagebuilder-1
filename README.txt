@@ -13,6 +13,8 @@ A convenient way to create a complete Wordpress website in a few minutes
 
 IG PageBuilder is a powerful plugin that helps you build a complete Wordpress website in a few minutes. 
 
+<iframe width="560" height="315" src="//www.youtube.com/embed/OwY40f43deI" frameborder="0" allowfullscreen></iframe>
+
 This page builder is so clear, simple and extremely easy to use. Designed with an intuitive interface, it gives a new experience for creating an entire online shop using visual drag-and-drop functionality.
 
 The plugin is similar to an advanced editor and works on both posts and pages of any theme. It includes full page elements, widget support, built-in shortcodes and many more options that provide an unlimited number of style variations, so there is no need to touch any code. In particular, the page builder has a live preview mode allowing users to view their page as it would appear in the front-end.
@@ -46,6 +48,12 @@ The plugin is similar to an advanced editor and works on both posts and pages of
 3. Widget Window
 
 == Changelog ==
+
+= 1.0.7 =
+* Fixed Tab position not working
+* Fixed Css override issue
+* Improved Refine TinyMCE code
+
 = 1.0.6 =
 * Added Option that allows user to not transform pagebuilder data to HTML after deactivate plugin
 * Fixed redirect after activate free shortcodes on some server configurations
