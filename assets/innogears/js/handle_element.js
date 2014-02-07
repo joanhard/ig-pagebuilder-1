@@ -308,7 +308,7 @@
                 new_el.removeClass('padTB0');
                 new_el.css('height', 'auto');
                 $('body').trigger('on_update_attr_label_common');
-
+                $('#form-container').trigger('ig-pagebuilder-layout-changed');
                 if(finished)finished();
             });
         });
@@ -336,6 +336,7 @@
                 if ($("#modalOptions").find('.has_submodal').length > 0){
                     $.HandleElement.rescanShortcode();
                 }
+                $('#form-container').trigger('ig-pagebuilder-layout-changed');
             });
         });
     },
@@ -538,6 +539,7 @@
             parent_item.toggleClass('disabled');
             // replace shortcode content
             textarea.text(textarea_text);
+            $('#form-container').trigger('ig-pagebuilder-layout-changed');
         });
     },
 
@@ -872,7 +874,7 @@
             // update to textarea of Classdic Editor
 
             // inserts the shortcode into the active editor
-            tinyMCE.activeEditor.execCommand('mceInsertContent', 0, shortcode_content);
+            tinymce.activeEditor.execCommand('mceInsertContent', 0, shortcode_content);
             // closes Thickbox
             tb_remove();
         }
@@ -988,6 +990,8 @@
         // remove overlay & loading
         $.HandleElement.hideLoading();
         $.HandleElement.removeModal();
+
+        $('#form-container').trigger('ig-pagebuilder-layout-changed');
     }
 
 
@@ -1320,24 +1324,14 @@
      * Update Content of Classic Editor
      */
     $.HandleElement.updateClassicEditor	= function (tab_content, html_active, callback){
-        // active tinyMCE
-        switchEditors.switchto(document.getElementById('content-tmce'));
-        var timer = setInterval(function() {
-            // set content for tinyMCE
-            window.tinyMCE.get('content').setContent(tab_content);
-            // set content for html content box
-            $("#ig_editor_tab1 #content").val(tab_content);
-            // if html content tab is visible before, reactive "Text" tab
-            if(html_active){
-                switchEditors.switchto(document.getElementById('content-html'));
-            }
-            if(callback != null)
+        if(tinymce.get('content'))
+            tinymce.get('content').setContent(tab_content);
+        $("#ig_editor_tab1 #content").val(tab_content);
+
+        if(callback != null)
                 callback();
-
-            clearInterval(timer);
-            // active WP Update button
-            $('#publishing-action #publish').removeAttr('disabled');
-        }, 100);
+        // active WP Update button
+        $('#publishing-action #publish').removeAttr('disabled');
     }
 
     // Disable click on a tag inside preview iframe
@@ -1373,6 +1367,23 @@
         $('#shortcode_inner_wrapper form').submit(function(e){
             e.preventDefault();
             return false;
+        });
+    }
+
+    $.HandleElement.deactivateShow = function() {
+        // Disable element
+        $('.shortcode-content').each(function(){
+            var content = $(this).val();
+            var shortcode = $(this).attr('shortcode-name');
+            var regex = new RegExp("\\[" + shortcode + '\\s' + '([^\\]])*' + 'disabled="yes"' + '([^\\]])*' + '\\]', "g");
+            var val = regex.test(content);
+            if (val) {
+                $(this).parent().addClass('disabled');
+                var deactivate_btn = $(this).parent().find('.element-deactivate');
+                deactivate_btn.attr('title', Ig_Translate.reactivate_el);
+                deactivate_btn.find('i').attr('class', 'icon-checkmark');
+            }
+
         });
     }
 
@@ -1383,6 +1394,7 @@
         $.HandleElement.editElement();
         $.HandleElement.cloneElement();
         $.HandleElement.deactivateElement();
+        $.HandleElement.deactivateShow();
         $.HandleElement.addLayout();
         $.HandleElement.saveLayout();
         $.HandleElement.checkSelectMedia();

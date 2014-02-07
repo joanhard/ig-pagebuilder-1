@@ -510,16 +510,16 @@
 
 
                 // for shortcode which contain TinyMCE param
-                var tinymce_content = '';
-                if(window.tinyMCE != null && window.tinyMCE.activeEditor != null && $('#modalOptions .wp-editor-wrap').hasClass('tmce-active')){
-                    tinymce_content = window.tinyMCE.activeEditor.getContent();
-                }else{
-                    tinymce_content = $.HandleSetting.selector(curr_iframe, '#ig_tiny_mce' ).serialize().replace(/rich_content_param-[a-z_]+=/,'');
-                }
-                tinymce_content = decodeURIComponent(tinymce_content.replace(/\+/g, ' '));
-                sc_content += tinymce_content;
+//                var tinymce_content = '';
+//                if(tinymce && tinymce.activeEditor != null && $('#modalOptions .wp-editor-wrap').hasClass('tmce-active')){
+//                    tinymce_content = tinymce.activeEditor.getContent();
+//                }else{
+//                    tinymce_content = $.HandleSetting.selector(curr_iframe, '#ig_tiny_mce' ).serialize().replace(/rich_content_param-[a-z_]+=/,'');
+//                }
+//                tinymce_content = decodeURIComponent(tinymce_content.replace(/\+/g, ' '));
+//                sc_content += tinymce_content;
 
-                // update tinyMCE content to #ig_share_data
+                // update tinymce content to #ig_share_data
                 window.parent.jQuery.noConflict()( '#jsn_view_modal').contents().find('#ig_share_data').text(sc_content);
 
                 // for shortcode which has sub-shortcode

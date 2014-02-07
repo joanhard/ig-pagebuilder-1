@@ -584,7 +584,7 @@ JS;
 			}
 		}
 
-		return "<div class='jsn-bootstrap'>" . $content . '</div>';
+		return $content;
 	}
 
 	/**

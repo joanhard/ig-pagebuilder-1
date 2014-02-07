@@ -781,7 +781,7 @@
                     if(old_ig_pg_html != $('#form-container textarea').serialize()){
                         ig_pg_change = 1;
                     }
-                    
+
                     if(ig_pg_change){
                         $("#form-container textarea[name^='shortcode_content']").each(function(){
                             tab_content += $(this).val();
@@ -811,7 +811,10 @@
                 case '#ig_editor_tab2':
                     // if content is empty, try to get again
                     if ( text_content == '' ) {
-                        text_content = $('#ig_editor_tab1 #content').val();
+                        if(tinymce.get('content'))
+                            text_content = tinymce.get('content').setContent(tab_content);
+                        else
+                            text_content = $('#ig_editor_tab1 #content').val();
                     }
 
                     // get content of Classic Editor

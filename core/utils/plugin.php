@@ -37,7 +37,7 @@ function ig_pb_activate_plugin() {
  */
 function ig_pb_extract_plugins() {
 	$providers = ig_default_providers();
-	$zip = new ZipArchive;
+	WP_Filesystem();
 	// extract dependency plugins
 	foreach ( $providers as $provider ) {
 		if ( isset ( $provider['folder'] ) ) {
@@ -48,24 +48,22 @@ function ig_pb_extract_plugins() {
 				return;
 			}
 
-			if ( $zip->open( $source_zip ) === TRUE ) {
-				$source_folder = WP_PLUGIN_DIR . "/$folder";
-				if ( file_exists( $source_folder ) ) {
-					// delete folder
-					rrmdir( $source_folder );
-					// rename older folder
-					//rename( $source_folder, $source_folder . '-old' );
-				}
-				// extract to plugin folder
-				$zip->extractTo( $source_folder );
-				$zip->close();
-				// remove zip file
-				unlink( $source_zip );
-
+			$source_folder = WP_PLUGIN_DIR . "/$folder";
+			if ( file_exists( $source_folder ) ) {
+				// delete folder
+				rrmdir( $source_folder );
+				// rename older folder
+				//rename( $source_folder, $source_folder . '-old' );
+			}
+			// extract to plugin folder
+			$unzipfile = unzip_file( $source_zip, $source_folder );
+			if ( $unzipfile ) {
 				$error = 0;
 			} else {
-				$error = -1;
+				$error = 1;
 			}
+			// remove zip file
+			unlink( $source_zip );
 		}
 	}
 }
@@ -83,7 +81,7 @@ function ig_default_providers() {
 				array(
 					'folder' => 'ig-shortcodes-free',
 				),
-            );
+		);
 	}
 	return $Ig_Sc_Providers;
 }
@@ -137,7 +135,7 @@ function ig_pb_deactivate() {
 				$ig_nonce = wp_create_nonce( $ig_action );
 				$method   = $deactivate_one ? 'GET' : 'POST';
 
-                $back_text = __( 'No, take me back', IGPBL );
+				$back_text = __( 'No, take me back', IGPBL );
 				if ( $deactivate_one )
 					$back_btn = "<a href='$plugin_url' class='button button-large'>" . $back_text . '</a>';
 				else {

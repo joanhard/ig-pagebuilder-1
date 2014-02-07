@@ -176,7 +176,6 @@ class IG_Pb_Element extends IG_Pb_Common {
 			'content_class' => $content_class,
 			'content' => $content,
 			'action_btn' => empty( $exception['action_btn'] ) ? '' : $exception['action_btn'],
-			'this_' => 'el_obj',
 		);
 		$extra = array();
 		if ( isset( $this->config['exception']['disable_preview_container'] ) ) {
@@ -216,9 +215,9 @@ class IG_Pb_Element extends IG_Pb_Common {
 			return '';
 		}
 
-        // enqueue script for current element in frontend
-		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ), 100 );
-        // get full shortcode content
+		// enqueue script for current element in frontend
+		add_action( 'wp_footer', array( &$this, 'enqueue_scripts_frontend' ), 1 );
+		// get full shortcode content
 		return $this->element_shortcode_full( $atts, $content );
 	}
 

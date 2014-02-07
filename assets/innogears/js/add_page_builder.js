@@ -41,6 +41,20 @@ jQuery( function ( $ ) {
         else{
             $(".switchmode-button[id='status-on']").addClass('btn-success');
         }
+
+        // Preview Changes fix
+        $('#form-container').bind('ig-pagebuilder-layout-changed', function() {
+            var tab_content = '';
+            $("#form-container textarea[name^='shortcode_content']").each(function(){
+                tab_content += $(this).val();
+            });
+
+            if(tinymce.activeEditor)
+                tinymce.activeEditor.setContent(tab_content);
+            $("#ig_editor_tab1 #content").val(tab_content);
+        });
+
+
     });
 } );
 
