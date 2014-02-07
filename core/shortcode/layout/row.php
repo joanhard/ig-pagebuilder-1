@@ -361,7 +361,7 @@ if ( ! class_exists( 'IG_Row' ) ) {
 				$style = ! empty( $arr_styles ) ? "style='$arr_styles'" : '';
 			}
 
-			return $common_style . "<div class='row jsn-bootstrap $extra_class' $style>" . IG_Pb_Helper_Shortcode::remove_autop( $content ) . '</div>';
+			return $common_style . "<div class='jsn-bootstrap'>" . "<div class='row $extra_class' $style>" . IG_Pb_Helper_Shortcode::remove_autop( $content ) . '</div>' . '</div>';
 		}
 
 	}
