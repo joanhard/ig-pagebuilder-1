@@ -13,7 +13,7 @@ A convenient way to create a complete Wordpress website in a few minutes
 
 IG PageBuilder is a powerful plugin that helps you build a complete Wordpress website in a few minutes. 
 
-<iframe width="560" height="315" src="//www.youtube.com/embed/OwY40f43deI" frameborder="0" allowfullscreen></iframe>
+[youtube http://www.youtube.com/embed/OwY40f43deI”]
 
 This page builder is so clear, simple and extremely easy to use. Designed with an intuitive interface, it gives a new experience for creating an entire online shop using visual drag-and-drop functionality.
 
