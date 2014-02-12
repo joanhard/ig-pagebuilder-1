@@ -1,4 +1,4 @@
-﻿=== IG PageBuilder ===
+=== IG PageBuilder ===
 Contributors: innogears
 Tags: admin, easy, content, cms, image, build, page builder, plugin, advanced, page elements, editor, pagebuilder, layout, page, post, responsive, widget
 Requires at least: 3.6
