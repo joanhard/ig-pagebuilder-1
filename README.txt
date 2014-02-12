@@ -1,5 +1,5 @@
-=== IG PageBuilder ===
-Contributors: Innogears
+﻿=== IG PageBuilder ===
+Contributors: innogears
 Tags: admin, easy, content, cms, image, build, page builder, plugin, advanced, page elements, editor, pagebuilder, layout, page, post, responsive, widget
 Requires at least: 3.6
 Tested up to: 3.8
@@ -13,7 +13,7 @@ A convenient way to create a complete Wordpress website in a few minutes
 
 IG PageBuilder is a powerful plugin that helps you build a complete Wordpress website in a few minutes. 
 
-[youtube http://www.youtube.com/embed/OwY40f43deI]
+[vimeo http://vimeo.com/86483663]
 
 This page builder is so clear, simple and extremely easy to use. Designed with an intuitive interface, it gives a new experience for creating an entire online shop using visual drag-and-drop functionality.
 
