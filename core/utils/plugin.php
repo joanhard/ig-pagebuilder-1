@@ -46,6 +46,16 @@ function ig_pb_activate() {
 	ig_pb_remove_cache_folder();
 }
 
+add_action( 'admin_init', 'ig_pb_check_activate_plugin' );
+function ig_pb_check_activate_plugin() {
+    if ( is_plugin_active( 'ig-pagebuilder/ig-pagebuilder.php' ) ) {
+        ob_start();
+        setcookie( 'ig_pb_check_deactivate', 1 );
+        ig_pb_remove_cache_folder();
+        remove_action( 'admin_init', __FUNCTION__ );
+    }
+}
+
 /**
  * Extract packages of third-party plugins
  */
