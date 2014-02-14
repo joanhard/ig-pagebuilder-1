@@ -12,7 +12,7 @@
 add_action( 'admin_init', 'ig_pb_activate_plugin', 100 );
 // active extracted plugin
 function ig_pb_activate_plugin() {
-	if ( isset ( $_COOKIE['ig_pb_check_deactivate'] ) ) {
+	if ( isset ( $_COOKIE['ig_pb_check_activate'] ) ) {
 		ob_start();
 		global $pagenow;
 		$providers = ig_default_providers();
@@ -32,7 +32,7 @@ function ig_pb_activate_plugin() {
 		}
 		ob_clean();
 
-		setcookie( 'ig_pb_check_deactivate', '', time() - 1000 );
+		setcookie( 'ig_pb_check_activate', '', time() - 1000 );
 	}
 }
 
@@ -41,17 +41,18 @@ function ig_pb_activate_plugin() {
  */
 register_activation_hook( IG_PB_FILE, 'ig_pb_activate' );
 function ig_pb_activate() {
-	setcookie( 'ig_pb_check_deactivate', 1 );
-
+	setcookie( 'ig_pb_check_activate', 1 );
 	ig_pb_remove_cache_folder();
 }
 
+/**
+ * Manual do activation_hook for Update action (when register_activation_hook is not fired)
+ */
 add_action( 'admin_init', 'ig_pb_check_activate_plugin' );
 function ig_pb_check_activate_plugin() {
     if ( is_plugin_active( 'ig-pagebuilder/ig-pagebuilder.php' ) ) {
         ob_start();
-        setcookie( 'ig_pb_check_deactivate', 1 );
-        ig_pb_remove_cache_folder();
+        ig_pb_activate();
         remove_action( 'admin_init', __FUNCTION__ );
     }
 }

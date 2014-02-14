@@ -49,6 +49,13 @@ The plugin is similar to an advanced editor and works on both posts and pages of
 
 == Changelog ==
 
+= 1.0.8 =
+* Fixed Carousel background
+* Fixed Full mode pagebuilder status
+* Fixed Bootstrap conflicts with theme’s css
+* Fixed Readmore button not showed
+* Improved Allow item’s heading to be nullable
+
 = 1.0.7 =
 * Fixed Tab position not working
 * Fixed Css override issue
