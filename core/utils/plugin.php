@@ -52,7 +52,7 @@ function ig_pb_activate() {
 add_action( 'admin_init', 'ig_pb_check_activate_plugin' );
 function ig_pb_check_activate_plugin() {
     global $pagenow;
-    if ( $pagenow == 'plugins.php' ) {
+    if ( in_array( $pagenow, array( 'plugins.php', 'update.php' ) ) ) {
         $plugin_data = get_plugin_data( IG_PB_FILE );
         $version = get_transient( 'ig_pb_check_activate' );
 
