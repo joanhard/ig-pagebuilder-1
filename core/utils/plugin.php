@@ -12,7 +12,7 @@
 add_action( 'admin_init', 'ig_pb_activate_plugin', 100 );
 // active extracted plugin
 function ig_pb_activate_plugin() {
-	if ( isset ( $_COOKIE['ig_pb_check_activate'] ) ) {
+	if ( get_transient( 'ig_pb_check_activate' ) ) {
 		ob_start();
 		global $pagenow;
 		$providers = ig_default_providers();
@@ -42,7 +42,7 @@ function ig_pb_activate_plugin() {
 register_activation_hook( IG_PB_FILE, 'ig_pb_activate' );
 function ig_pb_activate() {
     $plugin_data = get_plugin_data( IG_PB_FILE );
-	setcookie( 'ig_pb_check_activate', $plugin_data['Version'] );
+    set_transient( 'ig_pb_check_activate', $plugin_data['Version'] );
 	ig_pb_remove_cache_folder();
 }
 
@@ -51,11 +51,15 @@ function ig_pb_activate() {
  */
 add_action( 'admin_init', 'ig_pb_check_activate_plugin' );
 function ig_pb_check_activate_plugin() {
-    $plugin_data = get_plugin_data( IG_PB_FILE );
-    if ( $plugin_data['Version'] != $_COOKIE['ig_pb_check_activate'] ) {
-        ob_start();
-        ig_pb_activate();
-        remove_action( 'admin_init', __FUNCTION__ );
+    global $pagenow;
+    if ( $pagenow == 'plugins.php' ) {
+        $plugin_data = get_plugin_data( IG_PB_FILE );
+        $version = get_transient( 'ig_pb_check_activate' );
+
+        if ( $plugin_data['Version'] != $version ) {
+            ob_start();
+            ig_pb_activate();
+        }
     }
 }
 
