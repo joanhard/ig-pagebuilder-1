@@ -894,7 +894,7 @@ JS;
 					$file_to_write = "$cache_dir/$file_name";
 				} else {
 					$fp = fopen( $file_to_write, 'w' );
-					$handle_contents = implode( "\n------------------------------------------------------------\n", $list );
+					$handle_contents = implode( "\n/*------------------------------------------------------------*/\n", $list );
 					fwrite( $fp, $handle_contents );
 					fclose( $fp );
 				}

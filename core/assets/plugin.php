@@ -120,15 +120,6 @@ class IG_Pb_Plugin {
 			'ver' => '1.3.4',
 		),
 
-		'ig-pb-jquery-isotope-js' => array(
-			'src' => 'assets/3rd-party/jquery-isotope/jquery.isotope.min.js',
-			'deps' => array( 'ig-pb-colorpicker-js' )
-		),
-
-		'ig-pb-jquery-isotope-css' => array(
-			'src' => 'assets/3rd-party/jquery-isotope/jquery.isotope.css',
-		),
-
 		'ig-pb-jquery-lazyload-js' => array(
 			'src' => 'assets/3rd-party/jquery-lazyload/jquery.lazyload.js',
 			'deps' => array( 'jquery' ),
