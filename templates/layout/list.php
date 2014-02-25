@@ -9,6 +9,8 @@
  * Websites: http://www.www.innogears.com
  * Technical Support:  Feedback - http://www.www.innogears.com
  */
+
+$data = IG_Pb_Helper_Layout::show_premade_layouts();
 ?>
 <div class="jsn-master">
     <div class="jsn-bootstrap">
@@ -17,8 +19,7 @@
                 <fieldset>
                     <div style="text-align: center;">
                         <select class="jsn-filter-button input-large" style="float: none;">
-                            <option value="ig_pb_layout" selected><?php _e( 'IG Templates', IGPBL ) ?></option>
-                            <option value="user_layout"><?php _e( 'Your Templates', IGPBL ) ?></option>
+                            <?php echo balanceTags( $data['providers'] ); ?>
                         </select>
                     </div>
 <!--                    <div class="pull-right jsn-quick-search">
@@ -30,7 +31,7 @@
             <!-- Elements -->
             <ul class="jsn-items-list" style="height: auto;">
         <?php
-		IG_Pb_Helper_Functions::show_premade_layouts();
+		echo balanceTags( $data['files'] );
 		///add_action( 'ig_pb_footer', array( 'IG_Pb_Helper_Functions', 'print_premade_layouts' ) );
 		?>
             </ul>

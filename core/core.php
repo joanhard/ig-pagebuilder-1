@@ -12,10 +12,10 @@
 /**
  * Core initialization class of IG Pb Plugin.
  *
- * @package  IG_Pb_Plugin
+ * @package  IG_Pb_Assets_Register
  * @since	1.0.0
  */
-class IG_Pb {
+class IG_Pb_Core {
 
 	/**
 	 * IG Pb Plugin's custom post type slug.
@@ -34,7 +34,6 @@ class IG_Pb {
 		$this->register_element();
 		$this->register_widget();
 		$this->custom_hook();
-		$this->load_assets();
 	}
 
 	/**
@@ -62,6 +61,9 @@ class IG_Pb {
 	 * Pagebuilder custom hook
 	 */
 	function custom_hook() {
+		// filter assets
+		add_filter( 'ig_pb_assets_register', array( &$this, 'apply_assets' ) );
+		add_action( 'admin_head', array( &$this, 'load_assets' ), 10 );
 		// translation
 		add_action( 'init', array( &$this, 'translation' ) );
 		// register modal page
@@ -84,7 +86,9 @@ class IG_Pb {
 		add_action( 'edit_page_form', array( &$this, 'save_pagebuilder_content' ) );
 		add_action( 'pre_post_update', array( &$this, 'save_pagebuilder_content' ) );
 		// ajax action
+		add_action( 'wp_ajax_igpb_clear_cache', array( &$this, 'igpb_clear_cache' ) );
 		add_action( 'wp_ajax_save_layout', array( &$this, 'save_layout' ) );
+		add_action( 'wp_ajax_upload_layout', array( &$this, 'upload_layout' ) );
 		add_action( 'wp_ajax_update_whole_sc_content', array( &$this, 'update_whole_sc_content' ) );
 		add_action( 'wp_ajax_shortcode_extract_param', array( &$this, 'shortcode_extract_param' ) );
 		add_action( 'wp_ajax_get_json_custom', array( &$this, 'ajax_json_custom' ) );
@@ -116,7 +120,7 @@ class IG_Pb {
 		add_action( 'edit_form_after_title', array( &$this, 'hook_after_title' ) );
 		add_action( 'edit_form_after_editor', array( &$this, 'hook_after_editor' ) );
 		// Frontend hook
-		add_filter( 'body_class', array( &$this, 'wp_bodyclass' ) );
+		add_filter( 'post_class', array( &$this, 'wp_bodyclass' ) );
 		add_action( 'wp_head', array( &$this, 'post_view' ) );
 		add_action( 'wp_footer', array( &$this, 'enqueue_compressed_assets' ) );
 
@@ -139,16 +143,30 @@ class IG_Pb {
 			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/css/front_end.css',
 			'ver' => '1.0.0',
 		);
+		IG_Pb_Helper_Functions::load_bootstrap_3( $assets );
 		if ( ! is_admin() || IG_Pb_Helper_Functions::is_preview() ) {
-			$assets['ig-pb-bootstrap-css'] = array(
-				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/bootstrap3' ) . '/css/bootstrap.min.css',
-				'ver' => '3.0.2',
-			);
-			$assets['ig-pb-bootstrap-js'] = array(
-				'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/bootstrap3' ) . '/js/bootstrap.min.js',
-				'ver' => '3.0.2',
-			);
+			$options = array( 'ig_pb_boostrap_js', 'ig_pb_boostrap_css' );
+			// get saved options value
+			foreach ( $options as $key ) {
+				$$key = get_option( $key, false );
+			}
+			if ( ! ( ! $ig_pb_boostrap_js || $ig_pb_boostrap_js == 'enable' ) ) {
+				$assets['ig-pb-bootstrap-css'] = array(
+					'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/bootstrap3' ) . '/css/bootstrap.min.css',
+					'ver' => '3.0.2',
+				);
+			}
+			if ( ! ( ! $ig_pb_boostrap_css || $ig_pb_boostrap_css == 'enable' ) ) {
+				$assets['ig-pb-bootstrap-js'] = array(
+					'src' => '',
+					'ver' => '3.0.2',
+				);
+			}
 		}
+		$assets['ig-pb-joomlashine-frontend-css'] = array(
+			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/css/jsn-gui-frontend.css',
+			'deps' => array( 'ig-pb-bootstrap-css' ),
+		);
 		$assets['ig-pb-frontend-responsive-css'] = array(
 			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/css/front_end_responsive.css',
 			'ver' => '1.0.0',
@@ -169,6 +187,14 @@ class IG_Pb {
 			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/placeholder.js',
 			'ver' => '1.0.0',
 		);
+		$assets['ig-pb-settings-js'] = array(
+			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/product/settings.js',
+			'ver' => '1.0.0',
+		);
+		$assets['ig-pb-upgrade-js'] = array(
+			'src' => IG_Pb_Helper_Functions::path( 'assets/innogears' ) . '/js/product/upgrade.js',
+			'ver' => '1.0.0',
+		);
 		return $assets;
 	}
 
@@ -177,22 +203,25 @@ class IG_Pb {
 	 */
 	function frontend_scripts() {
 		// load css
-		$ig_pb_frontend_css = array( 'ig-pb-font-icomoon-css', 'ig-pb-joomlashine-css', 'ig-pb-frontend-css', 'ig-pb-frontend-responsive-css', 'ig-pb-jquery-tipsy-css', 'ig-pb-jquery-fancybox-css' );
-		IG_Pb_Assets::load( $ig_pb_frontend_css );
+		$ig_pb_frontend_css = array( 'ig-pb-font-icomoon-css', 'ig-pb-joomlashine-frontend-css', 'ig-pb-frontend-css', 'ig-pb-frontend-responsive-css', 'ig-pb-jquery-tipsy-css', 'ig-pb-jquery-fancybox-css' );
+		IG_Pb_Assets_Load::load( $ig_pb_frontend_css );
 		// load js
 		$ig_pb_frontend_js = array( 'jquery', 'jquery-ui', 'ig-pb-bootstrap-js', 'ig-pb-jquery-tipsy-js', 'ig-pb-jquery-mousewheel-js', 'ig-pb-jquery-fancybox-js', 'ig-pb-jquery-lazyload-js' );
-		IG_Pb_Assets::load( apply_filters( 'ig_pb_assets_enqueue_frontend',  $ig_pb_frontend_js ) );
+		IG_Pb_Assets_Load::load( apply_filters( 'ig_pb_assets_enqueue_frontend',  $ig_pb_frontend_js ) );
 	}
 
 	/**
 	 * Add Pagebuilder Metaboxes
 	 */
 	function custom_meta_boxes() {
-		add_meta_box(
-				'ig_page_builder'
-				, __( 'Page Builder', IGPBL )
-				, array( &$this, 'page_builder_html' )
-		);
+		$check = $this->check_condition( 'editor' );
+		if ( $check ){
+			add_meta_box(
+					'ig_page_builder'
+					, __( 'Page Builder', IGPBL )
+					, array( &$this, 'page_builder_html' )
+			);
+		}
 	}
 
 	/**
@@ -223,7 +252,7 @@ class IG_Pb {
 
 	// Register IGPB Widget
 	function register_widget(){
-		register_widget( 'IG_Pb_Widget' );
+		register_widget( 'IG_Pb_Objects_Widget' );
 	}
 	/**
 	 * Regiter sub element
@@ -268,7 +297,7 @@ class IG_Pb {
 			$modal_title = $shortcode_obj['identity_name'];
 			$element->config['shortcode'] = $shortcode;
 			$content = $element->config['exception']['data-modal-title'] = $modal_title;
-			$element->config['shortcode_structure'] = ig_pb_add_placeholder( "[ig_widget widget_id=\"$shortcode\"]%s[/ig_widget]", 'widget_title' );
+			$element->config['shortcode_structure'] = IG_Pb_Utils_Placeholder::add_placeholder( "[ig_widget widget_id=\"$shortcode\"]%s[/ig_widget]", 'widget_title' );
 			$element->config['el_type'] = $type;
 			$element_type = $element->element_in_pgbldr( $content );
 			foreach ( $element_type as $element_structure ) {
@@ -286,7 +315,7 @@ class IG_Pb {
 	 */
 	function modal_register() {
 		if ( IG_Pb_Helper_Functions::is_modal() ) {
-			$cls_modal = IG_Pb_Modal::get_instance();
+			$cls_modal = IG_Pb_Objects_Modal::get_instance();
 			if ( ! empty( $_GET['ig_modal_type'] ) )
 				$cls_modal->preview_modal();
 			if ( ! empty( $_GET['ig_layout'] ) )
@@ -354,7 +383,7 @@ JS;
 
 		$ig_deactivate_pb = intval( mysql_real_escape_string( $_POST['ig_deactivate_pb'] ) );
 		if ( $ig_deactivate_pb ) {
-			ig_pb_delete_meta_key( array( '_ig_page_builder_content', '_ig_html_content', '_ig_page_active_tab', '_ig_post_view_count' ), $post_id );
+			IG_Pb_Utils_Common::delete_meta_key( array( '_ig_page_builder_content', '_ig_html_content', '_ig_page_active_tab', '_ig_post_view_count' ), $post_id );
 		} else {
 			$ig_active_tab = intval( mysql_real_escape_string( $_POST['ig_active_tab'] ) );
 			$post_content  = '';
@@ -368,7 +397,7 @@ JS;
 					$data[] = '';
 
 				$post_content = ( implode( '', $data ) );
-				$post_content = ig_pb_remove_placeholder( $post_content, 'wrapper_append', '' );
+				$post_content = IG_Pb_Utils_Placeholder::remove_placeholder( $post_content, 'wrapper_append', '' );
 
 				update_post_meta( $post_id, '_ig_page_builder_content', $post_content );
 				update_post_meta( $post_id, '_ig_html_content', IG_Pb_Helper_Shortcode::doshortcode_content( $post_content ) );
@@ -440,7 +469,38 @@ JS;
 		$layout_name    = $_POST['layout_name'];
 		$layout_content = stripslashes( $_POST['layout_content'] );
 
-		IG_Pb_Helper_Functions::save_premade_layouts( $layout_name, $layout_content );
+		IG_Pb_Helper_Layout::save_premade_layouts( $layout_name, $layout_content );
+
+		exit;
+	}
+
+	/**
+	 * Upload premade layout to file
+	 * @return type
+	 */
+	function upload_layout() {
+		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
+			return;
+
+		$status = 0;
+		if ( ! empty ( $_FILES ) ) {
+			$fileinfo = $_FILES['file'];
+			$file     = $fileinfo['tmp_name'];
+			$tmp_file = 'tmp-layout-' . time();
+			$dest     = IG_Pb_Helper_Functions::get_wp_upload_folder( '/ig-pb-layout/' . $tmp_file );
+			if ( $fileinfo['type'] == 'application/octet-stream' ) {
+				WP_Filesystem();
+				$unzipfile = unzip_file( $file, $dest );
+				if ( $unzipfile ) {
+					// explore extracted folder to get provider info
+					$status = IG_Pb_Helper_Layout::import( $dest );
+				}
+				// remove zip file
+				unlink( $file );
+			}
+			IG_Pb_Utils_Common::recursive_rmdir( $dest );
+		}
+		echo intval( $status );
 
 		exit;
 	}
@@ -528,7 +588,7 @@ JS;
 			$modal_title = $Ig_Pb_Widgets[$shortcode]['identity_name'];
 			$element->config['shortcode'] = $shortcode;
 			$content = $element->config['exception']['data-modal-title'] = $modal_title;
-			$element->config['shortcode_structure'] = ig_pb_add_placeholder( "[ig_widget widget_id=\"$shortcode\"]%s[/ig_widget]", 'widget_title' );
+			$element->config['shortcode_structure'] = IG_Pb_Utils_Placeholder::add_placeholder( "[ig_widget widget_id=\"$shortcode\"]%s[/ig_widget]", 'widget_title' );
 			$element->config['el_type'] = $type;
 			$element_type = $element->element_in_pgbldr( $content );
 			foreach ( $element_type as $element_structure ) {
@@ -576,7 +636,7 @@ JS;
 			$ig_pagebuilder_content = get_post_meta( $post->ID, '_ig_page_builder_content', true );
 			if ( ! empty( $ig_pagebuilder_content ) ) {
 				// remove placeholder text which was inserted to &lt; and &gt;
-				$ig_pagebuilder_content = ig_pb_remove_placeholder( $ig_pagebuilder_content, 'wrapper_append', '' );
+				$ig_pagebuilder_content = IG_Pb_Utils_Placeholder::remove_placeholder( $ig_pagebuilder_content, 'wrapper_append', '' );
 
 				$ig_pagebuilder_content = preg_replace_callback(
 						'/\[ig_widget\s([A-Za-z0-9_-]+=\"[^"\']*\")*\](.*)\[\/ig_widget\]/Us', array( 'IG_Pb_Helper_Shortcode', 'widget_content' ), $ig_pagebuilder_content
@@ -617,26 +677,44 @@ JS;
 	}
 
 	/**
+     * Check condition to load Pagebuilder content & assets
+     *
+     * @global type $pagenow
+     * @global type $post
+     * @param type $check_support
+     * @return type
+     */
+	function check_condition( $check_support = '' ) {
+		global $pagenow, $post;
+		if ( $pagenow == 'post.php' || $pagenow == 'post-new.php' || $pagenow == 'widgets.php' ) {
+			if ( ! empty ( $check_support ) ) {
+				$post_type = get_post_type( $post->ID );
+				return post_type_supports( $post_type, $check_support );
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Load necessary assets.
 	 *
 	 * @return  void
 	 */
 	function load_assets() {
-		add_filter( 'ig_pb_assets_register', array( &$this, 'apply_assets' ) );
-
-		global $pagenow;
-		if ( $pagenow == 'post.php' || $pagenow == 'post-new.php' || $pagenow == 'widgets.php' ) {
+		$check = $this->check_condition( 'editor' );
+		if ( $check ){
 
 			// styles
 			IG_Pb_Helper_Functions::enqueue_styles();
 
-			IG_Pb_Assets::load( array( 'ig-pb-jquery-fancybox-css', 'ig-pb-jquery-isotope-css' ) );
+			IG_Pb_Assets_Load::load( array( 'ig-pb-jquery-fancybox-css' ) );
 
 			// scripts
 			IG_Pb_Helper_Functions::enqueue_scripts();
 
-			$scripts = array( 'ig-pb-jquery-select2-js', 'ig-pb-jquery-livequery-js', 'ig-pb-addpanel-js', 'ig-pb-jquery-resize-js', 'ig-pb-joomlashine-modalresize-js', 'ig-pb-jquery-isotope-js', 'ig-pb-layout-js', 'ig-pb-jquery-mousewheel-js', 'ig-pb-jquery-fancybox-js', 'ig-pb-placeholder' );
-			IG_Pb_Assets::load( apply_filters( 'ig_pb_assets_enqueue_admin', $scripts ) );
+			$scripts = array( 'ig-pb-jquery-select2-js', 'ig-pb-jquery-livequery-js', 'ig-pb-addpanel-js', 'ig-pb-jquery-resize-js', 'ig-pb-joomlashine-modalresize-js', 'ig-pb-layout-js', 'ig-pb-jquery-mousewheel-js', 'ig-pb-jquery-fancybox-js', 'ig-pb-placeholder' );
+			IG_Pb_Assets_Load::load( apply_filters( 'ig_pb_assets_enqueue_admin', $scripts ) );
 
 			IG_Pb_Helper_Functions::enqueue_scripts_end();
 		}
@@ -660,9 +738,9 @@ JS;
 				wp_enqueue_script( 'thickbox' );
 			}
 			$this->load_assets();
-			IG_Pb_Assets::load( 'ig-pb-handlesetting-js' );
-			IG_Pb_Assets::load( 'ig-pb-jquery-fancybox-js' );
-			IG_Pb_Assets::load( 'ig-pb-widget-js' );
+			IG_Pb_Assets_Load::load( 'ig-pb-handlesetting-js' );
+			IG_Pb_Assets_Load::load( 'ig-pb-jquery-fancybox-js' );
+			IG_Pb_Assets_Load::load( 'ig-pb-widget-js' );
 		}
 	}
 
@@ -729,7 +807,7 @@ JS;
 			$ig_handle_assets[] = 'jquery-ui-dialog';
 			$ig_handle_assets[] = 'jquery-ui-button';
 			$ig_handle_assets[] = 'jquery-ui-slider';
-
+			$ig_handle_assets   = apply_filters( 'custom_scripts_frontend_filter', $ig_handle_assets );
 			global $wp_scripts;
 			foreach ( $wp_scripts->queue as $script ) {
 				if ( ! in_array( $script, $ig_handle_assets ) ) {
@@ -865,6 +943,10 @@ JS;
 			global $post;
 			if ( empty ( $post ) )
 				exit;
+			$ig_pb_cache_status = get_option( 'ig_pb_cache_status', false );
+			if ( $ig_pb_cache_status == 'disable' ) {
+				exit;
+			}
 			$contents_of_type = array();
 			$this_session     = $_SESSION['ig-pb-assets-frontend'][$post->ID];
 			// Get content of assets file from shortcode directories
@@ -894,7 +976,7 @@ JS;
 					$file_to_write = "$cache_dir/$file_name";
 				} else {
 					$fp = fopen( $file_to_write, 'w' );
-					$handle_contents = implode( "\n/*------------------------------------------------------------*/\n", $list );
+					$handle_contents = implode( "\n------------------------------------------------------------\n", $list );
 					fwrite( $fp, $handle_contents );
 					fclose( $fp );
 				}
@@ -906,5 +988,20 @@ JS;
 				}
 			}
 		}
+	}
+
+	/**
+	 * Clear cache files
+	 * @return type
+	 */
+	function igpb_clear_cache() {
+		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
+			return;
+
+		$delete = IG_Pb_Utils_Common::remove_cache_folder();
+
+		echo balanceTags( $delete ? __( 'Cache files are deleted successfully', IGPBL ) : __( "Fail. Can't delete cache folder", IGPBL ) );
+
+		exit;
 	}
 }

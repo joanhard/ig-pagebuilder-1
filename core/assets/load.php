@@ -16,7 +16,7 @@
  * @package  IG_Plugin_Framework
  * @since    1.0.0
  */
-class IG_Pb_Assets {
+class IG_Pb_Assets_Load {
 	/**
 	 * Assets to be registered.
 	 *
@@ -73,9 +73,9 @@ class IG_Pb_Assets {
 			} else {
 				$prefix = defined( 'WP_ADMIN' ) ? 'admin' : 'wp';
 				// Register actions
-				add_action( "{$prefix}_enqueue_scripts", array( __CLASS__, 'enqueue_scripts' ), 1000000 );
-				add_action( "{$prefix}_head"           , array( __CLASS__, 'head'            ), 1000000 );
-				add_action( "{$prefix}_footer"         , array( __CLASS__, 'footer'          ), 1000000 );
+				add_action( "{$prefix}_enqueue_scripts", array( __CLASS__, 'enqueue_scripts' ) );
+				add_action( "{$prefix}_head"           , array( __CLASS__, 'head'            ) );
+				add_action( "{$prefix}_footer"         , array( __CLASS__, 'footer'          ) );
 			}
 
 			$registered = true;

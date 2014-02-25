@@ -16,7 +16,7 @@
  * @package  IG_Plugin_Framework
  * @since    1.0.0
  */
-class IG_Pb_Plugin {
+class IG_Pb_Assets_Register {
 	/**
 	 * Assets to be registered.
 	 *
