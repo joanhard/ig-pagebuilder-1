@@ -32,7 +32,6 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 		function init(){
 			global $Ig_Pb, $Ig_Pb_Widgets;
 			$Ig_Pb = new IG_Pb_Core();
-			$IG_Pb_Utils_Plugin = new IG_Pb_Utils_Plugin();
 			IG_Product_Plugin::init();
 			$Ig_Pb_Widgets = ! empty( $Ig_Pb_Widgets ) ? $Ig_Pb_Widgets : IG_Pb_Helper_Functions::widgets();
 		}
@@ -42,6 +41,7 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 			// include core files
 			include_once 'core/loader.php';
 			include_once 'core/defines.php';
+			include_once 'core/utils/plugin.php';
 		}
 
 		// autoload register

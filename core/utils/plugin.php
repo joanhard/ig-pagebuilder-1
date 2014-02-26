@@ -9,16 +9,13 @@
  * @version		$Id$
  */
 
-class IG_Pb_Utils_Plugin {
 
-	function __construct() {
-		add_action( 'admin_init', array( &$this, 'check_activate_plugin' ), 100 );
-		add_action( 'admin_init', array( &$this, 'activate_plugin' ), 100 );
-		register_activation_hook( IG_PB_FILE, array( &$this, 'do_activate' ) );
-		register_deactivation_hook( IG_PB_FILE, array( &$this, 'do_deactivate' ) );
+		add_action( 'admin_init',  'check_activate_plugin' , 100 );
+		add_action( 'admin_init',  'activate_plugin' , 100 );
+		register_activation_hook( IG_PB_FILE,  'do_activate' ) ;
+		register_deactivation_hook( IG_PB_FILE,  'do_deactivate' ) ;
 		// in case: select some/all plugins then Deactivate
-		add_action( 'admin_init', array( &$this, 'do_deactivate' ) );
-	}
+		add_action( 'admin_init',  'do_deactivate' ) ;
 
 	// Manual do activation_hook for Update action (when register_activation_hook is not fired)
 	function check_activate_plugin() {
@@ -86,7 +83,7 @@ class IG_Pb_Utils_Plugin {
 	// Extract packages of third-party plugins
 	function extract_plugins() {
 		$providers = $this->default_providers();
-		//WP_Filesystem();
+		WP_Filesystem();
 		// extract dependency plugins
 		foreach ( $providers as $provider ) {
 			if ( isset ( $provider['folder'] ) ) {
@@ -252,4 +249,3 @@ class IG_Pb_Utils_Plugin {
 			}
 		}
 	}
-}
