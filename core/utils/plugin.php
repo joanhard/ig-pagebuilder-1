@@ -10,14 +10,37 @@
  */
 
 add_action( 'admin_init', 'ig_pb_activate_plugin', 100 );
+add_action( 'admin_init', 'ig_pb_deactivate_once', 10 );
+
+function ig_pb_deactivate_once(){
+	global $pagenow;
+	if ( $pagenow == "update.php" && strpos("ig-pagebuilder" , $_GET['plugin']) !== false )  {
+		ig_pb_deactivate_providers();
+	}
+}
+
+function ig_pb_deactivate_providers() {
+    $providers = ig_pb_default_providers();
+    $plugins = array();
+    foreach ( $providers as $provider ) {
+        if ( isset ( $provider['folder'] ) ) {
+            $folder = $provider['folder'];
+            if ( is_plugin_active( $folder . '/main.php' ) ) {
+                $plugins[] = $folder . '/main.php';
+            }
+        }
+    }
+    deactivate_plugins( $plugins );
+}
+
 // active extracted plugin
 function ig_pb_activate_plugin() {
 	//if ( get_transient( 'ig_pb_check_activate' ) ) {
 		ob_start();
 		global $pagenow;
-		$providers = ig_default_providers();
+		$providers = ig_pb_default_providers();
 
-		if ( is_plugin_active( 'ig-pagebuilder/ig-pagebuilder.php' ) ) {
+		if ( is_plugin_active( 'ig-pagebuilder/ig-pagebuilder.php' ) ) {			
 			ig_pb_extract_plugins();
 
 			// activate dependency plugins
@@ -67,10 +90,11 @@ function ig_pb_check_activate_plugin() {
  * Extract packages of third-party plugins
  */
 function ig_pb_extract_plugins() {
-	$providers = ig_default_providers();
+	$providers = ig_pb_default_providers();
 	WP_Filesystem();
 	// extract dependency plugins
 	foreach ( $providers as $provider ) {
+
 		if ( isset ( $provider['folder'] ) ) {
 			$folder     = $provider['folder'];
 			$source_zip = plugin_dir_path( IG_PB_FILE ) . $folder . '.zip';
@@ -86,6 +110,7 @@ function ig_pb_extract_plugins() {
 				}
 				// extract to plugin folder
 				$unzipfile = unzip_file( $source_zip, $source_folder );
+
 				if ( $unzipfile ) {
 					$error = 0;
 				} else {
@@ -104,7 +129,7 @@ function ig_pb_extract_plugins() {
  * @global type $Ig_Sc_Providers
  * @return type
  */
-function ig_default_providers() {
+function ig_pb_default_providers() {
 	global $Ig_Sc_Providers;
 	if ( count( $Ig_Sc_Providers ) == 1 ) {
 		return array(
