@@ -56,6 +56,18 @@ You can constantly use this page builder as a starter tool for your website buil
 3. Widget Window
 
 == Changelog ==
+= 2.0 =
+* Added Setting page for IG PageBuilder
+* Added Options to handle IG Cache
+* Added Premade Template feature
+* Added Class suffix to row and element’s wrapper
+* Fixed table colspan problem
+* Fixed Css overriding bugs
+* Fixed elements’ displaying bugs
+* Fixed Assets enqueue error
+
+= 1.0.9 =
+* Updated remove isotop library
 
 = 1.0.8 =
 * Fixed Carousel background
