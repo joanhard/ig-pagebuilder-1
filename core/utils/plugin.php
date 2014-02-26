@@ -43,7 +43,7 @@ register_activation_hook( IG_PB_FILE, 'ig_pb_activate' );
 function ig_pb_activate() {
     $plugin_data = get_plugin_data( IG_PB_FILE );
     set_transient( 'ig_pb_check_activate', $plugin_data['Version'] );
-	ig_pb_remove_cache_folder();
+	IG_Pb_Utils_Common::remove_cache_folder();
 }
 
 /**
@@ -80,7 +80,7 @@ function ig_pb_extract_plugins() {
 				$source_folder = WP_PLUGIN_DIR . "/$folder";
 				if ( file_exists( $source_folder ) ) {
 					// delete folder
-					ig_pb_rrmdir( $source_folder );
+					IG_Pb_Utils_Common::recursive_rmdir( $source_folder );
 					// rename older folder
 					//rename( $source_folder, $source_folder . '-old' );
 				}
@@ -238,7 +238,7 @@ function ig_pb_deactivate() {
 						)
 					);
 					// delete pagebuilder content
-					ig_pb_delete_meta_key( array( '_ig_page_builder_content', '_ig_page_active_tab' ) );
+					IG_Pb_Utils_Common::delete_meta_key( array( '_ig_page_builder_content', '_ig_page_active_tab' ) );
 
 					do_action( 'ig_pb_deactivate' );
 				}
