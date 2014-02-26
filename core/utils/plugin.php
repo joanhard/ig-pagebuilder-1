@@ -8,7 +8,7 @@
  * @package		IGPGBLDR
  * @version		$Id$
  */
-
+require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 class IG_Pb_Utils_Plugin {
 
 	function __construct() {
