@@ -3,7 +3,7 @@
  * Plugin Name: IG Pagebuilder
  * Plugin URI:  http://www.innogears.com
  * Description: Awesome content builder for Wordpress websites
- * Version:     1.0
+ * Version:     1.0.9
  * Author:      InnoGears Team <support@www.innogears.com>
  * Author URI:  http://www.innogears.com
  * License:     GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,28 +19,22 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 
 			$this->includes();
 			$this->autoload();
-			$this->cls_alias();
 
-			// Init the plugin
-			IG_Pb_Assets_Register::init();
-			// Assets load management
-			IG_Pb_Assets_Load::hook();
+			global $pagenow;
+			$pages = array( 'post.php', 'post-new.php', 'widgets.php', 'admin-ajax.php' );
+			if ( in_array( $pagenow, $pages )  || IG_Pb_Helper_Functions::is_modal() || ! is_admin() ) {
+				// Init the plugin
+				IG_Pb_Plugin::init();
+				// Assets load management
+				IG_Pb_Assets::hook();
+			}
 
 			add_action( 'widgets_init', array( &$this, 'init' ), 100 );
 		}
 
 		function init(){
 			global $Ig_Pb, $Ig_Pb_Widgets;
-			$IG_Pb_Utils_Plugin	=	new 	IG_Pb_Utils_Plugin();
-			//if ( $plugin_data['Version'] != $version ) {
-				ob_start();
-				$IG_Pb_Utils_Plugin->deactivate_providers();
-			//}
-
-
-
-			$Ig_Pb = new IG_Pb_Core();
-			IG_Product_Plugin::init();
+			$Ig_Pb = new IG_Pb();
 			$Ig_Pb_Widgets = ! empty( $Ig_Pb_Widgets ) ? $Ig_Pb_Widgets : IG_Pb_Helper_Functions::widgets();
 		}
 
@@ -48,24 +42,23 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 		function includes() {
 			// include core files
 			include_once 'core/loader.php';
-			include_once 'core/defines.php';
-			include_once 'core/thirdparty.php';
+			include_once 'core/pb.php';
+			include_once 'core/third-party.php';
+			// include utility files
+			include_once 'core/utils/common.php';
+			include_once 'core/utils/placeholder.php';
 			include_once 'core/utils/plugin.php';
 		}
 
 		// autoload register
 		function autoload(){
-			IG_PB_Loader::register( IG_PB_PATH . 'core', 'IG_Pb_' );
-			IG_PB_Loader::register( IG_PB_PATH . 'core/product', 'IG_Product_' );
+			IG_Pb_Loader::register( IG_PB_PATH . 'core/assets', 'IG_Pb_' );
+			IG_Pb_Loader::register( IG_PB_PATH . 'core/helper', 'IG_Pb_Helper' );
+			IG_PB_Loader::register( IG_PB_PATH . 'core/helper/html', 'IG_Pb_Helper_Html_' );
+			IG_Pb_Loader::register( IG_PB_PATH . 'core/objects', 'IG_Pb_' );
+			IG_Pb_Loader::register( IG_PB_PATH . 'core/shortcode', 'IG_Pb_' );
 
 			do_action( 'ig_pb_autoload' );
-		}
-
-		// For revoking class from library without changes
-		function cls_alias() {
-			class_alias( 'IG_Pb_Loader', 'IG_Loader' );
-			class_alias( 'IG_Pb_Utils_Admin_Menu', 'IG_Init_Admin_Menu' );
-			class_alias( 'IG_Pb_Assets_Load', 'IG_Init_Assets' );
 		}
 	}
 

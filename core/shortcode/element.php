@@ -13,7 +13,7 @@
  * Parent class for normal elements
  */
 
-class IG_Pb_Shortcode_Element extends IG_Pb_Shortcode_Common {
+class IG_Pb_Element extends IG_Pb_Common {
 
 	public function __construct() {
 		$this->type = 'element';
@@ -29,28 +29,14 @@ class IG_Pb_Shortcode_Element extends IG_Pb_Shortcode_Common {
 
 		// enqueue script for current element in backend (modal setting iframe)
 		if ( IG_Pb_Helper_Functions::is_modal_of_element( $this->config['shortcode'] ) ) {
-			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_modal' ) );
+			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_modal' ), 1000000 );
 		}
 		// enqueue script for current element in backend (preview iframe)
 		if ( IG_Pb_Helper_Functions::is_preview() ) {
-			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ) );
+			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts_frontend' ), 1000000 );
 		}
 
 		do_action( 'ig_pb_element_init' );
-
-		$prefix = IG_Pb_Helper_Functions::is_preview() ? 'admin' : 'wp';
-		add_action( "{$prefix}_footer", array( &$this, 'custom_scripts_frontend' ) );
-		add_filter( 'custom_scripts_frontend_filter', array( &$this, 'custom_scripts_frontend_filter' ) );
-	}
-
-	// custom scripts for frontend
-	public function custom_scripts_frontend() {
-
-	}
-
-	// custom filter for scripts for frontend
-	public function custom_scripts_frontend_filter( $scripts ) {
-		return $scripts;
 	}
 
 	// enqueue scripts for frontend
@@ -78,24 +64,18 @@ class IG_Pb_Shortcode_Element extends IG_Pb_Shortcode_Common {
 
 		$disable_el = array(
 			'name' => __( 'Disable', IGPBL ),
-			'id' => 'disabled_el',
+			'id' => 'disabled',
 			'type' => 'radio',
 			'std' => 'no',
 			'options' => array( 'yes' => __( 'Yes', IGPBL ), 'no' => __( 'No', IGPBL ) ),
 			'wrap_class' => 'control-group hidden',
 		);
-		$css_suffix = array(
-			'name'    => __( 'Css Class suffix', IGPBL ),
-			'id'      => 'css_suffix',
-			'type'    => 'text_field',
-			'std'     => __( '', IGPBL ),
-			'tooltip' => __( 'Add custom css class for the wrapper div of this element', IGPBL )
-		);
 		if ( isset ( $this->items['styling'] ) ) {
 			$this->items['styling'] = array_merge(
 				$this->items['styling'], array(
-					$css_suffix,
+					// Disable element
 					$disable_el,
+
 					// always at the end of array
 					array(
 						'name'			=> __( 'Margin', IGPBL ),
@@ -114,9 +94,8 @@ class IG_Pb_Shortcode_Element extends IG_Pb_Shortcode_Common {
 			if ( isset ( $this->items['Notab'] ) ) {
 				$this->items['Notab'] = array_merge(
 					$this->items['Notab'], array(
-						$css_suffix,
-						$disable_el,
-
+					// Disable element
+					$disable_el,
 					)
 				);
 			}
@@ -161,9 +140,9 @@ class IG_Pb_Shortcode_Element extends IG_Pb_Shortcode_Common {
 			else {
 				if ( isset( $exception['item_text'] ) ) {
 					if ( ! empty( $exception['item_text'] ) )
-						$content = IG_Pb_Utils_Placeholder::add_placeholder( $exception['item_text'] . ' %s', 'index' );
+						$content = ig_pb_add_placeholder( $exception['item_text'] . ' %s', 'index' );
 				} else
-					$content = IG_Pb_Utils_Placeholder::add_placeholder( ( __( ucfirst( $parent_shortcode ), IGPBL ) . ' ' . __( 'Item', IGPBL ) ) . ' %s', 'index' );
+					$content = ig_pb_add_placeholder( ( __( ucfirst( $parent_shortcode ), IGPBL ) . ' ' . __( 'Item', IGPBL ) ) . ' %s', 'index' );
 			}
 		}
 		$content = ! empty( $el_title ) ? ( $content . ': ' . "<span>$el_title</span>" ) : $content;
@@ -229,7 +208,7 @@ class IG_Pb_Shortcode_Element extends IG_Pb_Shortcode_Common {
 	 */
 	public function element_shortcode( $atts = null, $content = null ) {
 		$arr_params = ( shortcode_atts( $this->config['params'], $atts ) );
-		if ( $arr_params['disabled_el'] == 'yes' ) {
+		if ( $arr_params['disabled'] == 'yes' ) {
 			if ( IG_Pb_Helper_Functions::is_preview() ) {
 				return ''; //_e( 'This element is deactivated. It will be hidden at frontend', IGPBL );
 			}
@@ -265,8 +244,7 @@ class IG_Pb_Shortcode_Element extends IG_Pb_Shortcode_Common {
 			$style = "style='$style $custom_style'";
 		}
 		$class  = "ig-element-container ig-element-$shortcode_name";
-		$extra_class .= ! empty ( $arr_params['css_suffix'] ) ? ' ' . esc_attr( $arr_params['css_suffix'] ) : '';
-		$class .= ! empty ( $extra_class ) ? ' ' . ltrim( $extra_class, ' ' ) : '';
+		$class .= ! empty ( $extra_class ) ? " $extra_class" : '';
 		return "<div class='$class' $style>" . $html_element . '</div>';
 	}
 
@@ -296,7 +274,7 @@ class IG_Pb_Shortcode_Element extends IG_Pb_Shortcode_Common {
 		$params = IG_Pb_Helper_Shortcode::generate_shortcode_params( $this->items, null, null, false, true );
 		// add Margin parameter for Not child shortcode
 		if ( strpos( $this->config['shortcode'], '_item' ) === false ) {
-			$this->config['params'] = array_merge( array( 'div_margin_top' => '', 'div_margin_bottom' => '', 'disabled_el' => 'no', 'css_suffix' => '' ), $params );
+			$this->config['params'] = array_merge( array( 'div_margin_top' => '', 'div_margin_bottom' => '', 'disabled' => 'no' ), $params );
 		}
 		else {
 			$this->config['params'] = $params;

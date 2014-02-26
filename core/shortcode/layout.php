@@ -13,7 +13,7 @@
  * Parent class for layout elements
  */
 
-class IG_Pb_Shortcode_Layout extends IG_Pb_Shortcode_Common {
+class IG_Pb_Layout extends IG_Pb_Common {
 
 	public function __construct() {
 		$this->type = 'layout';
