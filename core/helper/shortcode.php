@@ -33,7 +33,6 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
                 $IG_Pb_Utils_Plugin->do_activate();
                 $IG_Pb_Utils_Plugin->activate_plugin();
 
-                do_action( 'ig_pb_third_party' );
             }
 
 
