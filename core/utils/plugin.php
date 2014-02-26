@@ -70,16 +70,8 @@ class IG_Pb_Utils_Plugin {
 
     // deactivate dependency plugins
     function deactivate_providers() {
-        $providers = $this->default_providers();
-        $plugins = array();
-        foreach ( $providers as $provider ) {
-            if ( isset ( $provider['folder'] ) ) {
-                $folder = $provider['folder'];
-                if ( is_plugin_active( $folder . '/main.php' ) ) {
-                    $plugins[] = $folder . '/main.php';
-                }
-            }
-        }
+        
+        $plugins[] = WP_PLUGIN_DIR . '/ig-shortcodes-free/main.php';
         deactivate_plugins( $plugins );
     }
 
