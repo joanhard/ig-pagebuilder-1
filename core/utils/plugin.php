@@ -12,7 +12,7 @@
 add_action( 'admin_init', 'ig_pb_activate_plugin', 100 );
 // active extracted plugin
 function ig_pb_activate_plugin() {
-	if ( get_transient( 'ig_pb_check_activate' ) ) {
+	//if ( get_transient( 'ig_pb_check_activate' ) ) {
 		ob_start();
 		global $pagenow;
 		$providers = ig_default_providers();
@@ -33,7 +33,7 @@ function ig_pb_activate_plugin() {
 		ob_clean();
 
 		setcookie( 'ig_pb_check_activate', '', time() - 1000 );
-	}
+	//}
 }
 
 /**
