@@ -55,7 +55,7 @@ class IG_Pb_Utils_Plugin {
 				}
 			}
 			ob_clean();
-			
+
 			setcookie( 'ig_pb_check_activate', '', time() - 1000 );
 		}
 	}
