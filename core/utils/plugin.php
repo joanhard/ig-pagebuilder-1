@@ -98,10 +98,8 @@ class IG_Pb_Utils_Plugin {
 				} else {
 					$source_folder = WP_PLUGIN_DIR . "/$folder";
 					chmod( WP_PLUGIN_DIR, 0777 );
-					if ( file_exists( $source_folder ) ) {						
-                            // rename older folder
-                            rename( $source_folder, $source_folder . '-old' );                       
-
+					if ( file_exists( $source_folder ) ) {	
+							IG_Pb_Utils_Common::recursive_rmdir( $source_folder );	
 					}
 					// extract to plugin folder
 					$unzipfile = unzip_file( $source_zip, $source_folder );
@@ -109,7 +107,7 @@ class IG_Pb_Utils_Plugin {
 						$error = 0;
 						
 						unlink( $source_zip );
-						IG_Pb_Utils_Common::recursive_rmdir( $source_folder . '-old' );
+						
 					} else {
 						$error = 1;
 					}
