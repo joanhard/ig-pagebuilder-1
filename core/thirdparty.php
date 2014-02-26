@@ -145,3 +145,6 @@ class IG_Pb_ThirdParty {
 	}
 
 }
+
+
+class IG_Pb_Third_Party extends IG_Pb_ThirdParty {}
