@@ -52,8 +52,7 @@
 				}
 			}
 			ob_clean();
-
-			setcookie( 'ig_pb_check_activate', '', time() - 1000 );
+			delete_transient('ig_pb_check_activate');
 		}
 	}
 
@@ -83,7 +82,15 @@
 	// Extract packages of third-party plugins
 	function ig_pb_extract_plugins() {
 		$providers = ig_pb_default_providers();
-		WP_Filesystem();
+		global $wp_filesystem;
+
+		  if ( ! function_exists( 'WP_Filesystem' ) ) {
+		   include_once ABSPATH . 'wp-admin/includes/file.php';
+		  }
+
+		  if ( ! $wp_filesystem ) {
+		   WP_Filesystem();
+		  }
 		// extract dependency plugins
 		foreach ( $providers as $provider ) {
 			if ( isset ( $provider['folder'] ) ) {
