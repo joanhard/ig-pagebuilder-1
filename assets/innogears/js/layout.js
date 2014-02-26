@@ -643,9 +643,10 @@
             $('#premade-layout').click(function(e){
                 self.showPopover(box, e, self, $(this));
             });
-            $('#ig-add-layout #save-layout').click(function(e){
+            // toggle Save/Upload layout form
+            $('.layout-action').click(function(e){
                 $(this).toggleClass('hidden');
-                $('#ig-add-layout #save-layout-form').toggleClass('hidden');
+                $(this).next('.layout-toggle-form').toggleClass('hidden');
             });
         },
 
@@ -708,6 +709,7 @@
             }
             $container.find(item).fadeOut(100);
             $container.find(selector).fadeIn();
+
         },
 
         // Filter elements in "Add Element" Box
