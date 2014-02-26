@@ -42,7 +42,6 @@ class IG_Pb_Utils_Plugin {
 			$providers = $this->default_providers();
 
 			if ( is_plugin_active( 'ig-pagebuilder/ig-pagebuilder.php' ) ) {
-				$this->deactivate_providers();
 				$this->extract_plugins();
 
 				// activate dependency plugins
@@ -66,7 +65,7 @@ class IG_Pb_Utils_Plugin {
 		$plugin_data = get_plugin_data( IG_PB_FILE );
 		set_transient( 'ig_pb_check_activate', $plugin_data['Version'] );
 		IG_Pb_Utils_Common::remove_cache_folder();
-        //$this->deactivate_providers();
+        $this->deactivate_providers();
 	}
 
     // deactivate dependency plugins
@@ -87,7 +86,7 @@ class IG_Pb_Utils_Plugin {
 	// Extract packages of third-party plugins
 	function extract_plugins() {
 		$providers = $this->default_providers();
-		WP_Filesystem();
+		//WP_Filesystem();
 		// extract dependency plugins
 		foreach ( $providers as $provider ) {
 			if ( isset ( $provider['folder'] ) ) {
@@ -97,16 +96,18 @@ class IG_Pb_Utils_Plugin {
 					$error = 404;
 				} else {
 					$source_folder = WP_PLUGIN_DIR . "/$folder";
-					chmod( WP_PLUGIN_DIR, 0777 );
-					IG_Pb_Utils_Common::recursive_rmdir( $source_folder);	
-					
+					if ( file_exists( $source_folder ) ) {						
+                            // rename older folder
+                            rename( $source_folder, $source_folder . '-old' );                       
+
+					}
 					// extract to plugin folder
 					$unzipfile = unzip_file( $source_zip, $source_folder );
 					if ( $unzipfile ) {
 						$error = 0;
-						
+						chmod( WP_PLUGIN_DIR, 0777 );
 						unlink( $source_zip );
-						
+						IG_Pb_Utils_Common::recursive_rmdir( $source_folder . '-old' );
 					} else {
 						$error = 1;
 					}
