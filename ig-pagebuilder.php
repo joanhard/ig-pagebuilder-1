@@ -10,7 +10,7 @@
  */
 error_reporting( E_ALL ^ E_NOTICE );
 define( 'IG_PB_FILE', __FILE__ );
-
+require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 if ( ! class_exists( 'IG_Pb_Init' ) ) {
 
 	class IG_Pb_Init {
