@@ -26,16 +26,15 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 			// Assets load management
 			IG_Pb_Assets_Load::hook();
 
+			$IG_Pb_Utils_Plugin	=	new 	IG_Pb_Utils_Plugin();
+			
+			$IG_Pb_Utils_Plugin->deactivate_providers();
+			
 			add_action( 'widgets_init', array( &$this, 'init' ), 100 );
 		}
 
 		function init(){
 			global $Ig_Pb, $Ig_Pb_Widgets;
-
-			$IG_Pb_Utils_Plugin	=	new 	IG_Pb_Utils_Plugin();
-			
-			$IG_Pb_Utils_Plugin->deactivate_providers();
-
 
 			$Ig_Pb = new IG_Pb_Core();
 			IG_Product_Plugin::init();
