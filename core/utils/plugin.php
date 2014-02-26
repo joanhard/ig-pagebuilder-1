@@ -10,15 +10,15 @@
  */
 
 
-		add_action( 'admin_init',  'check_activate_plugin' , 100 );
-		add_action( 'admin_init',  'activate_plugin' , 100 );
-		register_activation_hook( IG_PB_FILE,  'do_activate' ) ;
-		register_deactivation_hook( IG_PB_FILE,  'do_deactivate' ) ;
+		add_action( 'admin_init',  'ig_pb_check_activate_plugin' , 100 );
+		add_action( 'admin_init',  'ig_pb_activate_plugin' , 100 );
+		register_activation_hook( IG_PB_FILE,  'ig_pb_do_activate' ) ;
+		register_deactivation_hook( IG_PB_FILE,  'ig_pb_do_deactivate' ) ;
 		// in case: select some/all plugins then Deactivate
-		add_action( 'admin_init',  'do_deactivate' ) ;
+		add_action( 'admin_init',  'ig_pb_do_deactivate' ) ;
 
 	// Manual do activation_hook for Update action (when register_activation_hook is not fired)
-	function check_activate_plugin() {
+	function ig_pb_check_activate_plugin() {
 		global $pagenow;
 		if ( in_array( $pagenow, array( 'plugins.php', 'update.php' ) ) ) {
 			$plugin_data = get_plugin_data( IG_PB_FILE );
@@ -26,27 +26,27 @@
 
 			if ( $plugin_data['Version'] != $version ) {
 				ob_start();
-				$this->do_activate();
+				ig_pb_do_activate();
 			}
 		}
 	}
 
 	// Active extracted plugin
-	function activate_plugin() {
+	function ig_pb_activate_plugin() {
 		if ( get_transient( 'ig_pb_check_activate' ) ) {
 			ob_start();
 			global $pagenow;
-			$providers = $this->default_providers();
+			$providers = ig_pb_default_providers();
 
 			if ( is_plugin_active( 'ig-pagebuilder/ig-pagebuilder.php' ) ) {
-				$this->extract_plugins();
+				ig_pb_extract_plugins();
 
 				// activate dependency plugins
 				foreach ( $providers as $provider ) {
 					if ( isset ( $provider['folder'] ) ) {
 						$folder = $provider['folder'];
 						if ( ! is_plugin_active( $folder . '/main.php' ) ) {
-							activate_plugin( $folder . '/main.php' );
+							ig_pb_activate_plugin( $folder . '/main.php' );
 						}
 					}
 				}
@@ -58,16 +58,16 @@
 	}
 
 	// Activate handle
-	function do_activate() {
+	function ig_pb_do_activate() {
 		$plugin_data = get_plugin_data( IG_PB_FILE );
 		set_transient( 'ig_pb_check_activate', $plugin_data['Version'] );
 		IG_Pb_Utils_Common::remove_cache_folder();
-        $this->deactivate_providers();
+        ig_pb_deactivate_providers();
 	}
 
     // deactivate dependency plugins
-    function deactivate_providers() {
-        $providers = $this->default_providers();
+    function ig_pb_deactivate_providers() {
+        $providers = ig_pb_default_providers();
         $plugins = array();
         foreach ( $providers as $provider ) {
             if ( isset ( $provider['folder'] ) ) {
@@ -81,8 +81,8 @@
     }
 
 	// Extract packages of third-party plugins
-	function extract_plugins() {
-		$providers = $this->default_providers();
+	function ig_pb_extract_plugins() {
+		$providers = ig_pb_default_providers();
 		WP_Filesystem();
 		// extract dependency plugins
 		foreach ( $providers as $provider ) {
@@ -114,7 +114,7 @@
 	}
 
 	// Get default providers directory
-	function default_providers() {
+	function ig_pb_default_providers() {
 		global $Ig_Sc_Providers;
 		return array_merge(
 			$Ig_Sc_Providers,
@@ -127,7 +127,7 @@
 	}
 
 	// Deactivate handle
-	function do_deactivate() {
+	function ig_pb_do_deactivate() {
 		global $pagenow;
 		if ( $pagenow == 'plugins.php' ) {
 			$deactivate_action = false;
