@@ -41,6 +41,7 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 			// include core files
 			include_once 'core/loader.php';
 			include_once 'core/defines.php';
+			include_once 'core/thirdparty.php';
 			include_once 'core/utils/plugin.php';
 		}
 

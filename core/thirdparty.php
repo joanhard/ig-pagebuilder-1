@@ -8,7 +8,7 @@
  * @package		IGPGBLDR
  * @version		$Id$
  */
-class IG_Pb_ThirdParty {
+class IG_Pb_Third_Party {
 
 	// prodiver name
 	protected $provider;
@@ -146,5 +146,3 @@ class IG_Pb_ThirdParty {
 
 }
 
-
-class IG_Pb_Third_Party extends IG_Pb_ThirdParty {}
