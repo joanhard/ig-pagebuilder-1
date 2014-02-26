@@ -32,16 +32,9 @@ if ( ! class_exists( 'IG_Pb_Init' ) ) {
 		function init(){
 			global $Ig_Pb, $Ig_Pb_Widgets;
 
-			
 			$IG_Pb_Utils_Plugin	=	new 	IG_Pb_Utils_Plugin();
-			$plugin_data = get_plugin_data( IG_PB_FILE );
-			$version     = get_transient( 'ig_pb_check_activate' );
-
-			if ( $plugin_data['Version'] != $version ) {
-				ob_start();
-				$IG_Pb_Utils_Plugin->deactivate_providers();
-			}
-
+			
+			$IG_Pb_Utils_Plugin->deactivate_providers();
 
 
 			$Ig_Pb = new IG_Pb_Core();
