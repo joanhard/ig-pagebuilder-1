@@ -12,7 +12,8 @@
 
 		add_action( 'admin_init',  'ig_pb_check_activate_plugin' , 100 );
 		add_action( 'admin_init',  'ig_pb_activate_plugin' , 100 );
-		register_activation_hook( IG_PB_FILE,  'ig_pb_do_activate' ) ;
+		add_action( 'admin_init',  'ig_pb_do_activate' , 99 );
+
 		register_deactivation_hook( IG_PB_FILE,  'ig_pb_do_deactivate' ) ;
 		// in case: select some/all plugins then Deactivate
 		add_action( 'admin_init',  'ig_pb_do_deactivate' ) ;
