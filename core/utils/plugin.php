@@ -29,7 +29,7 @@ class IG_Pb_Utils_Plugin {
 
 			if ( $plugin_data['Version'] != $version ) {
 				ob_start();
-				$this->do_activate();
+				//$this->do_activate();
 			}
 		}
 	}
