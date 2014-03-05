@@ -13,6 +13,8 @@ A simple yet powerful page builder that lets you create a complete WordPress web
 
 IG Page Builder is a drag-and-drop page builder that helps you quickly build a complete WordPress website and you don’t even need to read any documentation.
 
+[vimeo https://vimeo.com/88215863]
+
 This page builder is similar to an advanced visual editor, and you can use it for any theme.
 
 What makes IG Page Builder stand out from others is focusing on simplicity, lightweight and really useful, so that making your own unique website becomes easier than ever.
@@ -53,7 +55,6 @@ You can constantly use this page builder as a starter tool for your website buil
 2. Live Preview
 3. Widget Window
 
-== Changelog ==
 = 2.0 =
 * Added Setting page for IG PageBuilder
 * Added Options to handle IG Cache
