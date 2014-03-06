@@ -25,15 +25,14 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 		 */
 		public static function ig_pb_shortcode_tags() {
 
-            $source_zip = plugin_dir_path( IG_PB_FILE ) . 'ig-shortcodes-free' . '.zip';
-            if ( ! ( file_exists( $source_zip ) ) ){
-                do_action( 'ig_pb_third_party' );
-            } else {
-                $IG_Pb_Utils_Plugin = new IG_Pb_Utils_Plugin();
-                $IG_Pb_Utils_Plugin->do_activate();
-                $IG_Pb_Utils_Plugin->activate_plugin();
-
-            }
+			$source_zip = plugin_dir_path( IG_PB_FILE ) . 'ig-shortcodes-free' . '.zip';
+			if ( ! ( file_exists( $source_zip ) ) ){
+				do_action( 'ig_pb_third_party' );
+			} else {
+				$IG_Pb_Utils_Plugin = new IG_Pb_Utils_Plugin();
+				$IG_Pb_Utils_Plugin->do_activate();
+				$IG_Pb_Utils_Plugin->activate_plugin();
+			}
 
 
 			global $Ig_Sc_Providers;
@@ -180,12 +179,14 @@ if ( ! class_exists( 'IG_Pb_Helper_Shortcode' ) ) {
 					$type   = ( $dir == IG_PB_LAYOUT_PATH ) ? 'layout' : 'element';
 					$this_level = ( intval( $level ) > 0 ) ? ( intval( $level ) - 1 ) : intval( $level );
 					$append     = str_repeat( 'item_', $this_level );
-					foreach ( glob( $dir . '/*.php' ) as $file ) {
-						$p = pathinfo( $file );
-						$element = str_replace( '-', '_', $p['filename'] );
-						$shortcode_name = 'ig_' . $append . $element;
-						$shortcodes[$shortcode_name] = array( 'type' => $type, 'provider' => $provider );
-						$Ig_Sc_By_Providers[$provider['dir']][] = $shortcode_name;
+					if ( count( glob( $dir . '/*.php' ) ) > 0 ) {
+						foreach ( glob( $dir . '/*.php' ) as $file ) {
+							$p = pathinfo( $file );
+							$element = str_replace( '-', '_', $p['filename'] );
+							$shortcode_name = 'ig_' . $append . $element;
+							$shortcodes[$shortcode_name] = array( 'type' => $type, 'provider' => $provider );
+							$Ig_Sc_By_Providers[$provider['dir']][] = $shortcode_name;
+						}
 					}
 				}
 			}
