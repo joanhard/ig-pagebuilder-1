@@ -58,7 +58,11 @@ You can constantly use this page builder as a starter tool for your website buil
 == Changelog ==
 
 = 2.1.0 =
-
+* Added Custom Css feature
+* Added Addons management
+* Improved Move free shortcodes into core
+* Improved Working performance
+* Fixed minor bugs
 
 = 2.0 =
 * Added Setting page for IG PageBuilder
