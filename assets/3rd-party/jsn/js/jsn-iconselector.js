@@ -55,6 +55,7 @@
                 if (value != "") {
                     $(resultsFilter).find("li").each(function () {
                         var textField = $(this).find("a").attr("data-value").toLowerCase();
+                        textField = textField.replace('icon-', '');
                         if (textField.search(value.toLowerCase()) == -1) {
                             $(this).hide();
                         } else {

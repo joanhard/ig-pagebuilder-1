@@ -11,11 +11,11 @@
 
 (function ($) {
 	"use strict";
-	
+
 	$.IGSelectFonts = function () {
 		this.init();
 	};
-	
+
 	$.IGSelectFonts.prototype = {
 		init: function () {
 			var self 		= this;
@@ -26,12 +26,12 @@
 				self.changeFontFaceType( $(this) );
 			});
 		},
-		
+
 		changeFontFaceType: function( _this ) {
 			var self 		= this;
 			var divParent	= $(_this).parents('.controls');
 			var fontType	= $(_this).val();
-			
+
 			if ( ! fontType )
 				return false;
 			var dataOptions	= '';
@@ -44,7 +44,7 @@
 					dataOptions	= self.getGoogleOptions();
 					break;
 			};
-			
+
 			$.each(dataOptions, function (i, val) {
 				if (i == $(divParent).find("select.jsn-fontFace").attr("data-selected")) {
 	                $(divParent).find("select.jsn-fontFace").append(
@@ -56,16 +56,16 @@
 	                )
 	            }
 			});
-			
+
 			$(divParent).find("select.jsn-fontFace").select2({
 	            dropdownCssClass:'jsn-list-fontFace'
 	        });
-			
+
 			$(divParent).find("select.jsn-fontFaceType").select2({
 				minimumResultsForSearch:99
 			});
 		},
-		
+
 		getStandardOptions: function () {
 			var listFonts = {
 				"Verdana":"Verdana",
@@ -77,7 +77,7 @@
 			};
 			return listFonts;
 		},
-		
+
 		getGoogleOptions: function () {
 			var listFonts = {
 				"Open Sans":"Open Sans", "Oswald":"Oswald", "Droid Sans":"Droid Sans", "Lato":"Lato", "Open Sans Condensed":"Open Sans Condensed", "PT Sans":"PT Sans", "Ubuntu":"Ubuntu", "PT Sans Narrow":"PT Sans Narrow",
@@ -91,7 +91,7 @@
 			};
 			return listFonts;
 		}
-		
+
 	}
-	
+
 })(jQuery);
