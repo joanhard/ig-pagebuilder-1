@@ -58,10 +58,13 @@ You can constantly use this page builder as a starter tool for your website buil
 == Changelog ==
 
 = 2.1.0 =
-* Added Custom Css feature
+* Added Custom Css for page feature
 * Added Addons management
 * Improved Move free shortcodes into core
 * Improved Working performance
+* Improved Remove empty value attributes in shortcode tags
+* Improved PageBuilder transformation
+* Improved CSS loading mechanism
 * Fixed minor bugs
 
 = 2.0 =
