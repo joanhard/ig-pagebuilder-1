@@ -1,7 +1,7 @@
 <?php
 /**
  * @version    $Id$
- * @package    IG Pagebuilder
+ * @package    IG PageBuilder
  * @author     InnoGears Team <support@www.innogears.com>
  * @copyright  Copyright (C) 2012 www.innogears.com. All Rights Reserved.
  * @license    GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html
@@ -58,24 +58,21 @@ class IG_Pb_Core {
 	}
 
 	/**
-	 * Pagebuilder custom hook
+	 * IG PageBuilder custom hook
 	 */
 	function custom_hook() {
 		// filter assets
-		add_filter( 'ig_pb_assets_register', array( &$this, 'apply_assets' ) );
+		add_filter( 'ig_register_assets', array( &$this, 'apply_assets' ) );
 		add_action( 'admin_head', array( &$this, 'load_assets' ), 10 );
 		// translation
 		add_action( 'init', array( &$this, 'translation' ) );
 		// register modal page
 		add_action( 'admin_init', array( &$this, 'modal_register' ) );
 		add_action( 'admin_init', array( &$this, 'widget_register_assets' ) );
-		add_action( 'admin_init', array( &$this, 'remove_admin_assets' ), 900000 );
-		add_action( 'admin_footer', array( &$this, 'remove_admin_assets_footer' ), 10 );
-		add_action( 'admin_menu', array( &$this, 'add_ig_modal_page' ) );
+
 		// enable shortcode in content & filter content with IGPB shortcodes
+		add_filter( 'the_content', array( &$this, 'pagebuilder_to_frontend' ), 9 );
 		add_filter( 'the_content', 'do_shortcode' );
-		add_filter( 'the_content', array( &$this, 'pagebuilder_to_frontend' ) );
-		//		remove_filter( 'the_content', 'wpautop' );
 		remove_filter( 'the_excerpt', 'wpautop' );
 		// enqueue js for front-end
 		add_action( 'wp_enqueue_scripts', array( &$this, 'frontend_scripts' ) );
@@ -86,6 +83,10 @@ class IG_Pb_Core {
 		add_action( 'edit_page_form', array( &$this, 'save_pagebuilder_content' ) );
 		add_action( 'pre_post_update', array( &$this, 'save_pagebuilder_content' ) );
 		// ajax action
+		add_action( 'wp_ajax_save_css_custom', array( &$this, 'save_css_custom' ) );
+		add_action( 'wp_ajax_delete_layout', array( &$this, 'delete_layout' ) );
+		add_action( 'wp_ajax_delete_layouts_group', array( &$this, 'delete_layouts_group' ) );
+		add_action( 'wp_ajax_reload_layouts_box', array( &$this, 'reload_layouts_box' ) );
 		add_action( 'wp_ajax_igpb_clear_cache', array( &$this, 'igpb_clear_cache' ) );
 		add_action( 'wp_ajax_save_layout', array( &$this, 'save_layout' ) );
 		add_action( 'wp_ajax_upload_layout', array( &$this, 'upload_layout' ) );
@@ -95,8 +96,7 @@ class IG_Pb_Core {
 		add_action( 'wp_ajax_get_shortcode_tpl', array( &$this, 'get_shortcode_tpl' ) );
 		add_action( 'wp_ajax_text_to_pagebuilder', array( &$this, 'text_to_pagebuilder' ) );
 		add_action( 'wp_ajax_get_html_content', array( &$this, 'get_html_content' ) );
-		// preview shortcode
-		add_action( 'wp_after_admin_bar_render', array( &$this, 'shortcode_iframe_preview' ) );
+
 		// add IGPB metabox
 		add_action( 'add_meta_boxes', array( &$this, 'custom_meta_boxes' ) );
 		// print html template of shortcodes
@@ -124,6 +124,9 @@ class IG_Pb_Core {
 		add_action( 'wp_head', array( &$this, 'post_view' ) );
 		add_action( 'wp_footer', array( &$this, 'enqueue_compressed_assets' ) );
 
+		// Custom css
+		add_action( 'wp_head', array( &$this, 'enqueue_custom_css' ), 25 );
+		add_action( 'wp_print_styles', array( $this, 'print_frontend_styles' ), 25 );
 
 		do_action( 'ig_pb_custom_hook' );
 	}
@@ -145,18 +148,18 @@ class IG_Pb_Core {
 		);
 		IG_Pb_Helper_Functions::load_bootstrap_3( $assets );
 		if ( ! is_admin() || IG_Pb_Helper_Functions::is_preview() ) {
-			$options = array( 'ig_pb_boostrap_js', 'ig_pb_boostrap_css' );
+			$options = array( 'ig_pb_settings_boostrap_js', 'ig_pb_settings_boostrap_css' );
 			// get saved options value
 			foreach ( $options as $key ) {
-				$$key = get_option( $key, false );
+				$$key = get_option( $key, 'enable' );
 			}
-			if ( ! ( ! $ig_pb_boostrap_js || $ig_pb_boostrap_js == 'enable' ) ) {
+			if ( $ig_pb_settings_boostrap_css != 'enable' ) {
 				$assets['ig-pb-bootstrap-css'] = array(
-					'src' => IG_Pb_Helper_Functions::path( 'assets/3rd-party/bootstrap3' ) . '/css/bootstrap.min.css',
+					'src' => '',
 					'ver' => '3.0.2',
 				);
 			}
-			if ( ! ( ! $ig_pb_boostrap_css || $ig_pb_boostrap_css == 'enable' ) ) {
+			if ( $ig_pb_settings_boostrap_js != 'enable' ) {
 				$assets['ig-pb-bootstrap-js'] = array(
 					'src' => '',
 					'ver' => '3.0.2',
@@ -204,14 +207,14 @@ class IG_Pb_Core {
 	function frontend_scripts() {
 		// load css
 		$ig_pb_frontend_css = array( 'ig-pb-font-icomoon-css', 'ig-pb-joomlashine-frontend-css', 'ig-pb-frontend-css', 'ig-pb-frontend-responsive-css', 'ig-pb-jquery-tipsy-css', 'ig-pb-jquery-fancybox-css' );
-		IG_Pb_Assets_Load::load( $ig_pb_frontend_css );
+		IG_Init_Assets::load( $ig_pb_frontend_css );
 		// load js
 		$ig_pb_frontend_js = array( 'jquery', 'jquery-ui', 'ig-pb-bootstrap-js', 'ig-pb-jquery-tipsy-js', 'ig-pb-jquery-mousewheel-js', 'ig-pb-jquery-fancybox-js', 'ig-pb-jquery-lazyload-js' );
-		IG_Pb_Assets_Load::load( apply_filters( 'ig_pb_assets_enqueue_frontend',  $ig_pb_frontend_js ) );
+		IG_Init_Assets::load( apply_filters( 'ig_pb_assets_enqueue_frontend',  $ig_pb_frontend_js ) );
 	}
 
 	/**
-	 * Add Pagebuilder Metaboxes
+	 * Add IG PageBuilder Metaboxes
 	 */
 	function custom_meta_boxes() {
 		$check = $this->check_condition( 'editor' );
@@ -225,7 +228,7 @@ class IG_Pb_Core {
 	}
 
 	/**
-	 * Content file for Pagebuilder Metabox
+	 * Content file for IG PageBuilder Metabox
 	 */
 	function page_builder_html() {
 		include IG_PB_TPL_PATH . '/page-builder.php';
@@ -320,20 +323,9 @@ class IG_Pb_Core {
 				$cls_modal->preview_modal();
 			if ( ! empty( $_GET['ig_layout'] ) )
 				$cls_modal->preview_modal( '_layout' );
+			if ( ! empty( $_GET['ig_custom_css'] ) )
+				$cls_modal->preview_modal( '_custom_css' );
 		}
-	}
-
-	/**
-	 * Add modal page hook
-	 * @global array $_registered_pages
-	 */
-	function add_ig_modal_page() {
-		global $_registered_pages;
-		$hookname = get_plugin_page_hookname( 'ig_modal_page', 'index.php' );
-		if ( ! empty( $hookname ) ) {
-			add_action( $hookname, array( &$this, 'modal_page_content' ) );
-		}
-		$_registered_pages[$hookname] = true;
 	}
 
 	/**
@@ -358,19 +350,15 @@ class IG_Pb_Core {
 			var _param		= jQuery( '#' + _param_id );
 			_param.text( l.content ).val( l.content );
 			jQuery( '#ig-tinymce-change' ).val( '1' );
-			if( window.top.document.getElementById( 'jsn_view_modal' ) )
-				window.top.document.getElementById( 'jsn_view_modal' ).contentWindow['jQuery'].HandleSetting.shortcodePreview();
 		});
-
 	});
-
 }][0]
 JS;
 		return $initArray;
 	}
 
 	/**
-	 * Save Pagebuilder shortcode content of a post/page
+	 * Save IG PageBuilder shortcode content of a post/page
 	 * @param type $post_id
 	 * @return type
 	 */
@@ -382,11 +370,14 @@ JS;
 			return;
 
 		$ig_deactivate_pb = intval( mysql_real_escape_string( $_POST['ig_deactivate_pb'] ) );
+
 		if ( $ig_deactivate_pb ) {
 			IG_Pb_Utils_Common::delete_meta_key( array( '_ig_page_builder_content', '_ig_html_content', '_ig_page_active_tab', '_ig_post_view_count' ), $post_id );
 		} else {
 			$ig_active_tab = intval( mysql_real_escape_string( $_POST['ig_active_tab'] ) );
 			$post_content  = '';
+
+			// IG PageBuilder is activate
 			if ( $ig_active_tab ) {
 				$data = array();
 				if ( isset( $_POST['shortcode_content'] ) && is_array( $_POST['shortcode_content'] ) ) {
@@ -456,53 +447,6 @@ JS;
 			$html .= '</div>';
 			echo balanceTags( $html );
 		}
-	}
-
-	/**
-	 * Save premade layout to file
-	 * @return type
-	 */
-	function save_layout() {
-		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
-			return;
-
-		$layout_name    = $_POST['layout_name'];
-		$layout_content = stripslashes( $_POST['layout_content'] );
-
-		IG_Pb_Helper_Layout::save_premade_layouts( $layout_name, $layout_content );
-
-		exit;
-	}
-
-	/**
-	 * Upload premade layout to file
-	 * @return type
-	 */
-	function upload_layout() {
-		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
-			return;
-
-		$status = 0;
-		if ( ! empty ( $_FILES ) ) {
-			$fileinfo = $_FILES['file'];
-			$file     = $fileinfo['tmp_name'];
-			$tmp_file = 'tmp-layout-' . time();
-			$dest     = IG_Pb_Helper_Functions::get_wp_upload_folder( '/ig-pb-layout/' . $tmp_file );
-			if ( $fileinfo['type'] == 'application/octet-stream' ) {
-				WP_Filesystem();
-				$unzipfile = unzip_file( $file, $dest );
-				if ( $unzipfile ) {
-					// explore extracted folder to get provider info
-					$status = IG_Pb_Helper_Layout::import( $dest );
-				}
-				// remove zip file
-				unlink( $file );
-			}
-			IG_Pb_Utils_Common::recursive_rmdir( $dest );
-		}
-		echo intval( $status );
-
-		exit;
 	}
 
 	/**
@@ -600,7 +544,7 @@ JS;
 	}
 
 	/**
-	 * Classic Editor to Pagebuilder
+	 * Classic Editor to IG PageBuilder
 	 * @return type
 	 */
 	function text_to_pagebuilder() {
@@ -614,15 +558,23 @@ JS;
 		$content = stripslashes( $content );
 
 		$empty_str = IG_Pb_Helper_Shortcode::check_empty_( $content );
-		if ( strlen( trim( $content ) ) != 0 && strlen( trim( $empty_str ) ) != 0 ) {
+		if ( strlen( trim( $content ) ) && strlen( trim( $empty_str ) ) ) {
 			$builder = new IG_Pb_Helper_Shortcode();
+
+			// remove wrap p tag
+			$content = preg_replace( '/^<p>(.*)<\/p>$/', '$1', $content );
+			$content = balanceTags( $content );
+
 			echo balanceTags( $builder->do_shortcode_admin( $content, false, true ) );
+		} else {
+			echo '';
 		}
+
 		exit;
 	}
 
 	/**
-	 * Show Pagebuilder content for Frontend post
+	 * Show IG PageBuilder content for Frontend post
 	 *
 	 * @param type $content
 	 * @return type
@@ -639,10 +591,10 @@ JS;
 				$ig_pagebuilder_content = IG_Pb_Utils_Placeholder::remove_placeholder( $ig_pagebuilder_content, 'wrapper_append', '' );
 
 				$ig_pagebuilder_content = preg_replace_callback(
-						'/\[ig_widget\s([A-Za-z0-9_-]+=\"[^"\']*\")*\](.*)\[\/ig_widget\]/Us', array( 'IG_Pb_Helper_Shortcode', 'widget_content' ), $ig_pagebuilder_content
+						'/\[ig_widget\s+([A-Za-z0-9_-]+=\"[^"\']*\"\s*)*\s*\](.*)\[\/ig_widget\]/Us', array( 'IG_Pb_Helper_Shortcode', 'widget_content' ), $ig_pagebuilder_content
 						);
 
-				$content = do_shortcode( $ig_pagebuilder_content );
+				$content = $ig_pagebuilder_content;
 			}
 		}
 
@@ -656,14 +608,13 @@ JS;
 		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
 			return;
 
-		if ( ! isset( $_POST['content'] ) )
-			return;
-
 		$content = $_POST['content'];
 		$content = stripslashes( $content );
 		$content = IG_Pb_Helper_Shortcode::doshortcode_content( $content );
-		echo "<div class='jsn-bootstrap'>" . $content . '</div>';
 
+		if ( ! empty( $content ) ) {
+			echo "<div class='jsn-bootstrap'>" . $content . '</div>';
+		}
 		exit;
 	}
 
@@ -677,7 +628,7 @@ JS;
 	}
 
 	/**
-     * Check condition to load Pagebuilder content & assets
+     * Check condition to load IG PageBuilder content & assets
      *
      * @global type $pagenow
      * @global type $post
@@ -708,13 +659,11 @@ JS;
 			// styles
 			IG_Pb_Helper_Functions::enqueue_styles();
 
-			IG_Pb_Assets_Load::load( array( 'ig-pb-jquery-fancybox-css' ) );
-
 			// scripts
 			IG_Pb_Helper_Functions::enqueue_scripts();
 
-			$scripts = array( 'ig-pb-jquery-select2-js', 'ig-pb-jquery-livequery-js', 'ig-pb-addpanel-js', 'ig-pb-jquery-resize-js', 'ig-pb-joomlashine-modalresize-js', 'ig-pb-layout-js', 'ig-pb-jquery-mousewheel-js', 'ig-pb-jquery-fancybox-js', 'ig-pb-placeholder' );
-			IG_Pb_Assets_Load::load( apply_filters( 'ig_pb_assets_enqueue_admin', $scripts ) );
+			$scripts = array( 'ig-pb-jquery-select2-js', 'ig-pb-jquery-livequery-js', 'ig-pb-addpanel-js', 'ig-pb-jquery-resize-js', 'ig-pb-joomlashine-modalresize-js', 'ig-pb-layout-js', 'ig-pb-jquery-mousewheel-js', 'ig-pb-placeholder' );
+			IG_Init_Assets::load( apply_filters( 'ig_pb_assets_enqueue_admin', $scripts ) );
 
 			IG_Pb_Helper_Functions::enqueue_scripts_end();
 		}
@@ -738,83 +687,9 @@ JS;
 				wp_enqueue_script( 'thickbox' );
 			}
 			$this->load_assets();
-			IG_Pb_Assets_Load::load( 'ig-pb-handlesetting-js' );
-			IG_Pb_Assets_Load::load( 'ig-pb-jquery-fancybox-js' );
-			IG_Pb_Assets_Load::load( 'ig-pb-widget-js' );
-		}
-	}
-
-	/**
-	 * Unload Wp admin css in modal iframe
-	 */
-	function remove_admin_assets() {
-		if ( IG_Pb_Helper_Functions::is_modal() ) {
-			wp_deregister_style( 'wp-admin' );
-
-			wp_deregister_script( 'colors' );
-			wp_deregister_script( 'ie' );
-			wp_dequeue_script( 'utils' );
-
-			global $wp_scripts;
-			unset ( $wp_scripts );
-
-			remove_all_actions( 'admin_print_styles' );
-			//			remove_all_actions( 'admin_print_scripts' );
-
-			if ( is_network_admin() ) {
-				/**
-				 * Print network admin screen notices.
-				 *
-				 * @since 3.1.0
-				 */
-				remove_all_actions( 'network_admin_notices' );
-			} elseif ( is_user_admin() ) {
-				/**
-				 * Print user admin screen notices.
-				 *
-				 * @since 3.1.0
-				 */
-				remove_all_actions( 'user_admin_notices' );
-			} else {
-				/**
-				 * Print admin screen notices.
-				 *
-				 * @since 3.1.0
-				 */
-				remove_all_actions( 'admin_notices' );
-			}
-			remove_all_actions( 'all_admin_notices' );
-		}
-	}
-
-	/**
-	 * Remove assets of any third parties at admin footer
-	 */
-	function remove_admin_assets_footer() {
-		if ( IG_Pb_Helper_Functions::is_modal() ) {
-			global $ig_handle_assets;
-			$ig_handle_assets[] = 'common';
-			//			$ig_handle_assets[] = 'admin-bar';
-			$ig_handle_assets[] = 'media-editor';
-			//			$ig_handle_assets[] = 'utils';
-			$ig_handle_assets[] = 'wp-auth-check';
-			$ig_handle_assets[] = 'jquery';
-			$ig_handle_assets[] = 'jquery-ui-core';
-			$ig_handle_assets[] = 'jquery-ui-tabs';
-			$ig_handle_assets[] = 'jquery-ui-widget';
-			$ig_handle_assets[] = 'jquery-ui-resizable';
-			$ig_handle_assets[] = 'jquery-ui-sortable';
-			$ig_handle_assets[] = 'jquery-ui-dialog';
-			$ig_handle_assets[] = 'jquery-ui-button';
-			$ig_handle_assets[] = 'jquery-ui-slider';
-			$ig_handle_assets   = apply_filters( 'custom_scripts_frontend_filter', $ig_handle_assets );
-			global $wp_scripts;
-			foreach ( $wp_scripts->queue as $script ) {
-				if ( ! in_array( $script, $ig_handle_assets ) ) {
-					wp_dequeue_script( $script );
-					wp_dequeue_style( $script );
-				}
-			}
+			IG_Init_Assets::load( 'ig-pb-handlesetting-js' );
+			IG_Init_Assets::load( 'ig-pb-jquery-fancybox-js' );
+			IG_Init_Assets::load( 'ig-pb-widget-js' );
 		}
 	}
 
@@ -909,30 +784,36 @@ JS;
 	// after title hook
 	function hook_after_title() {
 		global $post;
-		$ig_pagebuilder_content = get_post_meta( $post->ID, '_ig_page_builder_content', true );
-		// active tab
-		$ig_page_active_tab = get_post_meta( $post->ID, '_ig_page_active_tab', true );
-		$tab_active = isset( $ig_page_active_tab ) ? intval( $ig_page_active_tab ) : ( ! empty($ig_pagebuilder_content ) ? 1 : 0);
-		// deactivate pagebuilder
-		$ig_deactivate_pb = get_post_meta( $post->ID, '_ig_deactivate_pb', true );
-		$ig_deactivate_pb = isset( $ig_deactivate_pb ) ? intval( $ig_deactivate_pb ) : 0;
+		$check = $this->check_condition( 'editor' );
+		if ( $check ) {
+			$ig_pagebuilder_content = get_post_meta( $post->ID, '_ig_page_builder_content', true );
+			// active tab
+			$ig_page_active_tab = get_post_meta( $post->ID, '_ig_page_active_tab', true );
+			$tab_active         = isset( $ig_page_active_tab ) ? intval( $ig_page_active_tab ) : ( ! empty( $ig_pagebuilder_content ) ? 1 : 0 );
+			// deactivate pagebuilder
+			$ig_deactivate_pb = get_post_meta( $post->ID, '_ig_deactivate_pb', true );
+			$ig_deactivate_pb = isset( $ig_deactivate_pb ) ? intval( $ig_deactivate_pb ) : 0;
 
-		$wrapper_style = $tab_active ? 'style="display:none"' : '';
-		echo '
-			<input id="ig_active_tab" name="ig_active_tab" value="' . $tab_active . '" type="hidden">
-			<input id="ig_deactivate_pb" name="ig_deactivate_pb" value="' . $ig_deactivate_pb . '" type="hidden">
-			<div class="jsn-bootstrap ig-editor-wrapper" ' . $wrapper_style . '>
-				<ul class="nav nav-tabs" id="ig_editor_tabs">
-					<li class="active"><a href="#ig_editor_tab1">' . __( 'Classic Editor', IGPBL ) . '</a></li>
-					<li><a href="#ig_editor_tab2">' . __( 'Page Builder', IGPBL ) . '</a></li>
-				</ul>
-				<div class="tab-content ig-editor-tab-content">
-					<div class="tab-pane active" id="ig_editor_tab1">';
+			$wrapper_style = $tab_active ? 'style="display:none"' : '';
+			echo '
+                <input id="ig_active_tab" name="ig_active_tab" value="' . $tab_active . '" type="hidden">
+                <input id="ig_deactivate_pb" name="ig_deactivate_pb" value="' . $ig_deactivate_pb . '" type="hidden">
+                <div class="jsn-bootstrap ig-editor-wrapper" ' . $wrapper_style . '>
+                    <ul class="nav nav-tabs" id="ig_editor_tabs">
+                        <li class="active"><a href="#ig_editor_tab1">' . __( 'Classic Editor', IGPBL ) . '</a></li>
+                        <li><a href="#ig_editor_tab2">' . __( 'Page Builder', IGPBL ) . '</a></li>
+                    </ul>
+                    <div class="tab-content ig-editor-tab-content">
+                        <div class="tab-pane active" id="ig_editor_tab1">';
+		}
 	}
 
 	// after editor hook
 	function hook_after_editor() {
-		echo '</div><div class="tab-pane" id="ig_editor_tab2"><div id="ig_before_pagebuilder"></div></div></div></div>';
+		$check = $this->check_condition( 'editor' );
+		if ( $check ) {
+			echo '</div><div class="tab-pane" id="ig_editor_tab2"><div id="ig_before_pagebuilder"></div></div></div></div>';
+		}
 	}
 
 	/**
@@ -943,8 +824,8 @@ JS;
 			global $post;
 			if ( empty ( $post ) )
 				exit;
-			$ig_pb_cache_status = get_option( 'ig_pb_cache_status', false );
-			if ( $ig_pb_cache_status == 'disable' ) {
+			$ig_pb_settings_cache = get_option( 'ig_pb_settings_cache', 'enable' );
+			if ( $ig_pb_settings_cache != 'enable' ) {
 				exit;
 			}
 			$contents_of_type = array();
@@ -976,7 +857,7 @@ JS;
 					$file_to_write = "$cache_dir/$file_name";
 				} else {
 					$fp = fopen( $file_to_write, 'w' );
-					$handle_contents = implode( "\n------------------------------------------------------------\n", $list );
+					$handle_contents = implode( "\n/*------------------------------------------------------------*/\n", $list );
 					fwrite( $fp, $handle_contents );
 					fclose( $fp );
 				}
@@ -1000,8 +881,182 @@ JS;
 
 		$delete = IG_Pb_Utils_Common::remove_cache_folder();
 
-		echo balanceTags( $delete ? __( 'Cache files are deleted successfully', IGPBL ) : __( "Fail. Can't delete cache folder", IGPBL ) );
+		echo balanceTags( $delete ? __( '<i class="icon-checkmark"></i>', IGPBL ) : __( "Fail. Can't delete cache folder", IGPBL ) );
 
 		exit;
+	}
+
+	/**
+	 * Save premade layout to file
+	 * @return type
+	 */
+	function save_layout() {
+		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
+			return;
+
+		$layout_name    = $_POST['layout_name'];
+		$layout_content = stripslashes( $_POST['layout_content'] );
+
+		$error = IG_Pb_Helper_Layout::save_premade_layouts( $layout_name, $layout_content );
+
+		echo intval( $error ) ? _( 'Template name exists. Please choose another one.' ) : _( 'Saved successfully.' );
+
+		exit;
+	}
+
+	/**
+	 * Upload premade layout to file
+	 * @return type
+	 */
+	function upload_layout() {
+		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
+			return;
+
+		$status = 0;
+		if ( ! empty ( $_FILES ) ) {
+			$fileinfo = $_FILES['file'];
+			$file     = $fileinfo['tmp_name'];
+			$tmp_file = 'tmp-layout-' . time();
+			$dest     = IG_Pb_Helper_Functions::get_wp_upload_folder( '/ig-pb-layout/' . $tmp_file );
+			if ( $fileinfo['type'] == 'application/octet-stream' ) {
+				WP_Filesystem();
+				$unzipfile = unzip_file( $file, $dest );
+				if ( $unzipfile ) {
+					// explore extracted folder to get provider info
+					$status = IG_Pb_Helper_Layout::import( $dest );
+				}
+				// remove zip file
+				unlink( $file );
+			}
+			IG_Pb_Utils_Common::recursive_delete( $dest );
+		}
+		echo intval( $status );
+
+		exit;
+	}
+
+	/**
+	 * Reload layout box
+	 * @return type
+	 */
+	function reload_layouts_box() {
+		if ( ! isset($_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) )
+			return;
+
+		include IG_PB_TPL_PATH . '/layout/list.php';
+
+		exit;
+	}
+
+	/**
+	 * Delete group layout
+	 * @return type
+	 */
+	function delete_layouts_group() {
+		if ( ! isset( $_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) ) {
+			return;
+		}
+
+		$group  = sanitize_key( $_POST['group'] );
+		$delete = IG_Pb_Helper_Layout::remove_group( $group );
+
+		include IG_PB_TPL_PATH . '/layout/list.php';
+
+		exit;
+	}
+
+	/**
+	 * Delete layout
+	 *
+	 * @return type
+	 */
+	function delete_layout() {
+		if ( ! isset( $_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) ) {
+			return;
+		}
+
+		$group  = sanitize_key( $_POST['group'] );
+		$layout = urlencode( $_POST['layout'] );
+		$delete = IG_Pb_Helper_Layout::remove_layout( $group, $layout );
+
+		echo esc_html( $delete ? 1 : 0 );
+
+		exit;
+	}
+
+	/**
+	 * Save custom CSS information: files, code
+	 * @return type
+	 */
+	function save_css_custom() {
+		if ( ! isset( $_POST[IGNONCE] ) || ! wp_verify_nonce( $_POST[IGNONCE], IGNONCE ) ) {
+			return;
+		}
+
+		$post_id = esc_sql( $_POST['post_id'] );
+		// save custom css code & files
+		IG_Pb_Helper_Functions::custom_css( $post_id, 'css_files', 'put', esc_sql( $_POST['css_files'] ) );
+		IG_Pb_Helper_Functions::custom_css( $post_id, 'css_custom', 'put', esc_textarea( $_POST['custom_css'] ) );
+
+		exit;
+	}
+
+	/**
+	 * Echo custom css code, link custom css files
+	 */
+	function enqueue_custom_css() {
+		global $post;
+		if ( ! isset( $post ) || ! is_object( $post ) ) {
+			return;
+		}
+
+		$ig_deactivate_pb = get_post_meta( $post->ID, '_ig_deactivate_pb', true );
+
+		// if not deactivate pagebuilder on this post
+		if ( empty( $ig_deactivate_pb ) ) {
+
+			$custom_css_data = IG_Pb_Helper_Functions::custom_css_data( isset ( $post->ID ) ? $post->ID : NULL );
+			extract( $custom_css_data );
+
+			$css_files = stripslashes( $css_files );
+
+			if ( ! empty( $css_files ) ) {
+				$css_files = json_decode( $css_files );
+				$data      = $css_files->data;
+
+				foreach ( $data as $idx => $file_info ) {
+					$checked = $file_info->checked;
+					$url     = $file_info->url;
+
+					// if file is checked to load, enqueue it
+					if ( $checked ) {
+						wp_enqueue_style( 'ig-pb-custom-file-' . $post->ID . '-' . $idx, $url );
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Print style on front-end
+	 */
+	function print_frontend_styles() {
+		global $post;
+		if ( ! isset( $post ) || ! is_object( $post ) ) {
+			return;
+		}
+
+		$ig_deactivate_pb = get_post_meta( $post->ID, '_ig_deactivate_pb', true );
+
+		// if not deactivate pagebuilder on this post
+		if ( empty( $ig_deactivate_pb ) ) {
+
+			$custom_css_data = IG_Pb_Helper_Functions::custom_css_data( isset ( $post->ID ) ? $post->ID : NULL );
+			extract( $custom_css_data );
+
+			$css_custom = stripslashes( $css_custom );
+
+			echo balanceTags( "<style id='ig-pb-custom-{$post->ID}-css'>\n$css_custom\n</style>\n" );
+		}
 	}
 }

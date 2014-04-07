@@ -78,22 +78,22 @@ class IG_Pb_Assets_Register {
 		),
 
 		'ig-pb-joomlashine-css' => array(
-			'src' => 'assets/3rd-party/joomlashine/css/jsn-gui.css',
+			'src' => 'assets/3rd-party/jsn/css/jsn-gui.css',
 			'deps' => array( 'ig-pb-bootstrap-css' ),
 		),
 
 		'ig-pb-joomlashine-fontselector-js' => array(
-			'src' => 'assets/3rd-party/joomlashine/js/jsn-fontselector.js',
+			'src' => 'assets/3rd-party/jsn/js/jsn-fontselector.js',
 			'deps' => array( 'jquery' )
 		),
 
 		'ig-pb-joomlashine-iconselector-js' => array(
-			'src' => 'assets/3rd-party/joomlashine/js/jsn-iconselector.js',
+			'src' => 'assets/3rd-party/jsn/js/jsn-iconselector.js',
 			'deps' => array( 'jquery' )
 		),
 
 		'ig-pb-joomlashine-modalresize-js' => array(
-			'src' => 'assets/3rd-party/joomlashine/js/jsn-modalresize.js',
+			'src' => 'assets/3rd-party/jsn/js/jsn-modalresize.js',
 			'deps' => array( 'jquery' )
 		),
 
@@ -164,6 +164,11 @@ class IG_Pb_Assets_Register {
 			'src' => 'assets/3rd-party/jquery-ui/css/ui-bootstrap/jquery-ui-1.9.0.custom.css',
 			'ver' => '1.9.0',
 		),
+
+		'ig-zeroclipboard-js' => array(
+			'src' => 'assets/3rd-party/zeroclipboard/ZeroClipboard.min.js',
+			'ver' => '1.3.5',
+		),
 	);
 
 	/**
@@ -175,10 +180,10 @@ class IG_Pb_Assets_Register {
 	 */
 	public static function apply_assets( $assets = array() ) {
 		foreach ( self::$assets AS $key => $value ) {
-			if ( ! isset( $assets[$key]) ) {
+			if ( ! isset( $assets[$key] ) ) {
 				// Fine-tune asset location
-				if ( ! preg_match( '#^(https?:)?/#', $value['src'] ) AND is_file( IG_PB_PATH . '/' . $value['src'] ) ) {
-					$value['src'] = IG_PB_URI . $value['src'];
+				if ( ! preg_match( '#^(https?:)?/#', $value['src'] ) AND is_file( IG_PB_PATH . $value['src'] ) ) {
+					$value['src'] = IG_PB_URI . '/' . $value['src'];
 
 					$assets[$key] = $value;
 				}
@@ -195,7 +200,7 @@ class IG_Pb_Assets_Register {
 	 */
 	public static function init() {
 		// Add filter to register assets
-		add_filter( 'ig_pb_assets_register', array( __CLASS__, 'apply_assets' ) );
+		add_filter( 'ig_register_assets', array( __CLASS__, 'apply_assets' ) );
 		// Do 'ig_init_plugins' action
 		do_action( 'ig_pb_init_plugin' );
 	}

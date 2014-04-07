@@ -1,4 +1,4 @@
-﻿=== IG Page Builder ===
+=== IG Page Builder ===
 Contributors: innogears
 Tags: page builder, admin, content, visual, element, plugin, advanced, page elements, editor, layout, easy to use, page, post, responsive, widget
 Requires at least: 3.6
@@ -54,6 +54,11 @@ You can constantly use this page builder as a starter tool for your website buil
 1. The IG Page Builder layout
 2. Live Preview
 3. Widget Window
+
+== Changelog ==
+
+= 2.1.0 =
+
 
 = 2.0 =
 * Added Setting page for IG PageBuilder
