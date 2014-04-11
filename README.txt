@@ -1,9 +1,9 @@
 === IG Page Builder ===
 Contributors: innogears
 Tags: page builder, admin, content, visual, element, plugin, advanced, page elements, editor, layout, easy to use, page, post, responsive, widget
-Requires at least: 3.6
+Requires at least: 3.8
 Tested up to: 3.8
-Stable tag: 3.6
+Stable tag: 3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
