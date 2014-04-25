@@ -58,8 +58,10 @@ You can constantly use this page builder as a starter tool for your website buil
 == Changelog ==
 
 = 2.2.0 =
+* Improved Working performance
 * Improved Upgrade backend UI to bootstrap 3
-
+* Added Ajax modal setting mechanism
+* Improved InnoShortcode button in classic editor
 
 = 2.1.0 =
 * Added Custom Css for page feature
