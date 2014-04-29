@@ -128,7 +128,11 @@
 	// Use jquery-te 3rd-party editor for specified classes
 	$.HandleSetting.setEditor = function (selector) {
 		$(selector).each(function () {
-			$(this).jqte();
+			var _this = $(this);
+			$(this).jqte({blur: function(){
+				$(_this).trigger('change');
+			}});
+
 		});
 	}
 

@@ -56,6 +56,9 @@ You can constantly use this page builder as a starter tool for your website buil
 3. Widget Window
 
 == Changelog ==
+= 2.2.1 =
+* Fixed Modal and select box z-index
+* Fixed Text Editor not fire change when saving 
 
 = 2.2.0 =
 * Improved Working performance
