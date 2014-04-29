@@ -184,7 +184,7 @@
     background: none;
 }
 .ig-dialog {
-    z-index: 1000001 !important;
+    z-index: 100050 !important;
     padding: 0;
     border: 0;
     -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
@@ -312,7 +312,7 @@
     right: 100px;
 }
 .select2-drop{
-    z-index: 100001 !important;
+    z-index: 100051 !important;
 }
 .select2-drop-mask{
     max-width: 80%;
@@ -421,15 +421,15 @@
     padding-top: 0;
 }
 /* === for sorting Element in Popover === */
-#ig-add-element .jsn-items-list {
+.ig-add-element .jsn-items-list {
 	position: relative;
 }
 
-#ig-add-element .jsn-items-list li{
+.ig-add-element .jsn-items-list li{
 	width: 32.5% !important;
 }
 
-#ig-add-element .jsn-items-list li.full-width {
+.ig-add-element .jsn-items-list li.full-width {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -438,27 +438,27 @@
 	width: auto !important;
 	height: auto !important;
 }
-#ig-add-element .jsn-items-list li.full-width > textarea {
+.ig-add-element .jsn-items-list li.full-width > textarea {
 	width: 100%;
 	height: 15em;
 }
-#ig-add-element .jsn-items-list li.full-width > button {
+.ig-add-element .jsn-items-list li.full-width > button {
 	width: auto;
 	outline: 0 !important;
 }
 /* === Hidden icon of Element in Popover === */
-#ig-add-element .jsn-items-list .jsn-item .shortcode-item > i {
+.ig-add-element .jsn-items-list .jsn-item .shortcode-item > i {
     display: none;
 }
-#ig-add-element .jsn-items-list li.ig-loading {
+.ig-add-element .jsn-items-list li.ig-loading {
 	background: url(../images/icons-24/icon-24-loading-circle.gif) 50% 50% no-repeat;
 }
-#ig-add-element .jsn-items-list li.ig-loading > * {
+.ig-add-element .jsn-items-list li.ig-loading > * {
 	visibility: hidden;
 }
 
 /* === to prevent scrollbar when have some elements, but the scrollbar still shows === */
-#ig-add-element .jsn-items-list{
+.ig-add-element .jsn-items-list{
     max-height: 260px !important;
     overflow-y: auto !important;
     min-height: 260px;
@@ -470,7 +470,7 @@
     position: relative !important;
 }
 
-#ig-add-element #rawshortcode-add {
+.ig-add-element #rawshortcode-add {
 	width: 120px;
 	margin: 0 auto;
 }
@@ -592,7 +592,6 @@ input:checked + .radio_image{
 }
 #ig-shortcodes .jsn-items-list{
     height: auto;
-    border: none;
     overflow: auto;
 }
 .jsn-modal-indicator{
@@ -1059,7 +1058,7 @@ input:checked + .radio_image{
 .jsn-bootstrap3 .jsn-item {
 	min-height: 38px !important;
 }
-.jsn-bootstrap3 .jsn-elementselector .jsn-items-list li {
+.ig-add-element .jsn-items-list li {
     -moz-box-sizing: border-box;
     border: medium none;
     float: left;
@@ -1071,14 +1070,14 @@ input:checked + .radio_image{
 .ui-tabs .ui-tabs-nav li.ui-state-processing a {
     border-color: #ddd #ddd transparent;
 }
-.jsn-bootstrap3 .jsn-elementselector p {
+.ig-add-element p {
     padding-top: 10px;
     margin-bottom: 0px;
 }
-.jsn-bootstrap3 #ig-add-element > div.popover {
+.ig-add-element > div.popover {
 	max-width: 600px !important;
 }
-.jsn-bootstrap3 #ig-add-element > div.popover .popover-content {
+.ig-add-element > div.popover .popover-content {
     padding: 15px;
 }
 .jsn-bootstrap3 .jsn-items-list {
@@ -1138,7 +1137,7 @@ input:checked + .radio_image{
 }
 .jsn-bootstrap3 .input-small {
 	float: left;
-	overflow: hidden;
+    overflow: hidden;
 	width: 90px !important;
 }
 .jsn-bootstrap3 .input-mini-inline {
@@ -1218,15 +1217,9 @@ input:checked + .radio_image{
 .jsn-bootstrap3 .ui-sortable .jsn-item.ui-state-default {
 	min-width: 38px;
 }
-
 .jsn-bootstrap3 #group_elements .jsn-item.ui-state-default {
 	min-height: 38px !important;
 }
-
-.jsn-bootstrap3 #group_elements .ui-sortable .jsn-item.ui-state-default {
-	min-height: 38px !important;
-}
-
 .jsn-bootstrap3 .jsn-items-list-container .jsn-buttonbar {
 	position: absolute;
     right: 25px;
@@ -1401,7 +1394,7 @@ input:checked + .radio_image{
 
 /* Color Picker */
 .colorpicker {
-	z-index: 100001;
+	z-index: 100051;
 }
 /* for jquery-te editor field in modal setting */
 #modalOptions .jqte {
@@ -1541,15 +1534,6 @@ div[id^="collorpicker_"]{
 	-moz-box-sizing:content-box;
 }
 
-/* Data Conversion Modal */
-#data-conversion-modal .modal-body {
-	padding-bottom: 15px;
-	text-align: center;
-}
-#data-conversion-modal .modal-body span.ig-loading {
-	padding-left: 20px;
-	background: url(../images/icons-16/icon-16-loading-circle.gif) 0 50% no-repeat;
-}
 #ig_pb_button i{
 	width: 17px;
 	display: block;
@@ -1567,7 +1551,6 @@ div[id^="collorpicker_"]{
 .jsn-bootstrap3 .ig-mini-input {
 	max-width: 120px;
 }
-
 .jsn-bootstrap3 #modalOptions .dimension-inline .combo-item {
 	max-width: 108px;
 }
@@ -1600,42 +1583,36 @@ div[id^="collorpicker_"]{
 .jsn-bootstrap3 #modalOptions .input-append-inline {
 	width: 115px;
 }
-
 .jsn-bootstrap3 #form-design-content .overflow_hidden {
 	overflow: hidden;
 }
 .jsn-bootstrap3 .ig-slider {
 	max-height: 12px;
 }
+.jsn-bootstrap3 #modalOptions .group_table .jsn-item .jsn-item-content {
+	width: 100%;
+}
 
-.jsn-bootstrap3 #modalOptions .dimension-inline .combo-item {
-	max-width: 108px;
+/* Data Conversion Modal */
+#data-conversion-modal {
+	display: none;
+	margin-left: 500px;
+	position: fixed;
+	width: 500px;
+	top: 10%;
+	z-index: 1050;
 }
-.jsn-bootstrap3 .jsn-icon16.jsn-icon-loading {
-    background: url("../images/icons-16/icon-16-loading-circle.gif") no-repeat scroll center center rgba(0, 0, 0, 0);
-    height: 16px;
-    width: 16px;
-    display: block;
+#data-conversion-modal .modal-header h3 {
+	padding: 0;
+	color: #404040;
+	font-size: 18px;
+	font-weight: bold;
 }
-.jsn-bootstrap3 #modalOptions .input-group-inline .input-group {
-	float: left;
-	margin-right: 10px;
-	margin-bottom: 5px;
+#data-conversion-modal .modal-body {
+	padding-bottom: 20px;
+	text-align: center;
 }
-.jsn-bootstrap3 #modalOptions .select2-container.input-mini {
-	margin-right: 10px;
-}
-.jsn-bootstrap3 #modalOptions .input-select-append .input-group-addon {
-	margin-left: -15px;
-}
-.jsn-bootstrap3 #modalOptions .input-select-append .select2-container {
-	border-right: 1px solid #CCCCCC;
-}
-.jsn-bootstrap3 #modalOptions .input-select-append .select2-container .select2-choice {
-	margin-right: -2px;
-}
-.jsn-bootstrap3 #modalOptions .input-append-inline {
-}
-.jsn-bootstrap3 .ig-slider {
-	max-height: 12px;
+#data-conversion-modal .modal-body span.ig-loading {
+	padding-left: 20px;
+	background: url(../images/icons-16/icon-16-loading-circle.gif) 0 50% no-repeat;
 }

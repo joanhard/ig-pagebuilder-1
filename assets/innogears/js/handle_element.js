@@ -1739,7 +1739,7 @@
 
 		// Set editor's height to fullfill the modal
 		$(window).resize(function() {
-			editor.setSize('98%' , $(window).height() - 250);
+			editor.setSize('100%' , $(window).height() - 250);
 		});
 		/**
 		 * Action inside Modal
