@@ -24,10 +24,11 @@ In order to offer the easiest way to build a website, IG Page Builder includes f
 In addition, the page builder is equipped fully responsive functionality; your site will automatically adjust its layout and look more fantastic on whatever devices which your customers are using.
 
 You can constantly use this page builder as a starter tool for your website building project. With IG PageBuilder, nothing is impossible.
+
 <h4>
 <a http://demo.innogears.com/ig-pagebuilder/">Live Demo</a></h4>
 <h4>
-<a http://www.innogears.com/docs/ig-pagebuilder/">Manuals and Documentation</a></h4>
+<a http://www.innogears.com/docs/ig-pagebuilder/">Manual & Documentation</a></h4>
 
 <h4>Main Features:</h4>
 
@@ -42,14 +43,14 @@ You can constantly use this page builder as a starter tool for your website buil
 * Support bundle of built-in shortcodes
 * Support many advanced page elements
 * Support resizing blocks using only a mouse
-<h4>
-<a http://www.innogears.com/addons.html">Check more add-ons of IG PageBuilder/a></h4>
+
+<h4>Check more <a http://www.innogears.com/addons.html/">add-ons </a>of IG PageBuilder</h4>
+
+Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on <a https://github.com/wp-plugins/ig-pagebuilder/">Github Pro</a>! 
+
+We also very much welcome those who want to expand their business with us! If you think your themes or plugins can combine and work well with our plugins, don’t hesitant to contact us right now and become our partner. We are always waiting for you!
 
 <i>*If you like the plugin, please vote for it!*</i>
-
-Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on <a https://github.com/wp-plugins/ig-pagebuilder">Github Pro</a>! 
-
-We also very much welcome those who want to expand their business with us! If you think your themes or plugins can combine and work well with our plugins to make more awesome stuff, don’t hesitant to contact us right now and become our partner. We are always waiting for you!
 
 == Installation ==
 1. Upload IG Page Builder to the /wp-content/plugins/ directory
@@ -62,7 +63,7 @@ We also very much welcome those who want to expand their business with us! If yo
 2. Live Preview
 3. Widget Window
 
-== Use ==
+== More Details ==
 
 For further information, product details, help and tutorials, please visit our website: http://www.innogears.com/
 
