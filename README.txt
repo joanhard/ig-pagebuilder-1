@@ -1,4 +1,4 @@
-=== IG Page Builder ===
+﻿=== IG Page Builder ===
 Contributors: innogears
 Tags: page builder, admin, content, visual, element, plugin, advanced, page elements, editor, layout, easy to use, page, post, responsive, widget
 Requires at least: 3.8
@@ -11,19 +11,23 @@ A simple yet powerful page builder that lets you create a complete WordPress web
 
 == Description ==
 
-IG Page Builder is a drag-and-drop page builder that helps you quickly build a complete WordPress website and you don’t even need to read any documentation.
+IG Page Builder is an easy-to-use page builder that helps you quickly build a complete WordPress website and you don’t even need to read any documentation.
 
 [vimeo https://vimeo.com/88215863]
 
-This page builder is similar to an advanced visual editor, and you can use it for any theme.
+This is a drag-n-drop page builder which is similar to an advanced visual editor and can use it for any theme.
 
-What makes IG Page Builder stand out from others is focusing on simplicity, lightweight and really useful, so that making your own unique website becomes easier than ever.
+What makes IG Page Builder stand-out from others is focusing on simplicity, lightweight and really useful, so that making your own unique website becomes easier than ever.
 
-In order to offer the easiest way to build a website, IG Page Builder includes full page elements (built-in shortcodes) for a fully functional website. Besides, it also totally supports adding any widget and many options for deeper customization, so there is no need to touch any code. All the elements are specifically designed with 2 configuration sections: one part for building content and the other for taking a visual look of what you are doing without having to go back into the front-end.
+In order to offer the easiest way to build a website, IG Page Builder includes full page elements (built-in shortcodes) for a fully functional website. Besides, it also totally supports adding any widget and many options for deeper customization, so there is no need to touch any code. All the elements are specifically designed with 2 configuration sections: one tab for building content and the other for taking a visual look of what you are doing without having to go back into the front-end.
 
 In addition, the page builder is equipped fully responsive functionality; your site will automatically adjust its layout and look more fantastic on whatever devices which your customers are using.
 
 You can constantly use this page builder as a starter tool for your website building project. With IG PageBuilder, nothing is impossible.
+<h4>
+<a http://demo.innogears.com/ig-pagebuilder/">Live Demo</a></h4>
+<h4>
+<a http://www.innogears.com/docs/ig-pagebuilder/">Manuals and Documentation</a></h4>
 
 <h4>Main Features:</h4>
 
@@ -38,12 +42,14 @@ You can constantly use this page builder as a starter tool for your website buil
 * Support bundle of built-in shortcodes
 * Support many advanced page elements
 * Support resizing blocks using only a mouse
-
-<h4>Support</h4>
-<p>
-<a href="http://www.innogears.com/wordpress-plugins/ig-pagebuilder-docs.zip">Full Help Documentation</a></p>
+<h4>
+<a http://www.innogears.com/addons.html">Check more add-ons of IG PageBuilder/a></h4>
 
 <i>*If you like the plugin, please vote for it!*</i>
+
+Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on <a https://github.com/wp-plugins/ig-pagebuilder">Github Pro</a>! 
+
+We also very much welcome those who want to expand their business with us! If you think your themes or plugins can combine and work well with our plugins to make more awesome stuff, don’t hesitant to contact us right now and become our partner. We are always waiting for you!
 
 == Installation ==
 1. Upload IG Page Builder to the /wp-content/plugins/ directory
@@ -51,11 +57,17 @@ You can constantly use this page builder as a starter tool for your website buil
 
 
 == Screenshots ==
+
 1. The IG Page Builder layout
 2. Live Preview
 3. Widget Window
 
+== Use ==
+
+For further information, product details, help and tutorials, please visit our website: http://www.innogears.com/
+
 == Changelog ==
+
 = 2.2.1 =
 * Fixed Modal and select box z-index
 * Fixed Text Editor not fire change when saving 
@@ -134,4 +146,6 @@ You can constantly use this page builder as a starter tool for your website buil
 * Added text editor into element setting modal
 
 = 1.0 =
+
+
 
