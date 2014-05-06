@@ -1,4 +1,4 @@
-﻿=== IG Page Builder ===
+=== IG Page Builder ===
 Contributors: innogears
 Tags: page builder, admin, content, visual, element, plugin, advanced, page elements, editor, layout, easy to use, page, post, responsive, widget
 Requires at least: 3.8
@@ -25,10 +25,10 @@ In addition, the page builder is equipped fully responsive functionality; your s
 
 You can constantly use this page builder as a starter tool for your website building project. With IG PageBuilder, nothing is impossible.
 
-<h4>
-<a http://demo.innogears.com/ig-pagebuilder/">Live Demo</a></h4>
-<h4>
-<a http://www.innogears.com/docs/ig-pagebuilder/">Documentation</a></h4>
+
+<a href=“http://demo.innogears.com/ig-pagebuilder/“><h4>Live Demo</h4></a>
+
+<a href=“http://www.innogears.com/docs/ig-pagebuilder/“><h4>Documentation</h4></a>
 
 <h4>Main Features:</h4>
 
@@ -44,9 +44,9 @@ You can constantly use this page builder as a starter tool for your website buil
 * Support many advanced page elements
 * Support resizing blocks using only a mouse
 
-<h4>Check more <a http://www.innogears.com/addons.html/">add-ons </a>of IG PageBuilder</h4>
+Check more <a href=“http://www.innogears.com/addons.html/“>add-ons </a>of IG PageBuilder
 
-Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on <a https://github.com/wp-plugins/ig-pagebuilder/">Github Pro</a>! 
+Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on <a href=“https://github.com/wp-plugins/ig-pagebuilder/“>Github Repo</a>! 
 
 We also very much welcome those who want to expand their business with us! If you think your themes or plugins can combine and work well with our plugins, don’t hesitant to contact us right now and become our partner. We are always waiting for you!
 
