@@ -26,9 +26,9 @@ In addition, the page builder is equipped fully responsive functionality; your s
 You can constantly use this page builder as a starter tool for your website building project. With IG PageBuilder, nothing is impossible.
 
 
-<a href=“http://demo.innogears.com/ig-pagebuilder/“>Live Demo</a>
+<a href=http://demo.innogears.com/ig-pagebuilder/>Live Demo</a>
 
-<a href=“http://www.innogears.com/docs/ig-pagebuilder/“>Documentation</a>
+<a href=http://www.innogears.com/docs/ig-pagebuilder/>Documentation</a>
 
 <h4>Main Features:</h4>
 
@@ -44,7 +44,7 @@ You can constantly use this page builder as a starter tool for your website buil
 * Support many advanced page elements
 * Support resizing blocks using only a mouse
 
-Check more <a href=“http://www.innogears.com/addons.html/“>add-ons </a>of IG PageBuilder
+Check more <a href=http://www.innogears.com/addons.html/>add-ons </a>of IG PageBuilder
 
 Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on <a href=“https://github.com/wp-plugins/ig-pagebuilder/“>Github Repo</a>! 
 
