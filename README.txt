@@ -26,9 +26,9 @@ In addition, the page builder is equipped fully responsive functionality; your s
 You can constantly use this page builder as a starter tool for your website building project. With IG PageBuilder, nothing is impossible.
 
 
-<a href=“http://demo.innogears.com/ig-pagebuilder/“><h4>Live Demo</h4></a>
+<a href=“http://demo.innogears.com/ig-pagebuilder/“>Live Demo</a>
 
-<a href=“http://www.innogears.com/docs/ig-pagebuilder/“><h4>Documentation</h4></a>
+<a href=“http://www.innogears.com/docs/ig-pagebuilder/“>Documentation</a>
 
 <h4>Main Features:</h4>
 
