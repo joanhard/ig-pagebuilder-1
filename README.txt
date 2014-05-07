@@ -27,7 +27,7 @@ You can constantly use this page builder as a starter tool for your website buil
 
 
 <h4><a href="http://demo.innogears.com/ig-pagebuilder">Live Demo</a></h4>
-<br>
+
 <h4><a href="http://www.innogears.com/docs/ig-pagebuilder">Documentation</a></h4>
 
 <h4>Main Features:</h4>
