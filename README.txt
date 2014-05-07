@@ -1,4 +1,4 @@
-=== IG Page Builder ===
+﻿=== IG Page Builder ===
 Contributors: innogears
 Tags: page builder, admin, content, visual, element, plugin, advanced, page elements, editor, layout, easy to use, page, post, responsive, widget
 Requires at least: 3.8
@@ -15,7 +15,7 @@ IG Page Builder is an easy-to-use page builder that helps you quickly build a co
 
 [vimeo https://vimeo.com/88215863]
 
-This is a drag-n-drop page builder which is similar to an advanced visual editor and can use it for any theme.
+This is a drag-n-drop page builder which is similar to an advanced visual editor and can use for any theme.
 
 What makes IG Page Builder stand-out from others is focusing on simplicity, lightweight and really useful, so that making your own unique website becomes easier than ever.
 
@@ -26,9 +26,9 @@ In addition, the page builder is equipped fully responsive functionality; your s
 You can constantly use this page builder as a starter tool for your website building project. With IG PageBuilder, nothing is impossible.
 
 
-<a href=http://demo.innogears.com/ig-pagebuilder/>Live Demo</a>
+<h4>[Live Demo](http://demo.innogears.com/ig-pagebuilder/)</h4>
 
-<a href=http://www.innogears.com/docs/ig-pagebuilder/>Documentation</a>
+<h4>[Documentation] (http://www.innogears.com/docs/ig-pagebuilder/)</h4>
 
 <h4>Main Features:</h4>
 
@@ -44,11 +44,11 @@ You can constantly use this page builder as a starter tool for your website buil
 * Support many advanced page elements
 * Support resizing blocks using only a mouse
 
-Check more <a href=http://www.innogears.com/addons.html/>add-ons </a>of IG PageBuilder
+<h4>Check more [add-ons](http://www.innogears.com/addons.html/)of IG PageBuilder</h4>
 
-Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on <a href=“https://github.com/wp-plugins/ig-pagebuilder/“>Github Repo</a>! 
+Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on [Github Repo] (https://github.com/wp-plugins/ig-pagebuilder/)!
 
-We also very much welcome those who want to expand their business with us! If you think your themes or plugins can combine and work well with our plugins, don’t hesitant to contact us right now and become our partner. We are always waiting for you!
+We also very much welcome those who want to expand their business with us! If you think your themes or plugins can combine and work well with our plugins, don’t hesitant to [contact us] (mailto:innogears@gmail.com)right now and become our partner. We are always waiting for you!
 
 <i>*If you like the plugin, please vote for it!*</i>
 
