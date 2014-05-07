@@ -44,7 +44,7 @@ You can constantly use this page builder as a starter tool for your website buil
 * Support many advanced page elements
 * Support resizing blocks using only a mouse
 
-<h4>Check more [add-ons](http://www.innogears.com/addons.html/)of IG PageBuilder</h4>
+<h4>Check more [add-ons] (http://www.innogears.com/addons.html/) of IG PageBuilder</h4>
 
 Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on [Github Repo] (https://github.com/wp-plugins/ig-pagebuilder/)!
 
