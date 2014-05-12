@@ -15,10 +15,6 @@ IG Page Builder is an easy-to-use page builder that helps you quickly build a co
 
 [vimeo https://vimeo.com/88215863]
 
-<p style="text-align: center;"><a href="http://demo.innogears.com/ig-pagebuilder" target="_blank">Live Demo</a></p>
-
-<p style="text-align: center;"><a href="http://www.innogears.com/docs/ig-pagebuilder">Documentation</a></p>
-
 This is a drag-n-drop page builder which is similar to an advanced visual editor and can use for any theme.
 
 What makes IG Page Builder stand-out from others is focusing on simplicity, lightweight and really useful, so that making your own unique website becomes easier than ever.
@@ -28,6 +24,9 @@ In order to offer the easiest way to build a website, IG Page Builder includes f
 In addition, the page builder is equipped fully responsive functionality; your site will automatically adjust its layout and look more fantastic on whatever devices which your customers are using.
 
 You can constantly use this page builder as a starter tool for your website building project. With IG PageBuilder, nothing is impossible.
+
+* <a href="http://demo.innogears.com/ig-pagebuilder">Live Demo</a>
+* <a href="http://www.innogears.com/docs/ig-pagebuilder">Documentation</a>
 
 <h4>Main Features:</h4>
 
