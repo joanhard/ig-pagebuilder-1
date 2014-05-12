@@ -1284,7 +1284,11 @@ JS;
 
 			$css_custom = stripslashes( $css_custom );
 
-			echo balanceTags( "<style id='ig-pb-custom-{$post->ID}-css'>\n$css_custom\n</style>\n" );
+			if( ! empty( $css_custom ) ) {
+			
+				echo balanceTags( "<style id='ig-pb-custom-{$post->ID}-css'>\n$css_custom\n</style>\n" );
+			
+			}
 		}
 	}
 
