@@ -11,9 +11,11 @@ A simple yet powerful page builder that lets you create a complete WordPress web
 
 == Description ==
 
-IG Page Builder is an easy-to-use page builder that helps you quickly build a complete WordPress website and you donâ€™t even need to read any documentation.
+IG Page Builder is an easy-to-use page builder that helps you quickly build a complete WordPress website and you don’t even need to read any documentation.
 
 [vimeo https://vimeo.com/88215863]
+
+<p style="text-align: center;"><a style="text-align: center;" href="http://demo.innogears.com/ig-pagebuilder" target="_blank">See Live Demo</a></p>
 
 This is a drag-n-drop page builder which is similar to an advanced visual editor and can use for any theme.
 
@@ -25,10 +27,6 @@ In addition, the page builder is equipped fully responsive functionality; your s
 
 You can constantly use this page builder as a starter tool for your website building project. With IG PageBuilder, nothing is impossible.
 
-
-<h4><a href="http://demo.innogears.com/ig-pagebuilder">Live Demo</a></h4>
-
-<h4><a href="http://www.innogears.com/docs/ig-pagebuilder">Documentation</a></h4>
 <h4>Main Features:</h4>
 
 * Intuitive interface
@@ -43,11 +41,20 @@ You can constantly use this page builder as a starter tool for your website buil
 * Support many advanced page elements
 * Support resizing blocks using only a mouse
 
-<h4>Check more <a href="http://www.innogears.com/addons.html">add-ons</a> of IG PageBuilder</h4>
+<h4>Support</h4>
+
+* <a href="http://www.innogears.com/docs/ig-pagebuilder">Documentation</a>
+* <a href="http://www.innogears.com/support/forum.html">Support</a>
+
+<h4>Extend IG PageBuilder with powerful add-ons</h4>
+
+* <a href="http://www.innogears.com/addons.html">Pro Page Elements</a>*
+
+<h4>Contribute to the project</h4>
 
 Are you a developer and interested in IG PageBuilder? Please join and collaborate with us on <a href="https://github.com/wp-plugins/ig-pagebuilder">Github Repo</a> !
 
-We also very much welcome those who want to expand their business with us! If you think your themes or plugins can combine and work well with our plugins, donâ€™t hesitant to [contact us] (mailto:innogears@gmail.com)right now and become our partner. We are always waiting for you!
+We also very much welcome those who want to expand their business with us! If you think your themes or plugins can combine and work well with our plugins, don’t hesitant to <a href="mailto:innogears@gmail.com">contact us</a> right now and become our partner. We are always waiting for you!
 
 <i>*If you like the plugin, please vote for it!*</i>
 
@@ -70,7 +77,7 @@ For further information, product details, help and tutorials, please visit our w
 
 = 2.2.1 =
 * Fixed Modal and select box z-index
-* Fixed Text Editor not fire change when saving 
+* Fixed Text Editor not fire change when saving
 
 = 2.2.0 =
 * Improved Working performance
@@ -92,10 +99,10 @@ For further information, product details, help and tutorials, please visit our w
 * Added Setting page for IG PageBuilder
 * Added Options to handle IG Cache
 * Added Premade Template feature
-* Added Class suffix to row and elementâ€™s wrapper
+* Added Class suffix to row and element’s wrapper
 * Fixed table colspan problem
 * Fixed Css overriding bugs
-* Fixed elementsâ€™ displaying bugs
+* Fixed elements’ displaying bugs
 * Fixed Assets enqueue error
 
 = 1.0.9 =
@@ -104,9 +111,9 @@ For further information, product details, help and tutorials, please visit our w
 = 1.0.8 =
 * Fixed Carousel background
 * Fixed Full mode pagebuilder status
-* Fixed Bootstrap conflicts with themeâ€™s css
+* Fixed Bootstrap conflicts with theme’s css
 * Fixed Readmore button not showed
-* Improved Allow itemâ€™s heading to be nullable
+* Improved Allow item’s heading to be nullable
 
 = 1.0.7 =
 * Fixed Tab position not working
@@ -125,7 +132,7 @@ For further information, product details, help and tutorials, please visit our w
 = 1.0.4 =
 * Added ability to disable an element on frontend
 * Improved Editor switching feature
-* Improved Element setting pageâ€™s speed
+* Improved Element setting page’s speed
 * Fixed Minor bugs
 
 = 1.0.3 =
